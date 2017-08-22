@@ -77,7 +77,7 @@ module.exports = ->
         user:
           name: 'NoFlo bot'
           email: 'bot@noflo.org'
-        silent: true
+        silent: false
       src: '**/*'
 
   # Grunt plugins used for building

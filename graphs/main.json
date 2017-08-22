@@ -16,8 +16,8 @@
             "component": "dom/GetElement",
             "metadata": {
                 "label": "dom/GetElement",
-                "x": 252,
-                "y": 180,
+                "x": 216,
+                "y": 144,
                 "width": 72,
                 "height": 72
             }
@@ -56,8 +56,8 @@
             "component": "interaction/ListenMouse",
             "metadata": {
                 "label": "interaction/ListenMouse",
-                "x": 432,
-                "y": 180,
+                "x": 396,
+                "y": 144,
                 "width": 72,
                 "height": 72
             }
@@ -158,7 +158,7 @@
             }
         },
         {
-            "data": "Hallo Johan!",
+            "data": "Hallo Menno!",
             "tgt": {
                 "process": "core/Kick_ey1nh",
                 "port": "data"

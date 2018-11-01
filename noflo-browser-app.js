@@ -60,17 +60,22 @@
 /******/ 	__webpack_require__.p = "";
 /******/
 /******/ 	// Load entry module and return exports
-/******/ 	return __webpack_require__(__webpack_require__.s = 26);
+/******/ 	return __webpack_require__(__webpack_require__.s = 24);
 /******/ })
 /************************************************************************/
 /******/ ([
 /* 0 */
 /***/ (function(module, exports, __webpack_require__) {
 
-(function() {
+"use strict";
+
+
+var _typeof = typeof Symbol === "function" && typeof Symbol.iterator === "symbol" ? function (obj) { return typeof obj; } : function (obj) { return obj && typeof Symbol === "function" && obj.constructor === Symbol && obj !== Symbol.prototype ? "symbol" : typeof obj; };
+
+(function () {
   var fbpGraph, ports;
 
-  fbpGraph = __webpack_require__(8);
+  fbpGraph = __webpack_require__(7);
 
   exports.graph = fbpGraph.graph;
 
@@ -86,7 +91,7 @@
 
   exports.ComponentLoader = __webpack_require__(10).ComponentLoader;
 
-  exports.Component = __webpack_require__(18).Component;
+  exports.Component = __webpack_require__(17).Component;
 
   exports.AsyncComponent = __webpack_require__(89).AsyncComponent;
 
@@ -94,48 +99,48 @@
 
   exports.streams = __webpack_require__(12);
 
-  ports = __webpack_require__(19);
+  ports = __webpack_require__(18);
 
   exports.InPorts = ports.InPorts;
 
   exports.OutPorts = ports.OutPorts;
 
-  exports.InPort = __webpack_require__(20);
+  exports.InPort = __webpack_require__(19);
 
-  exports.OutPort = __webpack_require__(22);
+  exports.OutPort = __webpack_require__(21);
 
   exports.Port = __webpack_require__(11).Port;
 
   exports.ArrayPort = __webpack_require__(91).ArrayPort;
 
-  exports.internalSocket = __webpack_require__(7);
+  exports.internalSocket = __webpack_require__(6);
 
   exports.IP = __webpack_require__(4);
 
-  exports.createNetwork = function(graph, callback, options) {
+  exports.createNetwork = function (graph, callback, options) {
     var network, networkReady;
-    if (typeof options !== 'object') {
+    if ((typeof options === 'undefined' ? 'undefined' : _typeof(options)) !== 'object') {
       options = {
         delay: options
       };
     }
     if (typeof callback !== 'function') {
-      callback = function(err) {
+      callback = function callback(err) {
         if (err) {
           throw err;
         }
       };
     }
     network = new exports.Network(graph, options);
-    networkReady = function(network) {
-      return network.start(function(err) {
+    networkReady = function networkReady(network) {
+      return network.start(function (err) {
         if (err) {
           return callback(err);
         }
         return callback(null, network);
       });
     };
-    network.loader.listComponents(function(err) {
+    network.loader.listComponents(function (err) {
       if (err) {
         return callback(err);
       }
@@ -146,7 +151,7 @@
         callback(null, network);
         return;
       }
-      return network.connect(function(err) {
+      return network.connect(function (err) {
         if (err) {
           return callback(err);
         }
@@ -156,18 +161,18 @@
     return network;
   };
 
-  exports.loadFile = function(file, options, callback) {
+  exports.loadFile = function (file, options, callback) {
     var baseDir;
     if (!callback) {
       callback = options;
       baseDir = null;
     }
-    if (callback && typeof options !== 'object') {
+    if (callback && (typeof options === 'undefined' ? 'undefined' : _typeof(options)) !== 'object') {
       options = {
         baseDir: options
       };
     }
-    return exports.graph.loadFile(file, function(err, net) {
+    return exports.graph.loadFile(file, function (err, net) {
       if (err) {
         return callback(err);
       }
@@ -178,207 +183,15 @@
     });
   };
 
-  exports.saveFile = function(graph, file, callback) {
+  exports.saveFile = function (graph, file, callback) {
     return exports.graph.save(file, callback);
   };
 
   exports.asCallback = __webpack_require__(92).asCallback;
-
-}).call(this);
-
+}).call(undefined);
 
 /***/ }),
 /* 1 */
-/***/ (function(module, exports) {
-
-// shim for using process in browser
-var process = module.exports = {};
-
-// cached from whatever global is present so that test runners that stub it
-// don't break things.  But we need to wrap it in a try catch in case it is
-// wrapped in strict mode code which doesn't define any globals.  It's inside a
-// function because try/catches deoptimize in certain engines.
-
-var cachedSetTimeout;
-var cachedClearTimeout;
-
-function defaultSetTimout() {
-    throw new Error('setTimeout has not been defined');
-}
-function defaultClearTimeout () {
-    throw new Error('clearTimeout has not been defined');
-}
-(function () {
-    try {
-        if (typeof setTimeout === 'function') {
-            cachedSetTimeout = setTimeout;
-        } else {
-            cachedSetTimeout = defaultSetTimout;
-        }
-    } catch (e) {
-        cachedSetTimeout = defaultSetTimout;
-    }
-    try {
-        if (typeof clearTimeout === 'function') {
-            cachedClearTimeout = clearTimeout;
-        } else {
-            cachedClearTimeout = defaultClearTimeout;
-        }
-    } catch (e) {
-        cachedClearTimeout = defaultClearTimeout;
-    }
-} ())
-function runTimeout(fun) {
-    if (cachedSetTimeout === setTimeout) {
-        //normal enviroments in sane situations
-        return setTimeout(fun, 0);
-    }
-    // if setTimeout wasn't available but was latter defined
-    if ((cachedSetTimeout === defaultSetTimout || !cachedSetTimeout) && setTimeout) {
-        cachedSetTimeout = setTimeout;
-        return setTimeout(fun, 0);
-    }
-    try {
-        // when when somebody has screwed with setTimeout but no I.E. maddness
-        return cachedSetTimeout(fun, 0);
-    } catch(e){
-        try {
-            // When we are in I.E. but the script has been evaled so I.E. doesn't trust the global object when called normally
-            return cachedSetTimeout.call(null, fun, 0);
-        } catch(e){
-            // same as above but when it's a version of I.E. that must have the global object for 'this', hopfully our context correct otherwise it will throw a global error
-            return cachedSetTimeout.call(this, fun, 0);
-        }
-    }
-
-
-}
-function runClearTimeout(marker) {
-    if (cachedClearTimeout === clearTimeout) {
-        //normal enviroments in sane situations
-        return clearTimeout(marker);
-    }
-    // if clearTimeout wasn't available but was latter defined
-    if ((cachedClearTimeout === defaultClearTimeout || !cachedClearTimeout) && clearTimeout) {
-        cachedClearTimeout = clearTimeout;
-        return clearTimeout(marker);
-    }
-    try {
-        // when when somebody has screwed with setTimeout but no I.E. maddness
-        return cachedClearTimeout(marker);
-    } catch (e){
-        try {
-            // When we are in I.E. but the script has been evaled so I.E. doesn't  trust the global object when called normally
-            return cachedClearTimeout.call(null, marker);
-        } catch (e){
-            // same as above but when it's a version of I.E. that must have the global object for 'this', hopfully our context correct otherwise it will throw a global error.
-            // Some versions of I.E. have different rules for clearTimeout vs setTimeout
-            return cachedClearTimeout.call(this, marker);
-        }
-    }
-
-
-
-}
-var queue = [];
-var draining = false;
-var currentQueue;
-var queueIndex = -1;
-
-function cleanUpNextTick() {
-    if (!draining || !currentQueue) {
-        return;
-    }
-    draining = false;
-    if (currentQueue.length) {
-        queue = currentQueue.concat(queue);
-    } else {
-        queueIndex = -1;
-    }
-    if (queue.length) {
-        drainQueue();
-    }
-}
-
-function drainQueue() {
-    if (draining) {
-        return;
-    }
-    var timeout = runTimeout(cleanUpNextTick);
-    draining = true;
-
-    var len = queue.length;
-    while(len) {
-        currentQueue = queue;
-        queue = [];
-        while (++queueIndex < len) {
-            if (currentQueue) {
-                currentQueue[queueIndex].run();
-            }
-        }
-        queueIndex = -1;
-        len = queue.length;
-    }
-    currentQueue = null;
-    draining = false;
-    runClearTimeout(timeout);
-}
-
-process.nextTick = function (fun) {
-    var args = new Array(arguments.length - 1);
-    if (arguments.length > 1) {
-        for (var i = 1; i < arguments.length; i++) {
-            args[i - 1] = arguments[i];
-        }
-    }
-    queue.push(new Item(fun, args));
-    if (queue.length === 1 && !draining) {
-        runTimeout(drainQueue);
-    }
-};
-
-// v8 likes predictible objects
-function Item(fun, array) {
-    this.fun = fun;
-    this.array = array;
-}
-Item.prototype.run = function () {
-    this.fun.apply(null, this.array);
-};
-process.title = 'browser';
-process.browser = true;
-process.env = {};
-process.argv = [];
-process.version = ''; // empty string to avoid regexp issues
-process.versions = {};
-
-function noop() {}
-
-process.on = noop;
-process.addListener = noop;
-process.once = noop;
-process.off = noop;
-process.removeListener = noop;
-process.removeAllListeners = noop;
-process.emit = noop;
-process.prependListener = noop;
-process.prependOnceListener = noop;
-
-process.listeners = function (name) { return [] }
-
-process.binding = function (name) {
-    throw new Error('process.binding is not supported');
-};
-
-process.cwd = function () { return '/' };
-process.chdir = function (dir) {
-    throw new Error('process.chdir is not supported');
-};
-process.umask = function() { return 0; };
-
-
-/***/ }),
-/* 2 */
 /***/ (function(module, exports) {
 
 // Copyright Joyent, Inc. and other Node contributors.
@@ -686,39 +499,220 @@ function isUndefined(arg) {
 
 
 /***/ }),
+/* 2 */
+/***/ (function(module, exports) {
+
+// shim for using process in browser
+var process = module.exports = {};
+
+// cached from whatever global is present so that test runners that stub it
+// don't break things.  But we need to wrap it in a try catch in case it is
+// wrapped in strict mode code which doesn't define any globals.  It's inside a
+// function because try/catches deoptimize in certain engines.
+
+var cachedSetTimeout;
+var cachedClearTimeout;
+
+function defaultSetTimout() {
+    throw new Error('setTimeout has not been defined');
+}
+function defaultClearTimeout () {
+    throw new Error('clearTimeout has not been defined');
+}
+(function () {
+    try {
+        if (typeof setTimeout === 'function') {
+            cachedSetTimeout = setTimeout;
+        } else {
+            cachedSetTimeout = defaultSetTimout;
+        }
+    } catch (e) {
+        cachedSetTimeout = defaultSetTimout;
+    }
+    try {
+        if (typeof clearTimeout === 'function') {
+            cachedClearTimeout = clearTimeout;
+        } else {
+            cachedClearTimeout = defaultClearTimeout;
+        }
+    } catch (e) {
+        cachedClearTimeout = defaultClearTimeout;
+    }
+} ())
+function runTimeout(fun) {
+    if (cachedSetTimeout === setTimeout) {
+        //normal enviroments in sane situations
+        return setTimeout(fun, 0);
+    }
+    // if setTimeout wasn't available but was latter defined
+    if ((cachedSetTimeout === defaultSetTimout || !cachedSetTimeout) && setTimeout) {
+        cachedSetTimeout = setTimeout;
+        return setTimeout(fun, 0);
+    }
+    try {
+        // when when somebody has screwed with setTimeout but no I.E. maddness
+        return cachedSetTimeout(fun, 0);
+    } catch(e){
+        try {
+            // When we are in I.E. but the script has been evaled so I.E. doesn't trust the global object when called normally
+            return cachedSetTimeout.call(null, fun, 0);
+        } catch(e){
+            // same as above but when it's a version of I.E. that must have the global object for 'this', hopfully our context correct otherwise it will throw a global error
+            return cachedSetTimeout.call(this, fun, 0);
+        }
+    }
+
+
+}
+function runClearTimeout(marker) {
+    if (cachedClearTimeout === clearTimeout) {
+        //normal enviroments in sane situations
+        return clearTimeout(marker);
+    }
+    // if clearTimeout wasn't available but was latter defined
+    if ((cachedClearTimeout === defaultClearTimeout || !cachedClearTimeout) && clearTimeout) {
+        cachedClearTimeout = clearTimeout;
+        return clearTimeout(marker);
+    }
+    try {
+        // when when somebody has screwed with setTimeout but no I.E. maddness
+        return cachedClearTimeout(marker);
+    } catch (e){
+        try {
+            // When we are in I.E. but the script has been evaled so I.E. doesn't  trust the global object when called normally
+            return cachedClearTimeout.call(null, marker);
+        } catch (e){
+            // same as above but when it's a version of I.E. that must have the global object for 'this', hopfully our context correct otherwise it will throw a global error.
+            // Some versions of I.E. have different rules for clearTimeout vs setTimeout
+            return cachedClearTimeout.call(this, marker);
+        }
+    }
+
+
+
+}
+var queue = [];
+var draining = false;
+var currentQueue;
+var queueIndex = -1;
+
+function cleanUpNextTick() {
+    if (!draining || !currentQueue) {
+        return;
+    }
+    draining = false;
+    if (currentQueue.length) {
+        queue = currentQueue.concat(queue);
+    } else {
+        queueIndex = -1;
+    }
+    if (queue.length) {
+        drainQueue();
+    }
+}
+
+function drainQueue() {
+    if (draining) {
+        return;
+    }
+    var timeout = runTimeout(cleanUpNextTick);
+    draining = true;
+
+    var len = queue.length;
+    while(len) {
+        currentQueue = queue;
+        queue = [];
+        while (++queueIndex < len) {
+            if (currentQueue) {
+                currentQueue[queueIndex].run();
+            }
+        }
+        queueIndex = -1;
+        len = queue.length;
+    }
+    currentQueue = null;
+    draining = false;
+    runClearTimeout(timeout);
+}
+
+process.nextTick = function (fun) {
+    var args = new Array(arguments.length - 1);
+    if (arguments.length > 1) {
+        for (var i = 1; i < arguments.length; i++) {
+            args[i - 1] = arguments[i];
+        }
+    }
+    queue.push(new Item(fun, args));
+    if (queue.length === 1 && !draining) {
+        runTimeout(drainQueue);
+    }
+};
+
+// v8 likes predictible objects
+function Item(fun, array) {
+    this.fun = fun;
+    this.array = array;
+}
+Item.prototype.run = function () {
+    this.fun.apply(null, this.array);
+};
+process.title = 'browser';
+process.browser = true;
+process.env = {};
+process.argv = [];
+process.version = ''; // empty string to avoid regexp issues
+process.versions = {};
+
+function noop() {}
+
+process.on = noop;
+process.addListener = noop;
+process.once = noop;
+process.off = noop;
+process.removeListener = noop;
+process.removeAllListeners = noop;
+process.emit = noop;
+process.prependListener = noop;
+process.prependOnceListener = noop;
+
+process.listeners = function (name) { return [] }
+
+process.binding = function (name) {
+    throw new Error('process.binding is not supported');
+};
+
+process.cwd = function () { return '/' };
+process.chdir = function (dir) {
+    throw new Error('process.chdir is not supported');
+};
+process.umask = function() { return 0; };
+
+
+/***/ }),
 /* 3 */
 /***/ (function(module, exports, __webpack_require__) {
 
-/* WEBPACK VAR INJECTION */(function(process) {/**
- * This is the web browser implementation of `debug()`.
- *
- * Expose `debug()` as the module.
- */
+"use strict";
+/* WEBPACK VAR INJECTION */(function(process) {
 
-exports = module.exports = __webpack_require__(87);
+function _typeof(obj) { if (typeof Symbol === "function" && typeof Symbol.iterator === "symbol") { _typeof = function _typeof(obj) { return typeof obj; }; } else { _typeof = function _typeof(obj) { return obj && typeof Symbol === "function" && obj.constructor === Symbol && obj !== Symbol.prototype ? "symbol" : typeof obj; }; } return _typeof(obj); }
+
+/* eslint-env browser */
+
+/**
+ * This is the web browser implementation of `debug()`.
+ */
 exports.log = log;
 exports.formatArgs = formatArgs;
 exports.save = save;
 exports.load = load;
 exports.useColors = useColors;
-exports.storage = 'undefined' != typeof chrome
-               && 'undefined' != typeof chrome.storage
-                  ? chrome.storage.local
-                  : localstorage();
-
+exports.storage = localstorage();
 /**
  * Colors.
  */
 
-exports.colors = [
-  'lightseagreen',
-  'forestgreen',
-  'goldenrod',
-  'dodgerblue',
-  'darkorchid',
-  'crimson'
-];
-
+exports.colors = ['#0000CC', '#0000FF', '#0033CC', '#0033FF', '#0066CC', '#0066FF', '#0099CC', '#0099FF', '#00CC00', '#00CC33', '#00CC66', '#00CC99', '#00CCCC', '#00CCFF', '#3300CC', '#3300FF', '#3333CC', '#3333FF', '#3366CC', '#3366FF', '#3399CC', '#3399FF', '#33CC00', '#33CC33', '#33CC66', '#33CC99', '#33CCCC', '#33CCFF', '#6600CC', '#6600FF', '#6633CC', '#6633FF', '#66CC00', '#66CC33', '#9900CC', '#9900FF', '#9933CC', '#9933FF', '#99CC00', '#99CC33', '#CC0000', '#CC0033', '#CC0066', '#CC0099', '#CC00CC', '#CC00FF', '#CC3300', '#CC3333', '#CC3366', '#CC3399', '#CC33CC', '#CC33FF', '#CC6600', '#CC6633', '#CC9900', '#CC9933', '#CCCC00', '#CCCC33', '#FF0000', '#FF0033', '#FF0066', '#FF0099', '#FF00CC', '#FF00FF', '#FF3300', '#FF3333', '#FF3366', '#FF3399', '#FF33CC', '#FF33FF', '#FF6600', '#FF6633', '#FF9900', '#FF9933', '#FFCC00', '#FFCC33'];
 /**
  * Currently only WebKit-based Web Inspectors, Firefox >= v31,
  * and the Firebug extension (any Firefox version) are known
@@ -726,79 +720,65 @@ exports.colors = [
  *
  * TODO: add a `localStorage` variable to explicitly enable/disable colors
  */
+// eslint-disable-next-line complexity
 
 function useColors() {
   // NB: In an Electron preload script, document will be defined but not fully
   // initialized. Since we know we're in Chrome, we'll just detect this case
   // explicitly
-  if (typeof window !== 'undefined' && window.process && window.process.type === 'renderer') {
+  if (typeof window !== 'undefined' && window.process && (window.process.type === 'renderer' || window.process.__nwjs)) {
     return true;
-  }
+  } // Internet Explorer and Edge do not support colors.
 
-  // is webkit? http://stackoverflow.com/a/16459606/376773
+
+  if (typeof navigator !== 'undefined' && navigator.userAgent && navigator.userAgent.toLowerCase().match(/(edge|trident)\/(\d+)/)) {
+    return false;
+  } // Is webkit? http://stackoverflow.com/a/16459606/376773
   // document is undefined in react-native: https://github.com/facebook/react-native/pull/1632
-  return (typeof document !== 'undefined' && document.documentElement && document.documentElement.style && document.documentElement.style.WebkitAppearance) ||
-    // is firebug? http://stackoverflow.com/a/398120/376773
-    (typeof window !== 'undefined' && window.console && (window.console.firebug || (window.console.exception && window.console.table))) ||
-    // is firefox >= v31?
-    // https://developer.mozilla.org/en-US/docs/Tools/Web_Console#Styling_messages
-    (typeof navigator !== 'undefined' && navigator.userAgent && navigator.userAgent.toLowerCase().match(/firefox\/(\d+)/) && parseInt(RegExp.$1, 10) >= 31) ||
-    // double check webkit in userAgent just in case we are in a worker
-    (typeof navigator !== 'undefined' && navigator.userAgent && navigator.userAgent.toLowerCase().match(/applewebkit\/(\d+)/));
+
+
+  return typeof document !== 'undefined' && document.documentElement && document.documentElement.style && document.documentElement.style.WebkitAppearance || // Is firebug? http://stackoverflow.com/a/398120/376773
+  typeof window !== 'undefined' && window.console && (window.console.firebug || window.console.exception && window.console.table) || // Is firefox >= v31?
+  // https://developer.mozilla.org/en-US/docs/Tools/Web_Console#Styling_messages
+  typeof navigator !== 'undefined' && navigator.userAgent && navigator.userAgent.toLowerCase().match(/firefox\/(\d+)/) && parseInt(RegExp.$1, 10) >= 31 || // Double check webkit in userAgent just in case we are in a worker
+  typeof navigator !== 'undefined' && navigator.userAgent && navigator.userAgent.toLowerCase().match(/applewebkit\/(\d+)/);
 }
-
-/**
- * Map %j to `JSON.stringify()`, since no Web Inspectors do that by default.
- */
-
-exports.formatters.j = function(v) {
-  try {
-    return JSON.stringify(v);
-  } catch (err) {
-    return '[UnexpectedJSONParseError]: ' + err.message;
-  }
-};
-
-
 /**
  * Colorize log arguments if enabled.
  *
  * @api public
  */
 
+
 function formatArgs(args) {
-  var useColors = this.useColors;
+  args[0] = (this.useColors ? '%c' : '') + this.namespace + (this.useColors ? ' %c' : ' ') + args[0] + (this.useColors ? '%c ' : ' ') + '+' + module.exports.humanize(this.diff);
 
-  args[0] = (useColors ? '%c' : '')
-    + this.namespace
-    + (useColors ? ' %c' : ' ')
-    + args[0]
-    + (useColors ? '%c ' : ' ')
-    + '+' + exports.humanize(this.diff);
-
-  if (!useColors) return;
+  if (!this.useColors) {
+    return;
+  }
 
   var c = 'color: ' + this.color;
-  args.splice(1, 0, c, 'color: inherit')
-
-  // the final "%c" is somewhat tricky, because there could be other
+  args.splice(1, 0, c, 'color: inherit'); // The final "%c" is somewhat tricky, because there could be other
   // arguments passed either before or after the %c, so we need to
   // figure out the correct index to insert the CSS into
+
   var index = 0;
   var lastC = 0;
-  args[0].replace(/%[a-zA-Z%]/g, function(match) {
-    if ('%%' === match) return;
+  args[0].replace(/%[a-zA-Z%]/g, function (match) {
+    if (match === '%%') {
+      return;
+    }
+
     index++;
-    if ('%c' === match) {
-      // we only are interested in the *last* %c
+
+    if (match === '%c') {
+      // We only are interested in the *last* %c
       // (the user may have provided their own)
       lastC = index;
     }
   });
-
   args.splice(lastC, 0, c);
 }
-
 /**
  * Invokes `console.log()` when available.
  * No-op when `console.log` is not a "function".
@@ -806,14 +786,14 @@ function formatArgs(args) {
  * @api public
  */
 
-function log() {
-  // this hackery is required for IE8/9, where
-  // the `console.log` function doesn't have 'apply'
-  return 'object' === typeof console
-    && console.log
-    && Function.prototype.apply.call(console.log, console, arguments);
-}
 
+function log() {
+  var _console;
+
+  // This hackery is required for IE8/9, where
+  // the `console.log` function doesn't have 'apply'
+  return (typeof console === "undefined" ? "undefined" : _typeof(console)) === 'object' && console.log && (_console = console).log.apply(_console, arguments);
+}
 /**
  * Save `namespaces`.
  *
@@ -821,16 +801,18 @@ function log() {
  * @api private
  */
 
+
 function save(namespaces) {
   try {
-    if (null == namespaces) {
-      exports.storage.removeItem('debug');
+    if (namespaces) {
+      exports.storage.setItem('debug', namespaces);
     } else {
-      exports.storage.debug = namespaces;
+      exports.storage.removeItem('debug');
     }
-  } catch(e) {}
+  } catch (error) {// Swallow
+    // XXX (@Qix-) should we be logging these?
+  }
 }
-
 /**
  * Load `namespaces`.
  *
@@ -838,26 +820,23 @@ function save(namespaces) {
  * @api private
  */
 
+
 function load() {
   var r;
-  try {
-    r = exports.storage.debug;
-  } catch(e) {}
 
+  try {
+    r = exports.storage.getItem('debug');
+  } catch (error) {} // Swallow
+  // XXX (@Qix-) should we be logging these?
   // If debug isn't set in LS, and we're in Electron, try to load $DEBUG
+
+
   if (!r && typeof process !== 'undefined' && 'env' in process) {
     r = process.env.DEBUG;
   }
 
   return r;
 }
-
-/**
- * Enable namespaces listed in `localStorage.debug` initially.
- */
-
-exports.enable(load());
-
 /**
  * Localstorage attempts to return the localstorage.
  *
@@ -869,26 +848,51 @@ exports.enable(load());
  * @api private
  */
 
+
 function localstorage() {
   try {
-    return window.localStorage;
-  } catch (e) {}
+    // TVMLKit (Apple TV JS Runtime) does not have a window object, just localStorage in the global context
+    // The Browser also has localStorage in the global context.
+    return localStorage;
+  } catch (error) {// Swallow
+    // XXX (@Qix-) should we be logging these?
+  }
 }
 
-/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(1)))
+module.exports = __webpack_require__(87)(exports);
+var formatters = module.exports.formatters;
+/**
+ * Map %j to `JSON.stringify()`, since no Web Inspectors do that by default.
+ */
+
+formatters.j = function (v) {
+  try {
+    return JSON.stringify(v);
+  } catch (error) {
+    return '[UnexpectedJSONParseError]: ' + error.message;
+  }
+};
+
+
+/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(2)))
 
 /***/ }),
 /* 4 */
-/***/ (function(module, exports) {
+/***/ (function(module, exports, __webpack_require__) {
 
-(function() {
+"use strict";
+
+
+var _typeof = typeof Symbol === "function" && typeof Symbol.iterator === "symbol" ? function (obj) { return typeof obj; } : function (obj) { return obj && typeof Symbol === "function" && obj.constructor === Symbol && obj !== Symbol.prototype ? "symbol" : typeof obj; };
+
+(function () {
   var IP;
 
-  module.exports = IP = (function() {
+  module.exports = IP = function () {
     IP.types = ['data', 'openBracket', 'closeBracket'];
 
-    IP.isIP = function(obj) {
-      return obj && typeof obj === 'object' && obj._isIP === true;
+    IP.isIP = function (obj) {
+      return obj && (typeof obj === 'undefined' ? 'undefined' : _typeof(obj)) === 'object' && obj._isIP === true;
     };
 
     function IP(type, data, options) {
@@ -903,13 +907,15 @@ function localstorage() {
       this.owner = null;
       this.clonable = false;
       this.index = null;
+      this.schema = null;
+      this.datatype = 'all';
       for (key in options) {
         val = options[key];
         this[key] = val;
       }
     }
 
-    IP.prototype.clone = function() {
+    IP.prototype.clone = function () {
       var ip, key, val;
       ip = new IP(this.type);
       for (key in this) {
@@ -920,7 +926,7 @@ function localstorage() {
         if (val === null) {
           continue;
         }
-        if (typeof val === 'object') {
+        if ((typeof val === 'undefined' ? 'undefined' : _typeof(val)) === 'object') {
           ip[key] = JSON.parse(JSON.stringify(val));
         } else {
           ip[key] = val;
@@ -929,11 +935,11 @@ function localstorage() {
       return ip;
     };
 
-    IP.prototype.move = function(owner) {
+    IP.prototype.move = function (owner) {
       this.owner = owner;
     };
 
-    IP.prototype.drop = function() {
+    IP.prototype.drop = function () {
       var key, results, val;
       results = [];
       for (key in this) {
@@ -944,25 +950,25 @@ function localstorage() {
     };
 
     return IP;
-
-  })();
-
-}).call(this);
-
+  }();
+}).call(undefined);
 
 /***/ }),
 /* 5 */
 /***/ (function(module, exports, __webpack_require__) {
 
-/* WEBPACK VAR INJECTION */(function(process) {(function() {
-  exports.isBrowser = function() {
+"use strict";
+/* WEBPACK VAR INJECTION */(function(process) {
+
+(function () {
+  exports.isBrowser = function () {
     if (typeof process !== 'undefined' && process.execPath && process.execPath.match(/node|iojs/)) {
       return false;
     }
     return true;
   };
 
-  exports.deprecated = function(message) {
+  exports.deprecated = function (message) {
     if (exports.isBrowser()) {
       if (window.NOFLO_FATAL_DEPRECATED) {
         throw new Error(message);
@@ -975,38 +981,41 @@ function localstorage() {
     }
     return console.warn(message);
   };
-
-}).call(this);
-
-/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(1)))
+}).call(undefined);
+/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(2)))
 
 /***/ }),
 /* 6 */
-/***/ (function(module, exports) {
-
-
-
-/***/ }),
-/* 7 */
 /***/ (function(module, exports, __webpack_require__) {
 
-(function() {
-  var EventEmitter, IP, InternalSocket,
-    extend = function(child, parent) { for (var key in parent) { if (hasProp.call(parent, key)) child[key] = parent[key]; } function ctor() { this.constructor = child; } ctor.prototype = parent.prototype; child.prototype = new ctor(); child.__super__ = parent.prototype; return child; },
-    hasProp = {}.hasOwnProperty;
+"use strict";
 
-  EventEmitter = __webpack_require__(2).EventEmitter;
+
+(function () {
+  var EventEmitter,
+      IP,
+      InternalSocket,
+      extend = function extend(child, parent) {
+    for (var key in parent) {
+      if (hasProp.call(parent, key)) child[key] = parent[key];
+    }function ctor() {
+      this.constructor = child;
+    }ctor.prototype = parent.prototype;child.prototype = new ctor();child.__super__ = parent.prototype;return child;
+  },
+      hasProp = {}.hasOwnProperty;
+
+  EventEmitter = __webpack_require__(1).EventEmitter;
 
   IP = __webpack_require__(4);
 
-  InternalSocket = (function(superClass) {
+  InternalSocket = function (superClass) {
     extend(InternalSocket, superClass);
 
-    InternalSocket.prototype.regularEmitEvent = function(event, data) {
+    InternalSocket.prototype.regularEmitEvent = function (event, data) {
       return this.emit(event, data);
     };
 
-    InternalSocket.prototype.debugEmitEvent = function(event, data) {
+    InternalSocket.prototype.debugEmitEvent = function (event, data) {
       var error, error1;
       try {
         return this.emit(event, data);
@@ -1039,7 +1048,7 @@ function localstorage() {
       this.emitEvent = this.regularEmitEvent;
     }
 
-    InternalSocket.prototype.connect = function() {
+    InternalSocket.prototype.connect = function () {
       if (this.connected) {
         return;
       }
@@ -1047,7 +1056,7 @@ function localstorage() {
       return this.emitEvent('connect', null);
     };
 
-    InternalSocket.prototype.disconnect = function() {
+    InternalSocket.prototype.disconnect = function () {
       if (!this.connected) {
         return;
       }
@@ -1055,18 +1064,18 @@ function localstorage() {
       return this.emitEvent('disconnect', null);
     };
 
-    InternalSocket.prototype.isConnected = function() {
+    InternalSocket.prototype.isConnected = function () {
       return this.connected;
     };
 
-    InternalSocket.prototype.send = function(data) {
+    InternalSocket.prototype.send = function (data) {
       if (data === void 0 && typeof this.dataDelegate === 'function') {
         data = this.dataDelegate();
       }
       return this.handleSocketEvent('data', data);
     };
 
-    InternalSocket.prototype.post = function(ip, autoDisconnect) {
+    InternalSocket.prototype.post = function (ip, autoDisconnect) {
       if (autoDisconnect == null) {
         autoDisconnect = true;
       }
@@ -1082,47 +1091,47 @@ function localstorage() {
       }
     };
 
-    InternalSocket.prototype.beginGroup = function(group) {
+    InternalSocket.prototype.beginGroup = function (group) {
       return this.handleSocketEvent('begingroup', group);
     };
 
-    InternalSocket.prototype.endGroup = function() {
+    InternalSocket.prototype.endGroup = function () {
       return this.handleSocketEvent('endgroup');
     };
 
-    InternalSocket.prototype.setDataDelegate = function(delegate) {
+    InternalSocket.prototype.setDataDelegate = function (delegate) {
       if (typeof delegate !== 'function') {
         throw Error('A data delegate must be a function.');
       }
       return this.dataDelegate = delegate;
     };
 
-    InternalSocket.prototype.setDebug = function(active) {
+    InternalSocket.prototype.setDebug = function (active) {
       this.debug = active;
       return this.emitEvent = this.debug ? this.debugEmitEvent : this.regularEmitEvent;
     };
 
-    InternalSocket.prototype.getId = function() {
+    InternalSocket.prototype.getId = function () {
       var fromStr, toStr;
-      fromStr = function(from) {
-        return from.process.id + "() " + (from.port.toUpperCase());
+      fromStr = function fromStr(from) {
+        return from.process.id + "() " + from.port.toUpperCase();
       };
-      toStr = function(to) {
-        return (to.port.toUpperCase()) + " " + to.process.id + "()";
+      toStr = function toStr(to) {
+        return to.port.toUpperCase() + " " + to.process.id + "()";
       };
       if (!(this.from || this.to)) {
         return "UNDEFINED";
       }
       if (this.from && !this.to) {
-        return (fromStr(this.from)) + " -> ANON";
+        return fromStr(this.from) + " -> ANON";
       }
       if (!this.from) {
-        return "DATA -> " + (toStr(this.to));
+        return "DATA -> " + toStr(this.to);
       }
-      return (fromStr(this.from)) + " -> " + (toStr(this.to));
+      return fromStr(this.from) + " -> " + toStr(this.to);
     };
 
-    InternalSocket.prototype.legacyToIp = function(event, payload) {
+    InternalSocket.prototype.legacyToIp = function (event, payload) {
       if (IP.isIP(payload)) {
         return payload;
       }
@@ -1138,7 +1147,7 @@ function localstorage() {
       }
     };
 
-    InternalSocket.prototype.ipToLegacy = function(ip) {
+    InternalSocket.prototype.ipToLegacy = function (ip) {
       var legacy;
       switch (ip.type) {
         case 'openBracket':
@@ -1159,7 +1168,7 @@ function localstorage() {
       }
     };
 
-    InternalSocket.prototype.handleSocketEvent = function(event, payload, autoConnect) {
+    InternalSocket.prototype.handleSocketEvent = function (event, payload, autoConnect) {
       var ip, isIP, legacy;
       if (autoConnect == null) {
         autoConnect = true;
@@ -1210,31 +1219,28 @@ function localstorage() {
     };
 
     return InternalSocket;
-
-  })(EventEmitter);
+  }(EventEmitter);
 
   exports.InternalSocket = InternalSocket;
 
-  exports.createSocket = function() {
-    return new InternalSocket;
+  exports.createSocket = function () {
+    return new InternalSocket();
   };
-
-}).call(this);
-
+}).call(undefined);
 
 /***/ }),
-/* 8 */
+/* 7 */
 /***/ (function(module, exports, __webpack_require__) {
 
-exports.graph = __webpack_require__(27);
+exports.graph = __webpack_require__(25);
 exports.Graph = exports.graph.Graph;
 
-exports.journal = __webpack_require__(34);
+exports.journal = __webpack_require__(32);
 exports.Journal = exports.journal.Journal;
 
 
 /***/ }),
-/* 9 */
+/* 8 */
 /***/ (function(module, exports) {
 
 var g;
@@ -1261,23 +1267,44 @@ module.exports = g;
 
 
 /***/ }),
+/* 9 */
+/***/ (function(module, exports) {
+
+
+
+/***/ }),
 /* 10 */
 /***/ (function(module, exports, __webpack_require__) {
 
-/* WEBPACK VAR INJECTION */(function(process) {(function() {
-  var ComponentLoader, EventEmitter, fbpGraph, internalSocket, registerLoader,
-    extend = function(child, parent) { for (var key in parent) { if (hasProp.call(parent, key)) child[key] = parent[key]; } function ctor() { this.constructor = child; } ctor.prototype = parent.prototype; child.prototype = new ctor(); child.__super__ = parent.prototype; return child; },
-    hasProp = {}.hasOwnProperty;
+"use strict";
+/* WEBPACK VAR INJECTION */(function(process) {
 
-  internalSocket = __webpack_require__(7);
+var _typeof = typeof Symbol === "function" && typeof Symbol.iterator === "symbol" ? function (obj) { return typeof obj; } : function (obj) { return obj && typeof Symbol === "function" && obj.constructor === Symbol && obj !== Symbol.prototype ? "symbol" : typeof obj; };
 
-  fbpGraph = __webpack_require__(8);
+(function () {
+  var ComponentLoader,
+      EventEmitter,
+      fbpGraph,
+      internalSocket,
+      registerLoader,
+      extend = function extend(child, parent) {
+    for (var key in parent) {
+      if (hasProp.call(parent, key)) child[key] = parent[key];
+    }function ctor() {
+      this.constructor = child;
+    }ctor.prototype = parent.prototype;child.prototype = new ctor();child.__super__ = parent.prototype;return child;
+  },
+      hasProp = {}.hasOwnProperty;
 
-  EventEmitter = __webpack_require__(2).EventEmitter;
+  internalSocket = __webpack_require__(6);
 
-  registerLoader = __webpack_require__(35);
+  fbpGraph = __webpack_require__(7);
 
-  ComponentLoader = (function(superClass) {
+  EventEmitter = __webpack_require__(1).EventEmitter;
+
+  registerLoader = __webpack_require__(33);
+
+  ComponentLoader = function (superClass) {
     extend(ComponentLoader, superClass);
 
     function ComponentLoader(baseDir, options) {
@@ -1292,7 +1319,7 @@ module.exports = g;
       }
     }
 
-    ComponentLoader.prototype.getModulePrefix = function(name) {
+    ComponentLoader.prototype.getModulePrefix = function (name) {
       if (!name) {
         return '';
       }
@@ -1305,13 +1332,13 @@ module.exports = g;
       return name.replace('noflo-', '');
     };
 
-    ComponentLoader.prototype.listComponents = function(callback) {
+    ComponentLoader.prototype.listComponents = function (callback) {
       if (this.processing) {
-        this.once('ready', (function(_this) {
-          return function() {
+        this.once('ready', function (_this) {
+          return function () {
             return callback(null, _this.components);
           };
-        })(this));
+        }(this));
         return;
       }
       if (this.components) {
@@ -1320,8 +1347,8 @@ module.exports = g;
       this.ready = false;
       this.processing = true;
       this.components = {};
-      registerLoader.register(this, (function(_this) {
-        return function(err) {
+      registerLoader.register(this, function (_this) {
+        return function (err) {
           if (err) {
             if (callback) {
               return callback(err);
@@ -1335,20 +1362,20 @@ module.exports = g;
             return callback(null, _this.components);
           }
         };
-      })(this));
+      }(this));
     };
 
-    ComponentLoader.prototype.load = function(name, callback, metadata) {
+    ComponentLoader.prototype.load = function (name, callback, metadata) {
       var component, componentName;
       if (!this.ready) {
-        this.listComponents((function(_this) {
-          return function(err) {
+        this.listComponents(function (_this) {
+          return function (err) {
             if (err) {
               return callback(err);
             }
             return _this.load(name, callback, metadata);
           };
-        })(this));
+        }(this));
         return;
       }
       component = this.components[name];
@@ -1366,22 +1393,22 @@ module.exports = g;
       }
       if (this.isGraph(component)) {
         if (typeof process !== 'undefined' && process.execPath && process.execPath.indexOf('node') !== -1) {
-          process.nextTick((function(_this) {
-            return function() {
+          process.nextTick(function (_this) {
+            return function () {
               return _this.loadGraph(name, component, callback, metadata);
             };
-          })(this));
+          }(this));
         } else {
-          setTimeout((function(_this) {
-            return function() {
+          setTimeout(function (_this) {
+            return function () {
               return _this.loadGraph(name, component, callback, metadata);
             };
-          })(this), 0);
+          }(this), 0);
         }
         return;
       }
-      return this.createComponent(name, component, metadata, (function(_this) {
-        return function(err, instance) {
+      return this.createComponent(name, component, metadata, function (_this) {
+        return function (err, instance) {
           if (err) {
             return callback(err);
           }
@@ -1398,10 +1425,10 @@ module.exports = g;
           _this.setIcon(name, instance);
           return callback(null, instance);
         };
-      })(this));
+      }(this));
     };
 
-    ComponentLoader.prototype.createComponent = function(name, component, metadata, callback) {
+    ComponentLoader.prototype.createComponent = function (name, component, metadata, callback) {
       var implementation, instance;
       implementation = component;
       if (!implementation) {
@@ -1419,17 +1446,17 @@ module.exports = g;
       } else if (typeof implementation === 'function') {
         instance = implementation(metadata);
       } else {
-        callback(new Error("Invalid type " + (typeof implementation) + " for component " + name + "."));
+        callback(new Error("Invalid type " + (typeof implementation === 'undefined' ? 'undefined' : _typeof(implementation)) + " for component " + name + "."));
         return;
       }
       return callback(null, instance);
     };
 
-    ComponentLoader.prototype.isGraph = function(cPath) {
-      if (typeof cPath === 'object' && cPath instanceof fbpGraph.Graph) {
+    ComponentLoader.prototype.isGraph = function (cPath) {
+      if ((typeof cPath === 'undefined' ? 'undefined' : _typeof(cPath)) === 'object' && cPath instanceof fbpGraph.Graph) {
         return true;
       }
-      if (typeof cPath === 'object' && cPath.processes && cPath.connections) {
+      if ((typeof cPath === 'undefined' ? 'undefined' : _typeof(cPath)) === 'object' && cPath.processes && cPath.connections) {
         return true;
       }
       if (typeof cPath !== 'string') {
@@ -1438,9 +1465,9 @@ module.exports = g;
       return cPath.indexOf('.fbp') !== -1 || cPath.indexOf('.json') !== -1;
     };
 
-    ComponentLoader.prototype.loadGraph = function(name, component, callback, metadata) {
-      this.createComponent(name, this.components['Graph'], metadata, (function(_this) {
-        return function(err, graph) {
+    ComponentLoader.prototype.loadGraph = function (name, component, callback, metadata) {
+      this.createComponent(name, this.components['Graph'], metadata, function (_this) {
+        return function (err, graph) {
           var graphSocket;
           if (err) {
             return callback(err);
@@ -1449,7 +1476,7 @@ module.exports = g;
           graph.loader = _this;
           graph.baseDir = _this.baseDir;
           graph.inPorts.remove('graph');
-          graph.setGraph(component, function(err) {
+          graph.setGraph(component, function (err) {
             if (err) {
               return callback(err);
             }
@@ -1457,10 +1484,10 @@ module.exports = g;
             return callback(null, graph);
           });
         };
-      })(this));
+      }(this));
     };
 
-    ComponentLoader.prototype.setIcon = function(name, instance) {
+    ComponentLoader.prototype.setIcon = function (name, instance) {
       var componentName, library, ref;
       if (!instance.getIcon || instance.getIcon()) {
         return;
@@ -1477,18 +1504,18 @@ module.exports = g;
       instance.setIcon('square');
     };
 
-    ComponentLoader.prototype.getLibraryIcon = function(prefix) {
+    ComponentLoader.prototype.getLibraryIcon = function (prefix) {
       if (this.libraryIcons[prefix]) {
         return this.libraryIcons[prefix];
       }
       return null;
     };
 
-    ComponentLoader.prototype.setLibraryIcon = function(prefix, icon) {
+    ComponentLoader.prototype.setLibraryIcon = function (prefix, icon) {
       return this.libraryIcons[prefix] = icon;
     };
 
-    ComponentLoader.prototype.normalizeName = function(packageId, name) {
+    ComponentLoader.prototype.normalizeName = function (packageId, name) {
       var fullName, prefix;
       prefix = this.getModulePrefix(packageId);
       fullName = prefix + "/" + name;
@@ -1498,7 +1525,7 @@ module.exports = g;
       return fullName;
     };
 
-    ComponentLoader.prototype.registerComponent = function(packageId, name, cPath, callback) {
+    ComponentLoader.prototype.registerComponent = function (packageId, name, cPath, callback) {
       var fullName;
       fullName = this.normalizeName(packageId, name);
       this.components[fullName] = cPath;
@@ -1507,80 +1534,88 @@ module.exports = g;
       }
     };
 
-    ComponentLoader.prototype.registerGraph = function(packageId, name, gPath, callback) {
+    ComponentLoader.prototype.registerGraph = function (packageId, name, gPath, callback) {
       return this.registerComponent(packageId, name, gPath, callback);
     };
 
-    ComponentLoader.prototype.registerLoader = function(loader, callback) {
+    ComponentLoader.prototype.registerLoader = function (loader, callback) {
       return loader(this, callback);
     };
 
-    ComponentLoader.prototype.setSource = function(packageId, name, source, language, callback) {
+    ComponentLoader.prototype.setSource = function (packageId, name, source, language, callback) {
       if (!registerLoader.setSource) {
         return callback(new Error('setSource not allowed'));
       }
       if (!this.ready) {
-        this.listComponents((function(_this) {
-          return function(err) {
+        this.listComponents(function (_this) {
+          return function (err) {
             if (err) {
               return callback(err);
             }
             return _this.setSource(packageId, name, source, language, callback);
           };
-        })(this));
+        }(this));
         return;
       }
       return registerLoader.setSource(this, packageId, name, source, language, callback);
     };
 
-    ComponentLoader.prototype.getSource = function(name, callback) {
+    ComponentLoader.prototype.getSource = function (name, callback) {
       if (!registerLoader.getSource) {
         return callback(new Error('getSource not allowed'));
       }
       if (!this.ready) {
-        this.listComponents((function(_this) {
-          return function(err) {
+        this.listComponents(function (_this) {
+          return function (err) {
             if (err) {
               return callback(err);
             }
             return _this.getSource(name, callback);
           };
-        })(this));
+        }(this));
         return;
       }
       return registerLoader.getSource(this, name, callback);
     };
 
-    ComponentLoader.prototype.clear = function() {
+    ComponentLoader.prototype.clear = function () {
       this.components = null;
       this.ready = false;
       return this.processing = false;
     };
 
     return ComponentLoader;
-
-  })(EventEmitter);
+  }(EventEmitter);
 
   exports.ComponentLoader = ComponentLoader;
-
-}).call(this);
-
-/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(1)))
+}).call(undefined);
+/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(2)))
 
 /***/ }),
 /* 11 */
 /***/ (function(module, exports, __webpack_require__) {
 
-(function() {
-  var EventEmitter, Port, platform,
-    extend = function(child, parent) { for (var key in parent) { if (hasProp.call(parent, key)) child[key] = parent[key]; } function ctor() { this.constructor = child; } ctor.prototype = parent.prototype; child.prototype = new ctor(); child.__super__ = parent.prototype; return child; },
-    hasProp = {}.hasOwnProperty;
+"use strict";
 
-  EventEmitter = __webpack_require__(2).EventEmitter;
+
+(function () {
+  var EventEmitter,
+      Port,
+      platform,
+      extend = function extend(child, parent) {
+    for (var key in parent) {
+      if (hasProp.call(parent, key)) child[key] = parent[key];
+    }function ctor() {
+      this.constructor = child;
+    }ctor.prototype = parent.prototype;child.prototype = new ctor();child.__super__ = parent.prototype;return child;
+  },
+      hasProp = {}.hasOwnProperty;
+
+  EventEmitter = __webpack_require__(1).EventEmitter;
 
   platform = __webpack_require__(5);
 
-  Port = (function(superClass) {
+  Port = function (superClass) {
     extend(Port, superClass);
 
     Port.prototype.description = '';
@@ -1602,27 +1637,31 @@ module.exports = g;
       this.name = null;
     }
 
-    Port.prototype.getId = function() {
+    Port.prototype.getId = function () {
       if (!(this.node && this.name)) {
         return 'Port';
       }
-      return this.node + " " + (this.name.toUpperCase());
+      return this.node + " " + this.name.toUpperCase();
     };
 
-    Port.prototype.getDataType = function() {
+    Port.prototype.getDataType = function () {
       return this.type;
     };
 
-    Port.prototype.getDescription = function() {
+    Port.prototype.getSchema = function () {
+      return null;
+    };
+
+    Port.prototype.getDescription = function () {
       return this.description;
     };
 
-    Port.prototype.attach = function(socket) {
+    Port.prototype.attach = function (socket) {
       this.sockets.push(socket);
       return this.attachSocket(socket);
     };
 
-    Port.prototype.attachSocket = function(socket, localId) {
+    Port.prototype.attachSocket = function (socket, localId) {
       if (localId == null) {
         localId = null;
       }
@@ -1631,37 +1670,37 @@ module.exports = g;
       if (socket.setMaxListeners) {
         socket.setMaxListeners(0);
       }
-      socket.on("connect", (function(_this) {
-        return function() {
+      socket.on("connect", function (_this) {
+        return function () {
           return _this.emit("connect", socket, localId);
         };
-      })(this));
-      socket.on("begingroup", (function(_this) {
-        return function(group) {
+      }(this));
+      socket.on("begingroup", function (_this) {
+        return function (group) {
           return _this.emit("begingroup", group, localId);
         };
-      })(this));
-      socket.on("data", (function(_this) {
-        return function(data) {
+      }(this));
+      socket.on("data", function (_this) {
+        return function (data) {
           return _this.emit("data", data, localId);
         };
-      })(this));
-      socket.on("endgroup", (function(_this) {
-        return function(group) {
+      }(this));
+      socket.on("endgroup", function (_this) {
+        return function (group) {
           return _this.emit("endgroup", group, localId);
         };
-      })(this));
-      return socket.on("disconnect", (function(_this) {
-        return function() {
+      }(this));
+      return socket.on("disconnect", function (_this) {
+        return function () {
           return _this.emit("disconnect", socket, localId);
         };
-      })(this));
+      }(this));
     };
 
-    Port.prototype.connect = function() {
+    Port.prototype.connect = function () {
       var i, len, ref, results, socket;
       if (this.sockets.length === 0) {
-        throw new Error((this.getId()) + ": No connections available");
+        throw new Error(this.getId() + ": No connections available");
       }
       ref = this.sockets;
       results = [];
@@ -1672,40 +1711,40 @@ module.exports = g;
       return results;
     };
 
-    Port.prototype.beginGroup = function(group) {
+    Port.prototype.beginGroup = function (group) {
       if (this.sockets.length === 0) {
-        throw new Error((this.getId()) + ": No connections available");
+        throw new Error(this.getId() + ": No connections available");
       }
-      return this.sockets.forEach(function(socket) {
+      return this.sockets.forEach(function (socket) {
         if (socket.isConnected()) {
           return socket.beginGroup(group);
         }
-        socket.once('connect', function() {
+        socket.once('connect', function () {
           return socket.beginGroup(group);
         });
         return socket.connect();
       });
     };
 
-    Port.prototype.send = function(data) {
+    Port.prototype.send = function (data) {
       if (this.sockets.length === 0) {
-        throw new Error((this.getId()) + ": No connections available");
+        throw new Error(this.getId() + ": No connections available");
       }
-      return this.sockets.forEach(function(socket) {
+      return this.sockets.forEach(function (socket) {
         if (socket.isConnected()) {
           return socket.send(data);
         }
-        socket.once('connect', function() {
+        socket.once('connect', function () {
           return socket.send(data);
         });
         return socket.connect();
       });
     };
 
-    Port.prototype.endGroup = function() {
+    Port.prototype.endGroup = function () {
       var i, len, ref, results, socket;
       if (this.sockets.length === 0) {
-        throw new Error((this.getId()) + ": No connections available");
+        throw new Error(this.getId() + ": No connections available");
       }
       ref = this.sockets;
       results = [];
@@ -1716,10 +1755,10 @@ module.exports = g;
       return results;
     };
 
-    Port.prototype.disconnect = function() {
+    Port.prototype.disconnect = function () {
       var i, len, ref, results, socket;
       if (this.sockets.length === 0) {
-        throw new Error((this.getId()) + ": No connections available");
+        throw new Error(this.getId() + ": No connections available");
       }
       ref = this.sockets;
       results = [];
@@ -1730,7 +1769,7 @@ module.exports = g;
       return results;
     };
 
-    Port.prototype.detach = function(socket) {
+    Port.prototype.detach = function (socket) {
       var index;
       if (this.sockets.length === 0) {
         return;
@@ -1751,10 +1790,10 @@ module.exports = g;
       return this.emit("detach", socket);
     };
 
-    Port.prototype.isConnected = function() {
+    Port.prototype.isConnected = function () {
       var connected;
       connected = false;
-      this.sockets.forEach(function(socket) {
+      this.sockets.forEach(function (socket) {
         if (socket.isConnected()) {
           return connected = true;
         }
@@ -1762,22 +1801,22 @@ module.exports = g;
       return connected;
     };
 
-    Port.prototype.isAddressable = function() {
+    Port.prototype.isAddressable = function () {
       return false;
     };
 
-    Port.prototype.isRequired = function() {
+    Port.prototype.isRequired = function () {
       return this.required;
     };
 
-    Port.prototype.isAttached = function() {
+    Port.prototype.isAttached = function () {
       if (this.sockets.length > 0) {
         return true;
       }
       return false;
     };
 
-    Port.prototype.listAttached = function() {
+    Port.prototype.listAttached = function () {
       var attached, i, idx, len, ref, socket;
       attached = [];
       ref = this.sockets;
@@ -1791,62 +1830,61 @@ module.exports = g;
       return attached;
     };
 
-    Port.prototype.canAttach = function() {
+    Port.prototype.canAttach = function () {
       return true;
     };
 
-    Port.prototype.clear = function() {};
+    Port.prototype.clear = function () {};
 
     return Port;
-
-  })(EventEmitter);
+  }(EventEmitter);
 
   exports.Port = Port;
-
-}).call(this);
-
+}).call(undefined);
 
 /***/ }),
 /* 12 */
-/***/ (function(module, exports) {
+/***/ (function(module, exports, __webpack_require__) {
 
-(function() {
+"use strict";
+
+
+(function () {
   var IP, StreamReceiver, StreamSender, Substream;
 
-  IP = (function() {
+  IP = function () {
     function IP(data1) {
       this.data = data1;
     }
 
-    IP.prototype.sendTo = function(port) {
+    IP.prototype.sendTo = function (port) {
       return port.send(this.data);
     };
 
-    IP.prototype.getValue = function() {
+    IP.prototype.getValue = function () {
       return this.data;
     };
 
-    IP.prototype.toObject = function() {
+    IP.prototype.toObject = function () {
       return this.data;
     };
 
     return IP;
-
-  })();
+  }();
 
   exports.IP = IP;
 
-  Substream = (function() {
+  Substream = function () {
     function Substream(key) {
       this.key = key;
       this.value = [];
     }
 
-    Substream.prototype.push = function(value) {
+    Substream.prototype.push = function (value) {
       return this.value.push(value);
     };
 
-    Substream.prototype.sendTo = function(port) {
+    Substream.prototype.sendTo = function (port) {
       var i, ip, len, ref;
       port.beginGroup(this.key);
       ref = this.value;
@@ -1861,11 +1899,11 @@ module.exports = g;
       return port.endGroup(this.key);
     };
 
-    Substream.prototype.getKey = function() {
+    Substream.prototype.getKey = function () {
       return this.key;
     };
 
-    Substream.prototype.getValue = function() {
+    Substream.prototype.getValue = function () {
       var hasKeys, i, ip, len, obj, ref, res, val;
       switch (this.value.length) {
         case 0:
@@ -1902,7 +1940,7 @@ module.exports = g;
       }
     };
 
-    Substream.prototype.toObject = function() {
+    Substream.prototype.toObject = function () {
       var obj;
       obj = {};
       obj[this.key] = this.getValue();
@@ -1910,12 +1948,11 @@ module.exports = g;
     };
 
     return Substream;
-
-  })();
+  }();
 
   exports.Substream = Substream;
 
-  StreamSender = (function() {
+  StreamSender = function () {
     function StreamSender(port1, ordered) {
       this.port = port1;
       this.ordered = ordered != null ? ordered : false;
@@ -1924,13 +1961,13 @@ module.exports = g;
       this.resolved = false;
     }
 
-    StreamSender.prototype.resetCurrent = function() {
+    StreamSender.prototype.resetCurrent = function () {
       this.level = 0;
       this.current = null;
       return this.stack = [];
     };
 
-    StreamSender.prototype.beginGroup = function(group) {
+    StreamSender.prototype.beginGroup = function (group) {
       var stream;
       this.level++;
       stream = new Substream(group);
@@ -1939,7 +1976,7 @@ module.exports = g;
       return this;
     };
 
-    StreamSender.prototype.endGroup = function() {
+    StreamSender.prototype.endGroup = function () {
       var parent, value;
       if (this.level > 0) {
         this.level--;
@@ -1956,7 +1993,7 @@ module.exports = g;
       return this;
     };
 
-    StreamSender.prototype.send = function(data) {
+    StreamSender.prototype.send = function (data) {
       if (this.level === 0) {
         this.q.push(new IP(data));
       } else {
@@ -1965,7 +2002,7 @@ module.exports = g;
       return this;
     };
 
-    StreamSender.prototype.done = function() {
+    StreamSender.prototype.done = function () {
       if (this.ordered) {
         this.resolved = true;
       } else {
@@ -1974,12 +2011,12 @@ module.exports = g;
       return this;
     };
 
-    StreamSender.prototype.disconnect = function() {
+    StreamSender.prototype.disconnect = function () {
       this.q.push(null);
       return this;
     };
 
-    StreamSender.prototype.flush = function() {
+    StreamSender.prototype.flush = function () {
       var i, ip, len, ref, res;
       res = false;
       if (this.q.length > 0) {
@@ -2000,25 +2037,24 @@ module.exports = g;
       return res;
     };
 
-    StreamSender.prototype.isAttached = function() {
+    StreamSender.prototype.isAttached = function () {
       return this.port.isAttached();
     };
 
     return StreamSender;
-
-  })();
+  }();
 
   exports.StreamSender = StreamSender;
 
-  StreamReceiver = (function() {
+  StreamReceiver = function () {
     function StreamReceiver(port1, buffered, process) {
       this.port = port1;
       this.buffered = buffered != null ? buffered : false;
       this.process = process != null ? process : null;
       this.q = [];
       this.resetCurrent();
-      this.port.process = (function(_this) {
-        return function(event, payload, index) {
+      this.port.process = function (_this) {
+        return function (event, payload, index) {
           var stream;
           switch (event) {
             case 'connect':
@@ -2068,17 +2104,17 @@ module.exports = g;
               }
           }
         };
-      })(this);
+      }(this);
     }
 
-    StreamReceiver.prototype.resetCurrent = function() {
+    StreamReceiver.prototype.resetCurrent = function () {
       this.level = 0;
       this.root = null;
       this.current = null;
       return this.parent = null;
     };
 
-    StreamReceiver.prototype.read = function() {
+    StreamReceiver.prototype.read = function () {
       if (this.q.length === 0) {
         return void 0;
       }
@@ -2086,13 +2122,10 @@ module.exports = g;
     };
 
     return StreamReceiver;
-
-  })();
+  }();
 
   exports.StreamReceiver = StreamReceiver;
-
-}).call(this);
-
+}).call(undefined);
 
 /***/ }),
 /* 13 */
@@ -2204,7 +2237,13 @@ function clone(parent, circular, depth, prototype, includeNonEnumerable) {
     } else if (clone.__isDate(parent)) {
       child = new Date(parent.getTime());
     } else if (useBuffer && Buffer.isBuffer(parent)) {
-      child = new Buffer(parent.length);
+      if (Buffer.allocUnsafe) {
+        // Node.js >= 4.5.0
+        child = Buffer.allocUnsafe(parent.length);
+      } else {
+        // Older Node.js versions
+        child = new Buffer(parent.length);
+      }
       parent.copy(child);
       return child;
     } else if (_instanceof(parent, Error)) {
@@ -2367,9 +2406,9 @@ if (typeof module === 'object' && module.exports) {
 
 
 
-var base64 = __webpack_require__(28)
-var ieee754 = __webpack_require__(29)
-var isArray = __webpack_require__(30)
+var base64 = __webpack_require__(26)
+var ieee754 = __webpack_require__(27)
+var isArray = __webpack_require__(28)
 
 exports.Buffer = Buffer
 exports.SlowBuffer = SlowBuffer
@@ -4147,32 +4186,48 @@ function isnan (val) {
   return val !== val // eslint-disable-line no-self-compare
 }
 
-/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(9)))
+/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(8)))
 
 /***/ }),
 /* 15 */
 /***/ (function(module, exports, __webpack_require__) {
 
-/* WEBPACK VAR INJECTION */(function(process) {(function() {
-  var EventEmitter, IP, Network, componentLoader, graph, internalSocket, platform, utils,
-    extend = function(child, parent) { for (var key in parent) { if (hasProp.call(parent, key)) child[key] = parent[key]; } function ctor() { this.constructor = child; } ctor.prototype = parent.prototype; child.prototype = new ctor(); child.__super__ = parent.prototype; return child; },
-    hasProp = {}.hasOwnProperty;
+"use strict";
+/* WEBPACK VAR INJECTION */(function(process) {
 
-  internalSocket = __webpack_require__(7);
+(function () {
+  var EventEmitter,
+      IP,
+      Network,
+      componentLoader,
+      graph,
+      internalSocket,
+      platform,
+      utils,
+      extend = function extend(child, parent) {
+    for (var key in parent) {
+      if (hasProp.call(parent, key)) child[key] = parent[key];
+    }function ctor() {
+      this.constructor = child;
+    }ctor.prototype = parent.prototype;child.prototype = new ctor();child.__super__ = parent.prototype;return child;
+  },
+      hasProp = {}.hasOwnProperty;
 
-  graph = __webpack_require__(8);
+  internalSocket = __webpack_require__(6);
 
-  EventEmitter = __webpack_require__(2).EventEmitter;
+  graph = __webpack_require__(7);
+
+  EventEmitter = __webpack_require__(1).EventEmitter;
 
   platform = __webpack_require__(5);
 
   componentLoader = __webpack_require__(10);
 
-  utils = __webpack_require__(17);
+  utils = __webpack_require__(16);
 
   IP = __webpack_require__(4);
 
-  Network = (function(superClass) {
+  Network = function (superClass) {
     extend(Network, superClass);
 
     Network.prototype.processes = {};
@@ -4212,14 +4267,14 @@ function isnan (val) {
       }
     }
 
-    Network.prototype.uptime = function() {
+    Network.prototype.uptime = function () {
       if (!this.startupDate) {
         return 0;
       }
       return new Date() - this.startupDate;
     };
 
-    Network.prototype.getActiveProcesses = function() {
+    Network.prototype.getActiveProcesses = function () {
       var active, name, process, ref;
       active = [];
       if (!this.started) {
@@ -4238,7 +4293,7 @@ function isnan (val) {
       return active;
     };
 
-    Network.prototype.bufferedEmit = function(event, payload) {
+    Network.prototype.bufferedEmit = function (event, payload) {
       var ev, i, len, ref;
       if (event === 'error' || event === 'process-error' || event === 'end') {
         this.emit(event, payload);
@@ -4262,11 +4317,11 @@ function isnan (val) {
       }
     };
 
-    Network.prototype.load = function(component, metadata, callback) {
+    Network.prototype.load = function (component, metadata, callback) {
       return this.loader.load(component, callback, metadata);
     };
 
-    Network.prototype.addNode = function(node, callback) {
+    Network.prototype.addNode = function (node, callback) {
       var process;
       if (this.processes[node.id]) {
         callback(null, this.processes[node.id]);
@@ -4280,8 +4335,8 @@ function isnan (val) {
         callback(null, process);
         return;
       }
-      return this.load(node.component, node.metadata, (function(_this) {
-        return function(err, instance) {
+      return this.load(node.component, node.metadata, function (_this) {
+        return function (err, instance) {
           var inPorts, name, outPorts, port;
           if (err) {
             return callback(err);
@@ -4310,25 +4365,25 @@ function isnan (val) {
           _this.processes[process.id] = process;
           return callback(null, process);
         };
-      })(this));
+      }(this));
     };
 
-    Network.prototype.removeNode = function(node, callback) {
+    Network.prototype.removeNode = function (node, callback) {
       if (!this.processes[node.id]) {
         return callback(new Error("Node " + node.id + " not found"));
       }
-      return this.processes[node.id].component.shutdown((function(_this) {
-        return function(err) {
+      return this.processes[node.id].component.shutdown(function (_this) {
+        return function (err) {
           if (err) {
             return callback(err);
           }
           delete _this.processes[node.id];
           return callback(null);
         };
-      })(this));
+      }(this));
     };
 
-    Network.prototype.renameNode = function(oldId, newId, callback) {
+    Network.prototype.renameNode = function (oldId, newId, callback) {
       var inPorts, name, outPorts, port, process;
       process = this.getNode(oldId);
       if (!process) {
@@ -4356,26 +4411,26 @@ function isnan (val) {
       return callback(null);
     };
 
-    Network.prototype.getNode = function(id) {
+    Network.prototype.getNode = function (id) {
       return this.processes[id];
     };
 
-    Network.prototype.connect = function(done) {
+    Network.prototype.connect = function (done) {
       var callStack, edges, initializers, nodes, serialize, setDefaults, subscribeGraph;
       if (done == null) {
-        done = function() {};
+        done = function done() {};
       }
       callStack = 0;
-      serialize = (function(_this) {
-        return function(next, add) {
-          return function(type) {
-            return _this["add" + type](add, function(err) {
+      serialize = function (_this) {
+        return function (next, add) {
+          return function (type) {
+            return _this["add" + type](add, function (err) {
               if (err) {
                 return done(err);
               }
               callStack++;
               if (callStack % 100 === 0) {
-                setTimeout(function() {
+                setTimeout(function () {
                   return next(type);
                 }, 0);
                 return;
@@ -4384,27 +4439,27 @@ function isnan (val) {
             });
           };
         };
-      })(this);
-      subscribeGraph = (function(_this) {
-        return function() {
+      }(this);
+      subscribeGraph = function (_this) {
+        return function () {
           _this.subscribeGraph();
           return done();
         };
-      })(this);
+      }(this);
       setDefaults = utils.reduceRight(this.graph.nodes, serialize, subscribeGraph);
-      initializers = utils.reduceRight(this.graph.initializers, serialize, function() {
+      initializers = utils.reduceRight(this.graph.initializers, serialize, function () {
         return setDefaults("Defaults");
       });
-      edges = utils.reduceRight(this.graph.edges, serialize, function() {
+      edges = utils.reduceRight(this.graph.edges, serialize, function () {
         return initializers("Initial");
       });
-      nodes = utils.reduceRight(this.graph.nodes, serialize, function() {
+      nodes = utils.reduceRight(this.graph.nodes, serialize, function () {
         return edges("Edge");
       });
       return nodes("Node");
     };
 
-    Network.prototype.connectPort = function(socket, process, port, index, inbound) {
+    Network.prototype.connectPort = function (socket, process, port, index, inbound, callback) {
       if (inbound) {
         socket.to = {
           process: process,
@@ -4412,13 +4467,17 @@ function isnan (val) {
           index: index
         };
         if (!(process.component.inPorts && process.component.inPorts[port])) {
-          throw new Error("No inport '" + port + "' defined in process " + process.id + " (" + (socket.getId()) + ")");
+          callback(new Error("No inport '" + port + "' defined in process " + process.id + " (" + socket.getId() + ")"));
           return;
         }
         if (process.component.inPorts[port].isAddressable()) {
-          return process.component.inPorts[port].attach(socket, index);
+          process.component.inPorts[port].attach(socket, index);
+          callback();
+          return;
         }
-        return process.component.inPorts[port].attach(socket);
+        process.component.inPorts[port].attach(socket);
+        callback();
+        return;
       }
       socket.from = {
         process: process,
@@ -4426,27 +4485,30 @@ function isnan (val) {
         index: index
       };
       if (!(process.component.outPorts && process.component.outPorts[port])) {
-        throw new Error("No outport '" + port + "' defined in process " + process.id + " (" + (socket.getId()) + ")");
+        callback(new Error("No outport '" + port + "' defined in process " + process.id + " (" + socket.getId() + ")"));
         return;
       }
       if (process.component.outPorts[port].isAddressable()) {
-        return process.component.outPorts[port].attach(socket, index);
+        process.component.outPorts[port].attach(socket, index);
+        callback();
+        return;
       }
-      return process.component.outPorts[port].attach(socket);
+      process.component.outPorts[port].attach(socket);
+      callback();
     };
 
-    Network.prototype.subscribeGraph = function() {
+    Network.prototype.subscribeGraph = function () {
       var graphOps, processOps, processing, registerOp;
       graphOps = [];
       processing = false;
-      registerOp = function(op, details) {
+      registerOp = function registerOp(op, details) {
         return graphOps.push({
           op: op,
           details: details
         });
       };
-      processOps = (function(_this) {
-        return function(err) {
+      processOps = function (_this) {
+        return function (err) {
           var cb, op;
           if (err) {
             if (_this.listeners('process-error').length === 0) {
@@ -4468,20 +4530,20 @@ function isnan (val) {
               return _this[op.op](op.details, cb);
           }
         };
-      })(this);
-      this.graph.on('addNode', function(node) {
+      }(this);
+      this.graph.on('addNode', function (node) {
         registerOp('addNode', node);
         if (!processing) {
           return processOps();
         }
       });
-      this.graph.on('removeNode', function(node) {
+      this.graph.on('removeNode', function (node) {
         registerOp('removeNode', node);
         if (!processing) {
           return processOps();
         }
       });
-      this.graph.on('renameNode', function(oldId, newId) {
+      this.graph.on('renameNode', function (oldId, newId) {
         registerOp('renameNode', {
           from: oldId,
           to: newId
@@ -4490,25 +4552,25 @@ function isnan (val) {
           return processOps();
         }
       });
-      this.graph.on('addEdge', function(edge) {
+      this.graph.on('addEdge', function (edge) {
         registerOp('addEdge', edge);
         if (!processing) {
           return processOps();
         }
       });
-      this.graph.on('removeEdge', function(edge) {
+      this.graph.on('removeEdge', function (edge) {
         registerOp('removeEdge', edge);
         if (!processing) {
           return processOps();
         }
       });
-      this.graph.on('addInitial', function(iip) {
+      this.graph.on('addInitial', function (iip) {
         registerOp('addInitial', iip);
         if (!processing) {
           return processOps();
         }
       });
-      return this.graph.on('removeInitial', function(iip) {
+      return this.graph.on('removeInitial', function (iip) {
         registerOp('removeInitial', iip);
         if (!processing) {
           return processOps();
@@ -4516,22 +4578,22 @@ function isnan (val) {
       });
     };
 
-    Network.prototype.subscribeSubgraph = function(node) {
+    Network.prototype.subscribeSubgraph = function (node) {
       var emitSub;
       if (!node.component.isReady()) {
-        node.component.once('ready', (function(_this) {
-          return function() {
+        node.component.once('ready', function (_this) {
+          return function () {
             return _this.subscribeSubgraph(node);
           };
-        })(this));
+        }(this));
         return;
       }
       if (!node.component.network) {
         return;
       }
       node.component.network.setDebug(this.debug);
-      emitSub = (function(_this) {
-        return function(type, data) {
+      emitSub = function (_this) {
+        return function (type, data) {
           if (type === 'process-error' && _this.listeners('process-error').length === 0) {
             if (data.id && data.metadata && data.error) {
               throw data.error;
@@ -4551,33 +4613,33 @@ function isnan (val) {
           }
           return _this.bufferedEmit(type, data);
         };
-      })(this);
-      node.component.network.on('connect', function(data) {
+      }(this);
+      node.component.network.on('connect', function (data) {
         return emitSub('connect', data);
       });
-      node.component.network.on('begingroup', function(data) {
+      node.component.network.on('begingroup', function (data) {
         return emitSub('begingroup', data);
       });
-      node.component.network.on('data', function(data) {
+      node.component.network.on('data', function (data) {
         return emitSub('data', data);
       });
-      node.component.network.on('endgroup', function(data) {
+      node.component.network.on('endgroup', function (data) {
         return emitSub('endgroup', data);
       });
-      node.component.network.on('disconnect', function(data) {
+      node.component.network.on('disconnect', function (data) {
         return emitSub('disconnect', data);
       });
-      node.component.network.on('ip', function(data) {
+      node.component.network.on('ip', function (data) {
         return emitSub('ip', data);
       });
-      return node.component.network.on('process-error', function(data) {
+      return node.component.network.on('process-error', function (data) {
         return emitSub('process-error', data);
       });
     };
 
-    Network.prototype.subscribeSocket = function(socket, source) {
-      socket.on('ip', (function(_this) {
-        return function(ip) {
+    Network.prototype.subscribeSocket = function (socket, source) {
+      socket.on('ip', function (_this) {
+        return function (ip) {
           return _this.bufferedEmit('ip', {
             id: socket.getId(),
             type: ip.type,
@@ -4586,9 +4648,9 @@ function isnan (val) {
             metadata: socket.metadata
           });
         };
-      })(this));
-      socket.on('connect', (function(_this) {
-        return function() {
+      }(this));
+      socket.on('connect', function (_this) {
+        return function () {
           if (source && source.component.isLegacy()) {
             if (!source.component.__openConnections) {
               source.component.__openConnections = 0;
@@ -4601,9 +4663,9 @@ function isnan (val) {
             metadata: socket.metadata
           });
         };
-      })(this));
-      socket.on('begingroup', (function(_this) {
-        return function(group) {
+      }(this));
+      socket.on('begingroup', function (_this) {
+        return function (group) {
           return _this.bufferedEmit('begingroup', {
             id: socket.getId(),
             socket: socket,
@@ -4611,9 +4673,9 @@ function isnan (val) {
             metadata: socket.metadata
           });
         };
-      })(this));
-      socket.on('data', (function(_this) {
-        return function(data) {
+      }(this));
+      socket.on('data', function (_this) {
+        return function (data) {
           return _this.bufferedEmit('data', {
             id: socket.getId(),
             socket: socket,
@@ -4621,9 +4683,9 @@ function isnan (val) {
             metadata: socket.metadata
           });
         };
-      })(this));
-      socket.on('endgroup', (function(_this) {
-        return function(group) {
+      }(this));
+      socket.on('endgroup', function (_this) {
+        return function (group) {
           return _this.bufferedEmit('endgroup', {
             id: socket.getId(),
             socket: socket,
@@ -4631,9 +4693,9 @@ function isnan (val) {
             metadata: socket.metadata
           });
         };
-      })(this));
-      socket.on('disconnect', (function(_this) {
-        return function() {
+      }(this));
+      socket.on('disconnect', function (_this) {
+        return function () {
           _this.bufferedEmit('disconnect', {
             id: socket.getId(),
             socket: socket,
@@ -4649,9 +4711,9 @@ function isnan (val) {
             }
           }
         };
-      })(this));
-      return socket.on('error', (function(_this) {
-        return function(event) {
+      }(this));
+      return socket.on('error', function (_this) {
+        return function (event) {
           if (_this.listeners('process-error').length === 0) {
             if (event.id && event.metadata && event.error) {
               throw event.error;
@@ -4660,32 +4722,32 @@ function isnan (val) {
           }
           return _this.bufferedEmit('process-error', event);
         };
-      })(this));
+      }(this));
     };
 
-    Network.prototype.subscribeNode = function(node) {
-      node.component.on('deactivate', (function(_this) {
-        return function(load) {
+    Network.prototype.subscribeNode = function (node) {
+      node.component.on('deactivate', function (_this) {
+        return function (load) {
           if (load > 0) {
             return;
           }
           return _this.checkIfFinished();
         };
-      })(this));
+      }(this));
       if (!node.component.getIcon) {
         return;
       }
-      return node.component.on('icon', (function(_this) {
-        return function() {
+      return node.component.on('icon', function (_this) {
+        return function () {
           return _this.bufferedEmit('icon', {
             id: node.id,
             icon: node.component.getIcon()
           });
         };
-      })(this));
+      }(this));
     };
 
-    Network.prototype.addEdge = function(edge, callback) {
+    Network.prototype.addEdge = function (edge, callback) {
       var from, socket, to;
       socket = internalSocket.createSocket(edge.metadata);
       socket.setDebug(this.debug);
@@ -4697,11 +4759,11 @@ function isnan (val) {
         return callback(new Error("No component defined for outbound node " + edge.from.node));
       }
       if (!from.component.isReady()) {
-        from.component.once("ready", (function(_this) {
-          return function() {
+        from.component.once("ready", function (_this) {
+          return function () {
             return _this.addEdge(edge, callback);
           };
-        })(this));
+        }(this));
         return;
       }
       to = this.getNode(edge.to.node);
@@ -4712,21 +4774,31 @@ function isnan (val) {
         return callback(new Error("No component defined for inbound node " + edge.to.node));
       }
       if (!to.component.isReady()) {
-        to.component.once("ready", (function(_this) {
-          return function() {
+        to.component.once("ready", function (_this) {
+          return function () {
             return _this.addEdge(edge, callback);
           };
-        })(this));
+        }(this));
         return;
       }
       this.subscribeSocket(socket, from);
-      this.connectPort(socket, to, edge.to.port, edge.to.index, true);
-      this.connectPort(socket, from, edge.from.port, edge.from.index, false);
-      this.connections.push(socket);
-      return callback();
+      return this.connectPort(socket, to, edge.to.port, edge.to.index, true, function (_this) {
+        return function (err) {
+          if (err) {
+            return callback(err);
+          }
+          return _this.connectPort(socket, from, edge.from.port, edge.from.index, false, function (err) {
+            if (err) {
+              return callback(err);
+            }
+            _this.connections.push(socket);
+            return callback();
+          });
+        };
+      }(this));
     };
 
-    Network.prototype.removeEdge = function(edge, callback) {
+    Network.prototype.removeEdge = function (edge, callback) {
       var connection, i, len, ref, results;
       ref = this.connections;
       results = [];
@@ -4750,18 +4822,18 @@ function isnan (val) {
       return results;
     };
 
-    Network.prototype.addDefaults = function(node, callback) {
+    Network.prototype.addDefaults = function (node, callback) {
       var key, port, process, ref, socket;
       process = this.processes[node.id];
       if (!process.component.isReady()) {
         if (process.component.setMaxListeners) {
           process.component.setMaxListeners(0);
         }
-        process.component.once("ready", (function(_this) {
-          return function() {
+        process.component.once("ready", function (_this) {
+          return function () {
             return _this.addDefaults(process, callback);
           };
-        })(this));
+        }(this));
         return;
       }
       ref = process.component.inPorts.ports;
@@ -4771,7 +4843,7 @@ function isnan (val) {
           socket = internalSocket.createSocket();
           socket.setDebug(this.debug);
           this.subscribeSocket(socket);
-          this.connectPort(socket, process, key, void 0, true);
+          this.connectPort(socket, process, key, void 0, true, function () {});
           this.connections.push(socket);
           this.defaults.push(socket);
         }
@@ -4779,8 +4851,8 @@ function isnan (val) {
       return callback();
     };
 
-    Network.prototype.addInitial = function(initializer, callback) {
-      var init, socket, to;
+    Network.prototype.addInitial = function (initializer, callback) {
+      var socket, to;
       socket = internalSocket.createSocket(initializer.metadata);
       socket.setDebug(this.debug);
       this.subscribeSocket(socket);
@@ -4792,31 +4864,38 @@ function isnan (val) {
         if (to.component.setMaxListeners) {
           to.component.setMaxListeners(0);
         }
-        to.component.once("ready", (function(_this) {
-          return function() {
+        to.component.once("ready", function (_this) {
+          return function () {
             return _this.addInitial(initializer, callback);
           };
-        })(this));
+        }(this));
         return;
       }
-      this.connectPort(socket, to, initializer.to.port, initializer.to.index, true);
-      this.connections.push(socket);
-      init = {
-        socket: socket,
-        data: initializer.from.data
-      };
-      this.initials.push(init);
-      this.nextInitials.push(init);
-      if (this.isRunning()) {
-        this.sendInitials();
-      } else if (!this.isStopped()) {
-        this.setStarted(true);
-        this.sendInitials();
-      }
-      return callback();
+      return this.connectPort(socket, to, initializer.to.port, initializer.to.index, true, function (_this) {
+        return function (err) {
+          var init;
+          if (err) {
+            return callback(err);
+          }
+          _this.connections.push(socket);
+          init = {
+            socket: socket,
+            data: initializer.from.data
+          };
+          _this.initials.push(init);
+          _this.nextInitials.push(init);
+          if (_this.isRunning()) {
+            _this.sendInitials();
+          } else if (!_this.isStopped()) {
+            _this.setStarted(true);
+            _this.sendInitials();
+          }
+          return callback();
+        };
+      }(this));
     };
 
-    Network.prototype.removeInitial = function(initializer, callback) {
+    Network.prototype.removeInitial = function (initializer, callback) {
       var connection, i, init, j, k, len, len1, len2, ref, ref1, ref2;
       ref = this.connections;
       for (i = 0, len = ref.length; i < len; i++) {
@@ -4855,19 +4934,19 @@ function isnan (val) {
       return callback();
     };
 
-    Network.prototype.sendInitial = function(initial) {
+    Network.prototype.sendInitial = function (initial) {
       return initial.socket.post(new IP('data', initial.data, {
         initial: true
       }));
     };
 
-    Network.prototype.sendInitials = function(callback) {
+    Network.prototype.sendInitials = function (callback) {
       var send;
       if (!callback) {
-        callback = function() {};
+        callback = function callback() {};
       }
-      send = (function(_this) {
-        return function() {
+      send = function (_this) {
+        return function () {
           var i, initial, len, ref;
           ref = _this.initials;
           for (i = 0, len = ref.length; i < len; i++) {
@@ -4877,7 +4956,7 @@ function isnan (val) {
           _this.initials = [];
           return callback();
         };
-      })(this);
+      }(this);
       if (typeof process !== 'undefined' && process.execPath && process.execPath.indexOf('node') !== -1) {
         return process.nextTick(send);
       } else {
@@ -4885,29 +4964,29 @@ function isnan (val) {
       }
     };
 
-    Network.prototype.isStarted = function() {
+    Network.prototype.isStarted = function () {
       return this.started;
     };
 
-    Network.prototype.isStopped = function() {
+    Network.prototype.isStopped = function () {
       return this.stopped;
     };
 
-    Network.prototype.isRunning = function() {
+    Network.prototype.isRunning = function () {
       if (!this.started) {
         return false;
       }
       return this.getActiveProcesses().length > 0;
     };
 
-    Network.prototype.startComponents = function(callback) {
+    Network.prototype.startComponents = function (callback) {
       var count, id, length, onProcessStart, process, ref, results;
       if (!callback) {
-        callback = function() {};
+        callback = function callback() {};
       }
       count = 0;
       length = this.processes ? Object.keys(this.processes).length : 0;
-      onProcessStart = function(err) {
+      onProcessStart = function onProcessStart(err) {
         if (err) {
           return callback(err);
         }
@@ -4938,10 +5017,10 @@ function isnan (val) {
       return results;
     };
 
-    Network.prototype.sendDefaults = function(callback) {
+    Network.prototype.sendDefaults = function (callback) {
       var i, len, ref, socket;
       if (!callback) {
-        callback = function() {};
+        callback = function callback() {};
       }
       if (!this.defaults.length) {
         return callback();
@@ -4959,37 +5038,37 @@ function isnan (val) {
       return callback();
     };
 
-    Network.prototype.start = function(callback) {
+    Network.prototype.start = function (callback) {
       if (!callback) {
         platform.deprecated('Calling network.start() without callback is deprecated');
-        callback = function() {};
+        callback = function callback() {};
       }
       if (this.debouncedEnd) {
         this.abortDebounce = true;
       }
       if (this.started) {
-        this.stop((function(_this) {
-          return function(err) {
+        this.stop(function (_this) {
+          return function (err) {
             if (err) {
               return callback(err);
             }
             return _this.start(callback);
           };
-        })(this));
+        }(this));
         return;
       }
       this.initials = this.nextInitials.slice(0);
       this.eventBuffer = [];
-      return this.startComponents((function(_this) {
-        return function(err) {
+      return this.startComponents(function (_this) {
+        return function (err) {
           if (err) {
             return callback(err);
           }
-          return _this.sendInitials(function(err) {
+          return _this.sendInitials(function (err) {
             if (err) {
               return callback(err);
             }
-            return _this.sendDefaults(function(err) {
+            return _this.sendDefaults(function (err) {
               if (err) {
                 return callback(err);
               }
@@ -4998,14 +5077,14 @@ function isnan (val) {
             });
           });
         };
-      })(this));
+      }(this));
     };
 
-    Network.prototype.stop = function(callback) {
+    Network.prototype.stop = function (callback) {
       var connection, count, i, id, len, length, onProcessEnd, process, ref, ref1, results;
       if (!callback) {
         platform.deprecated('Calling network.stop() without callback is deprecated');
-        callback = function() {};
+        callback = function callback() {};
       }
       if (this.debouncedEnd) {
         this.abortDebounce = true;
@@ -5024,8 +5103,8 @@ function isnan (val) {
       }
       count = 0;
       length = this.processes ? Object.keys(this.processes).length : 0;
-      onProcessEnd = (function(_this) {
-        return function(err) {
+      onProcessEnd = function (_this) {
+        return function (err) {
           if (err) {
             return callback(err);
           }
@@ -5036,7 +5115,7 @@ function isnan (val) {
             return callback();
           }
         };
-      })(this);
+      }(this);
       if (!(this.processes && Object.keys(this.processes).length)) {
         this.setStarted(false);
         this.stopped = true;
@@ -5061,7 +5140,7 @@ function isnan (val) {
       return results;
     };
 
-    Network.prototype.setStarted = function(started) {
+    Network.prototype.setStarted = function (started) {
       if (this.started === started) {
         return;
       }
@@ -5069,13 +5148,13 @@ function isnan (val) {
         this.started = false;
         this.bufferedEmit('end', {
           start: this.startupDate,
-          end: new Date,
+          end: new Date(),
           uptime: this.uptime()
         });
         return;
       }
       if (!this.startupDate) {
-        this.startupDate = new Date;
+        this.startupDate = new Date();
       }
       this.started = true;
       this.stopped = false;
@@ -5084,14 +5163,14 @@ function isnan (val) {
       });
     };
 
-    Network.prototype.checkIfFinished = function() {
+    Network.prototype.checkIfFinished = function () {
       if (this.isRunning()) {
         return;
       }
       delete this.abortDebounce;
       if (!this.debouncedEnd) {
-        this.debouncedEnd = utils.debounce((function(_this) {
-          return function() {
+        this.debouncedEnd = utils.debounce(function (_this) {
+          return function () {
             if (_this.abortDebounce) {
               return;
             }
@@ -5100,16 +5179,16 @@ function isnan (val) {
             }
             return _this.setStarted(false);
           };
-        })(this), 50);
+        }(this), 50);
       }
       return this.debouncedEnd();
     };
 
-    Network.prototype.getDebug = function() {
+    Network.prototype.getDebug = function () {
       return this.debug;
     };
 
-    Network.prototype.setDebug = function(active) {
+    Network.prototype.setDebug = function (active) {
       var i, instance, len, process, processId, ref, ref1, results, socket;
       if (active === this.debug) {
         return;
@@ -5135,618 +5214,27 @@ function isnan (val) {
     };
 
     return Network;
-
-  })(EventEmitter);
+  }(EventEmitter);
 
   exports.Network = Network;
-
-}).call(this);
-
-/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(1)))
+}).call(undefined);
+/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(2)))
 
 /***/ }),
 /* 16 */
 /***/ (function(module, exports, __webpack_require__) {
 
-/* WEBPACK VAR INJECTION */(function(global, process) {// Copyright Joyent, Inc. and other Node contributors.
-//
-// Permission is hereby granted, free of charge, to any person obtaining a
-// copy of this software and associated documentation files (the
-// "Software"), to deal in the Software without restriction, including
-// without limitation the rights to use, copy, modify, merge, publish,
-// distribute, sublicense, and/or sell copies of the Software, and to permit
-// persons to whom the Software is furnished to do so, subject to the
-// following conditions:
-//
-// The above copyright notice and this permission notice shall be included
-// in all copies or substantial portions of the Software.
-//
-// THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS
-// OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF
-// MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN
-// NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM,
-// DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR
-// OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE
-// USE OR OTHER DEALINGS IN THE SOFTWARE.
+"use strict";
 
-var formatRegExp = /%[sdj%]/g;
-exports.format = function(f) {
-  if (!isString(f)) {
-    var objects = [];
-    for (var i = 0; i < arguments.length; i++) {
-      objects.push(inspect(arguments[i]));
-    }
-    return objects.join(' ');
-  }
 
-  var i = 1;
-  var args = arguments;
-  var len = args.length;
-  var str = String(f).replace(formatRegExp, function(x) {
-    if (x === '%%') return '%';
-    if (i >= len) return x;
-    switch (x) {
-      case '%s': return String(args[i++]);
-      case '%d': return Number(args[i++]);
-      case '%j':
-        try {
-          return JSON.stringify(args[i++]);
-        } catch (_) {
-          return '[Circular]';
-        }
-      default:
-        return x;
-    }
-  });
-  for (var x = args[i]; i < len; x = args[++i]) {
-    if (isNull(x) || !isObject(x)) {
-      str += ' ' + x;
-    } else {
-      str += ' ' + inspect(x);
-    }
-  }
-  return str;
-};
+var _typeof = typeof Symbol === "function" && typeof Symbol.iterator === "symbol" ? function (obj) { return typeof obj; } : function (obj) { return obj && typeof Symbol === "function" && obj.constructor === Symbol && obj !== Symbol.prototype ? "symbol" : typeof obj; };
 
+(function () {
+  var _clone, contains, createReduce, debounce, getKeys, getValues, guessLanguageFromFilename, intersection, isArray, isObject, optimizeCb, reduceRight, unique;
 
-// Mark that a method should not be used.
-// Returns a modified function which warns once by default.
-// If --no-deprecation is set, then it is a no-op.
-exports.deprecate = function(fn, msg) {
-  // Allow for deprecating things in the process of starting up.
-  if (isUndefined(global.process)) {
-    return function() {
-      return exports.deprecate(fn, msg).apply(this, arguments);
-    };
-  }
-
-  if (process.noDeprecation === true) {
-    return fn;
-  }
-
-  var warned = false;
-  function deprecated() {
-    if (!warned) {
-      if (process.throwDeprecation) {
-        throw new Error(msg);
-      } else if (process.traceDeprecation) {
-        console.trace(msg);
-      } else {
-        console.error(msg);
-      }
-      warned = true;
-    }
-    return fn.apply(this, arguments);
-  }
-
-  return deprecated;
-};
-
-
-var debugs = {};
-var debugEnviron;
-exports.debuglog = function(set) {
-  if (isUndefined(debugEnviron))
-    debugEnviron = process.env.NODE_DEBUG || '';
-  set = set.toUpperCase();
-  if (!debugs[set]) {
-    if (new RegExp('\\b' + set + '\\b', 'i').test(debugEnviron)) {
-      var pid = process.pid;
-      debugs[set] = function() {
-        var msg = exports.format.apply(exports, arguments);
-        console.error('%s %d: %s', set, pid, msg);
-      };
-    } else {
-      debugs[set] = function() {};
-    }
-  }
-  return debugs[set];
-};
-
-
-/**
- * Echos the value of a value. Trys to print the value out
- * in the best way possible given the different types.
- *
- * @param {Object} obj The object to print out.
- * @param {Object} opts Optional options object that alters the output.
- */
-/* legacy: obj, showHidden, depth, colors*/
-function inspect(obj, opts) {
-  // default options
-  var ctx = {
-    seen: [],
-    stylize: stylizeNoColor
-  };
-  // legacy...
-  if (arguments.length >= 3) ctx.depth = arguments[2];
-  if (arguments.length >= 4) ctx.colors = arguments[3];
-  if (isBoolean(opts)) {
-    // legacy...
-    ctx.showHidden = opts;
-  } else if (opts) {
-    // got an "options" object
-    exports._extend(ctx, opts);
-  }
-  // set default options
-  if (isUndefined(ctx.showHidden)) ctx.showHidden = false;
-  if (isUndefined(ctx.depth)) ctx.depth = 2;
-  if (isUndefined(ctx.colors)) ctx.colors = false;
-  if (isUndefined(ctx.customInspect)) ctx.customInspect = true;
-  if (ctx.colors) ctx.stylize = stylizeWithColor;
-  return formatValue(ctx, obj, ctx.depth);
-}
-exports.inspect = inspect;
-
-
-// http://en.wikipedia.org/wiki/ANSI_escape_code#graphics
-inspect.colors = {
-  'bold' : [1, 22],
-  'italic' : [3, 23],
-  'underline' : [4, 24],
-  'inverse' : [7, 27],
-  'white' : [37, 39],
-  'grey' : [90, 39],
-  'black' : [30, 39],
-  'blue' : [34, 39],
-  'cyan' : [36, 39],
-  'green' : [32, 39],
-  'magenta' : [35, 39],
-  'red' : [31, 39],
-  'yellow' : [33, 39]
-};
-
-// Don't use 'blue' not visible on cmd.exe
-inspect.styles = {
-  'special': 'cyan',
-  'number': 'yellow',
-  'boolean': 'yellow',
-  'undefined': 'grey',
-  'null': 'bold',
-  'string': 'green',
-  'date': 'magenta',
-  // "name": intentionally not styling
-  'regexp': 'red'
-};
-
-
-function stylizeWithColor(str, styleType) {
-  var style = inspect.styles[styleType];
-
-  if (style) {
-    return '\u001b[' + inspect.colors[style][0] + 'm' + str +
-           '\u001b[' + inspect.colors[style][1] + 'm';
-  } else {
-    return str;
-  }
-}
-
-
-function stylizeNoColor(str, styleType) {
-  return str;
-}
-
-
-function arrayToHash(array) {
-  var hash = {};
-
-  array.forEach(function(val, idx) {
-    hash[val] = true;
-  });
-
-  return hash;
-}
-
-
-function formatValue(ctx, value, recurseTimes) {
-  // Provide a hook for user-specified inspect functions.
-  // Check that value is an object with an inspect function on it
-  if (ctx.customInspect &&
-      value &&
-      isFunction(value.inspect) &&
-      // Filter out the util module, it's inspect function is special
-      value.inspect !== exports.inspect &&
-      // Also filter out any prototype objects using the circular check.
-      !(value.constructor && value.constructor.prototype === value)) {
-    var ret = value.inspect(recurseTimes, ctx);
-    if (!isString(ret)) {
-      ret = formatValue(ctx, ret, recurseTimes);
-    }
-    return ret;
-  }
-
-  // Primitive types cannot have properties
-  var primitive = formatPrimitive(ctx, value);
-  if (primitive) {
-    return primitive;
-  }
-
-  // Look up the keys of the object.
-  var keys = Object.keys(value);
-  var visibleKeys = arrayToHash(keys);
-
-  if (ctx.showHidden) {
-    keys = Object.getOwnPropertyNames(value);
-  }
-
-  // IE doesn't make error fields non-enumerable
-  // http://msdn.microsoft.com/en-us/library/ie/dww52sbt(v=vs.94).aspx
-  if (isError(value)
-      && (keys.indexOf('message') >= 0 || keys.indexOf('description') >= 0)) {
-    return formatError(value);
-  }
-
-  // Some type of object without properties can be shortcutted.
-  if (keys.length === 0) {
-    if (isFunction(value)) {
-      var name = value.name ? ': ' + value.name : '';
-      return ctx.stylize('[Function' + name + ']', 'special');
-    }
-    if (isRegExp(value)) {
-      return ctx.stylize(RegExp.prototype.toString.call(value), 'regexp');
-    }
-    if (isDate(value)) {
-      return ctx.stylize(Date.prototype.toString.call(value), 'date');
-    }
-    if (isError(value)) {
-      return formatError(value);
-    }
-  }
-
-  var base = '', array = false, braces = ['{', '}'];
-
-  // Make Array say that they are Array
-  if (isArray(value)) {
-    array = true;
-    braces = ['[', ']'];
-  }
-
-  // Make functions say that they are functions
-  if (isFunction(value)) {
-    var n = value.name ? ': ' + value.name : '';
-    base = ' [Function' + n + ']';
-  }
-
-  // Make RegExps say that they are RegExps
-  if (isRegExp(value)) {
-    base = ' ' + RegExp.prototype.toString.call(value);
-  }
-
-  // Make dates with properties first say the date
-  if (isDate(value)) {
-    base = ' ' + Date.prototype.toUTCString.call(value);
-  }
-
-  // Make error with message first say the error
-  if (isError(value)) {
-    base = ' ' + formatError(value);
-  }
-
-  if (keys.length === 0 && (!array || value.length == 0)) {
-    return braces[0] + base + braces[1];
-  }
-
-  if (recurseTimes < 0) {
-    if (isRegExp(value)) {
-      return ctx.stylize(RegExp.prototype.toString.call(value), 'regexp');
-    } else {
-      return ctx.stylize('[Object]', 'special');
-    }
-  }
-
-  ctx.seen.push(value);
-
-  var output;
-  if (array) {
-    output = formatArray(ctx, value, recurseTimes, visibleKeys, keys);
-  } else {
-    output = keys.map(function(key) {
-      return formatProperty(ctx, value, recurseTimes, visibleKeys, key, array);
-    });
-  }
-
-  ctx.seen.pop();
-
-  return reduceToSingleString(output, base, braces);
-}
-
-
-function formatPrimitive(ctx, value) {
-  if (isUndefined(value))
-    return ctx.stylize('undefined', 'undefined');
-  if (isString(value)) {
-    var simple = '\'' + JSON.stringify(value).replace(/^"|"$/g, '')
-                                             .replace(/'/g, "\\'")
-                                             .replace(/\\"/g, '"') + '\'';
-    return ctx.stylize(simple, 'string');
-  }
-  if (isNumber(value))
-    return ctx.stylize('' + value, 'number');
-  if (isBoolean(value))
-    return ctx.stylize('' + value, 'boolean');
-  // For some reason typeof null is "object", so special case here.
-  if (isNull(value))
-    return ctx.stylize('null', 'null');
-}
-
-
-function formatError(value) {
-  return '[' + Error.prototype.toString.call(value) + ']';
-}
-
-
-function formatArray(ctx, value, recurseTimes, visibleKeys, keys) {
-  var output = [];
-  for (var i = 0, l = value.length; i < l; ++i) {
-    if (hasOwnProperty(value, String(i))) {
-      output.push(formatProperty(ctx, value, recurseTimes, visibleKeys,
-          String(i), true));
-    } else {
-      output.push('');
-    }
-  }
-  keys.forEach(function(key) {
-    if (!key.match(/^\d+$/)) {
-      output.push(formatProperty(ctx, value, recurseTimes, visibleKeys,
-          key, true));
-    }
-  });
-  return output;
-}
-
-
-function formatProperty(ctx, value, recurseTimes, visibleKeys, key, array) {
-  var name, str, desc;
-  desc = Object.getOwnPropertyDescriptor(value, key) || { value: value[key] };
-  if (desc.get) {
-    if (desc.set) {
-      str = ctx.stylize('[Getter/Setter]', 'special');
-    } else {
-      str = ctx.stylize('[Getter]', 'special');
-    }
-  } else {
-    if (desc.set) {
-      str = ctx.stylize('[Setter]', 'special');
-    }
-  }
-  if (!hasOwnProperty(visibleKeys, key)) {
-    name = '[' + key + ']';
-  }
-  if (!str) {
-    if (ctx.seen.indexOf(desc.value) < 0) {
-      if (isNull(recurseTimes)) {
-        str = formatValue(ctx, desc.value, null);
-      } else {
-        str = formatValue(ctx, desc.value, recurseTimes - 1);
-      }
-      if (str.indexOf('\n') > -1) {
-        if (array) {
-          str = str.split('\n').map(function(line) {
-            return '  ' + line;
-          }).join('\n').substr(2);
-        } else {
-          str = '\n' + str.split('\n').map(function(line) {
-            return '   ' + line;
-          }).join('\n');
-        }
-      }
-    } else {
-      str = ctx.stylize('[Circular]', 'special');
-    }
-  }
-  if (isUndefined(name)) {
-    if (array && key.match(/^\d+$/)) {
-      return str;
-    }
-    name = JSON.stringify('' + key);
-    if (name.match(/^"([a-zA-Z_][a-zA-Z_0-9]*)"$/)) {
-      name = name.substr(1, name.length - 2);
-      name = ctx.stylize(name, 'name');
-    } else {
-      name = name.replace(/'/g, "\\'")
-                 .replace(/\\"/g, '"')
-                 .replace(/(^"|"$)/g, "'");
-      name = ctx.stylize(name, 'string');
-    }
-  }
-
-  return name + ': ' + str;
-}
-
-
-function reduceToSingleString(output, base, braces) {
-  var numLinesEst = 0;
-  var length = output.reduce(function(prev, cur) {
-    numLinesEst++;
-    if (cur.indexOf('\n') >= 0) numLinesEst++;
-    return prev + cur.replace(/\u001b\[\d\d?m/g, '').length + 1;
-  }, 0);
-
-  if (length > 60) {
-    return braces[0] +
-           (base === '' ? '' : base + '\n ') +
-           ' ' +
-           output.join(',\n  ') +
-           ' ' +
-           braces[1];
-  }
-
-  return braces[0] + base + ' ' + output.join(', ') + ' ' + braces[1];
-}
-
-
-// NOTE: These type checking functions intentionally don't use `instanceof`
-// because it is fragile and can be easily faked with `Object.create()`.
-function isArray(ar) {
-  return Array.isArray(ar);
-}
-exports.isArray = isArray;
-
-function isBoolean(arg) {
-  return typeof arg === 'boolean';
-}
-exports.isBoolean = isBoolean;
-
-function isNull(arg) {
-  return arg === null;
-}
-exports.isNull = isNull;
-
-function isNullOrUndefined(arg) {
-  return arg == null;
-}
-exports.isNullOrUndefined = isNullOrUndefined;
-
-function isNumber(arg) {
-  return typeof arg === 'number';
-}
-exports.isNumber = isNumber;
-
-function isString(arg) {
-  return typeof arg === 'string';
-}
-exports.isString = isString;
-
-function isSymbol(arg) {
-  return typeof arg === 'symbol';
-}
-exports.isSymbol = isSymbol;
-
-function isUndefined(arg) {
-  return arg === void 0;
-}
-exports.isUndefined = isUndefined;
-
-function isRegExp(re) {
-  return isObject(re) && objectToString(re) === '[object RegExp]';
-}
-exports.isRegExp = isRegExp;
-
-function isObject(arg) {
-  return typeof arg === 'object' && arg !== null;
-}
-exports.isObject = isObject;
-
-function isDate(d) {
-  return isObject(d) && objectToString(d) === '[object Date]';
-}
-exports.isDate = isDate;
-
-function isError(e) {
-  return isObject(e) &&
-      (objectToString(e) === '[object Error]' || e instanceof Error);
-}
-exports.isError = isError;
-
-function isFunction(arg) {
-  return typeof arg === 'function';
-}
-exports.isFunction = isFunction;
-
-function isPrimitive(arg) {
-  return arg === null ||
-         typeof arg === 'boolean' ||
-         typeof arg === 'number' ||
-         typeof arg === 'string' ||
-         typeof arg === 'symbol' ||  // ES6 symbol
-         typeof arg === 'undefined';
-}
-exports.isPrimitive = isPrimitive;
-
-exports.isBuffer = __webpack_require__(48);
-
-function objectToString(o) {
-  return Object.prototype.toString.call(o);
-}
-
-
-function pad(n) {
-  return n < 10 ? '0' + n.toString(10) : n.toString(10);
-}
-
-
-var months = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep',
-              'Oct', 'Nov', 'Dec'];
-
-// 26 Feb 16:19:34
-function timestamp() {
-  var d = new Date();
-  var time = [pad(d.getHours()),
-              pad(d.getMinutes()),
-              pad(d.getSeconds())].join(':');
-  return [d.getDate(), months[d.getMonth()], time].join(' ');
-}
-
-
-// log is just a thin wrapper to console.log that prepends a timestamp
-exports.log = function() {
-  console.log('%s - %s', timestamp(), exports.format.apply(exports, arguments));
-};
-
-
-/**
- * Inherit the prototype methods from one constructor into another.
- *
- * The Function.prototype.inherits from lang.js rewritten as a standalone
- * function (not on Function.prototype). NOTE: If this file is to be loaded
- * during bootstrapping this function needs to be rewritten using some native
- * functions as prototype setup using normal JavaScript does not work as
- * expected during bootstrapping (see mirror.js in r114903).
- *
- * @param {function} ctor Constructor function which needs to inherit the
- *     prototype.
- * @param {function} superCtor Constructor function to inherit prototype from.
- */
-exports.inherits = __webpack_require__(49);
-
-exports._extend = function(origin, add) {
-  // Don't do anything if add isn't an object
-  if (!add || !isObject(add)) return origin;
-
-  var keys = Object.keys(add);
-  var i = keys.length;
-  while (i--) {
-    origin[keys[i]] = add[keys[i]];
-  }
-  return origin;
-};
-
-function hasOwnProperty(obj, prop) {
-  return Object.prototype.hasOwnProperty.call(obj, prop);
-}
-
-/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(9), __webpack_require__(1)))
-
-/***/ }),
-/* 17 */
-/***/ (function(module, exports) {
-
-(function() {
-  var clone, contains, createReduce, debounce, getKeys, getValues, guessLanguageFromFilename, intersection, isArray, isObject, optimizeCb, reduceRight, unique;
-
-  clone = function(obj) {
+  _clone = function clone(obj) {
     var flags, key, newInstance;
-    if ((obj == null) || typeof obj !== 'object') {
+    if (obj == null || (typeof obj === 'undefined' ? 'undefined' : _typeof(obj)) !== 'object') {
       return obj;
     }
     if (obj instanceof Date) {
@@ -5770,32 +5258,32 @@ function hasOwnProperty(obj, prop) {
     }
     newInstance = new obj.constructor();
     for (key in obj) {
-      newInstance[key] = clone(obj[key]);
+      newInstance[key] = _clone(obj[key]);
     }
     return newInstance;
   };
 
-  guessLanguageFromFilename = function(filename) {
+  guessLanguageFromFilename = function guessLanguageFromFilename(filename) {
     if (/.*\.coffee$/.test(filename)) {
       return 'coffeescript';
     }
     return 'javascript';
   };
 
-  isArray = function(obj) {
+  isArray = function isArray(obj) {
     if (Array.isArray) {
       return Array.isArray(obj);
     }
     return Object.prototype.toString.call(arg) === '[object Array]';
   };
 
-  isObject = function(obj) {
+  isObject = function isObject(obj) {
     var type;
-    type = typeof obj;
+    type = typeof obj === 'undefined' ? 'undefined' : _typeof(obj);
     return type === 'function' || type === 'object' && !!obj;
   };
 
-  unique = function(array) {
+  unique = function unique(array) {
     var k, key, output, ref, results, value;
     output = {};
     for (key = k = 0, ref = array.length; 0 <= ref ? k < ref : k > ref; key = 0 <= ref ? ++k : --k) {
@@ -5809,36 +5297,36 @@ function hasOwnProperty(obj, prop) {
     return results;
   };
 
-  optimizeCb = function(func, context, argCount) {
+  optimizeCb = function optimizeCb(func, context, argCount) {
     if (context === void 0) {
       return func;
     }
-    switch ((argCount === null ? 3 : argCount)) {
+    switch (argCount === null ? 3 : argCount) {
       case 1:
-        return function(value) {
+        return function (value) {
           return func.call(context, value);
         };
       case 2:
-        return function(value, other) {
+        return function (value, other) {
           return func.call(context, value, other);
         };
       case 3:
-        return function(value, index, collection) {
+        return function (value, index, collection) {
           return func.call(context, value, index, collection);
         };
       case 4:
-        return function(accumulator, value, index, collection) {
+        return function (accumulator, value, index, collection) {
           return func.call(context, accumulator, value, index, collection);
         };
     }
-    return function() {
+    return function () {
       return func.apply(context, arguments);
     };
   };
 
-  createReduce = function(dir) {
+  createReduce = function createReduce(dir) {
     var iterator;
-    iterator = function(obj, iteratee, memo, keys, index, length) {
+    iterator = function iterator(obj, iteratee, memo, keys, index, length) {
       var currentKey;
       while (index >= 0 && index < length) {
         currentKey = keys ? keys[index] : index;
@@ -5847,7 +5335,7 @@ function hasOwnProperty(obj, prop) {
       }
       return memo;
     };
-    return function(obj, iteratee, memo, context) {
+    return function (obj, iteratee, memo, context) {
       var index, keys, length;
       iteratee = optimizeCb(iteratee, context, 4);
       keys = Object.keys(obj);
@@ -5863,18 +5351,18 @@ function hasOwnProperty(obj, prop) {
 
   reduceRight = createReduce(-1);
 
-  debounce = function(func, wait, immediate) {
-    var args, context, later, result, timeout, timestamp;
+  debounce = function debounce(func, wait, immediate) {
+    var args, context, _later, result, timeout, timestamp;
     timeout = void 0;
     args = void 0;
     context = void 0;
     timestamp = void 0;
     result = void 0;
-    later = function() {
+    _later = function later() {
       var last;
       last = Date.now - timestamp;
       if (last < wait && last >= 0) {
-        timeout = setTimeout(later, wait - last);
+        timeout = setTimeout(_later, wait - last);
       } else {
         timeout = null;
         if (!immediate) {
@@ -5885,14 +5373,14 @@ function hasOwnProperty(obj, prop) {
         }
       }
     };
-    return function() {
+    return function () {
       var callNow;
       context = this;
       args = arguments;
       timestamp = Date.now;
       callNow = immediate && !timeout;
       if (!timeout) {
-        timeout = setTimeout(later, wait);
+        timeout = setTimeout(_later, wait);
       }
       if (callNow) {
         result = func.apply(context, args);
@@ -5902,7 +5390,7 @@ function hasOwnProperty(obj, prop) {
     };
   };
 
-  getKeys = function(obj) {
+  getKeys = function getKeys(obj) {
     var key, keys;
     if (!isObject(obj)) {
       return [];
@@ -5919,7 +5407,7 @@ function hasOwnProperty(obj, prop) {
     return keys;
   };
 
-  getValues = function(obj) {
+  getValues = function getValues(obj) {
     var i, keys, length, values;
     keys = getKeys(obj);
     length = keys.length;
@@ -5932,7 +5420,7 @@ function hasOwnProperty(obj, prop) {
     return values;
   };
 
-  contains = function(obj, item, fromIndex) {
+  contains = function contains(obj, item, fromIndex) {
     if (!isArray(obj)) {
       obj = getValues(obj);
     }
@@ -5942,7 +5430,7 @@ function hasOwnProperty(obj, prop) {
     return obj.indexOf(item) >= 0;
   };
 
-  intersection = function(array) {
+  intersection = function intersection(array) {
     var argsLength, i, item, j, k, l, ref, ref1, result;
     result = [];
     argsLength = arguments.length;
@@ -5963,7 +5451,7 @@ function hasOwnProperty(obj, prop) {
     return result;
   };
 
-  exports.clone = clone;
+  exports.clone = _clone;
 
   exports.guessLanguageFromFilename = guessLanguageFromFilename;
 
@@ -5978,24 +5466,46 @@ function hasOwnProperty(obj, prop) {
   exports.intersection = intersection;
 
   exports.getValues = getValues;
-
-}).call(this);
-
+}).call(undefined);
 
 /***/ }),
-/* 18 */
+/* 17 */
 /***/ (function(module, exports, __webpack_require__) {
 
-(function() {
-  var Component, EventEmitter, IP, ProcessContext, ProcessInput, ProcessOutput, debug, debugBrackets, debugSend, ports,
-    bind = function(fn, me){ return function(){ return fn.apply(me, arguments); }; },
-    extend = function(child, parent) { for (var key in parent) { if (hasProp.call(parent, key)) child[key] = parent[key]; } function ctor() { this.constructor = child; } ctor.prototype = parent.prototype; child.prototype = new ctor(); child.__super__ = parent.prototype; return child; },
-    hasProp = {}.hasOwnProperty,
-    slice = [].slice;
+"use strict";
 
-  EventEmitter = __webpack_require__(2).EventEmitter;
 
-  ports = __webpack_require__(19);
+var _typeof = typeof Symbol === "function" && typeof Symbol.iterator === "symbol" ? function (obj) { return typeof obj; } : function (obj) { return obj && typeof Symbol === "function" && obj.constructor === Symbol && obj !== Symbol.prototype ? "symbol" : typeof obj; };
+
+(function () {
+  var Component,
+      EventEmitter,
+      IP,
+      ProcessContext,
+      ProcessInput,
+      ProcessOutput,
+      debug,
+      debugBrackets,
+      debugSend,
+      ports,
+      bind = function bind(fn, me) {
+    return function () {
+      return fn.apply(me, arguments);
+    };
+  },
+      extend = function extend(child, parent) {
+    for (var key in parent) {
+      if (hasProp.call(parent, key)) child[key] = parent[key];
+    }function ctor() {
+      this.constructor = child;
+    }ctor.prototype = parent.prototype;child.prototype = new ctor();child.__super__ = parent.prototype;return child;
+  },
+      hasProp = {}.hasOwnProperty,
+      slice = [].slice;
+
+  EventEmitter = __webpack_require__(1).EventEmitter;
+
+  ports = __webpack_require__(18);
 
   IP = __webpack_require__(4);
 
@@ -6005,7 +5515,7 @@ function hasOwnProperty(obj, prop) {
 
   debugSend = __webpack_require__(3)('noflo:component:send');
 
-  Component = (function(superClass) {
+  Component = function (superClass) {
     extend(Component, superClass);
 
     Component.prototype.description = '';
@@ -6061,28 +5571,28 @@ function hasOwnProperty(obj, prop) {
       }
     }
 
-    Component.prototype.getDescription = function() {
+    Component.prototype.getDescription = function () {
       return this.description;
     };
 
-    Component.prototype.isReady = function() {
+    Component.prototype.isReady = function () {
       return true;
     };
 
-    Component.prototype.isSubgraph = function() {
+    Component.prototype.isSubgraph = function () {
       return false;
     };
 
-    Component.prototype.setIcon = function(icon) {
+    Component.prototype.setIcon = function (icon) {
       this.icon = icon;
       return this.emit('icon', this.icon);
     };
 
-    Component.prototype.getIcon = function() {
+    Component.prototype.getIcon = function () {
       return this.icon;
     };
 
-    Component.prototype.error = function(e, groups, errorPort, scope) {
+    Component.prototype.error = function (e, groups, errorPort, scope) {
       var group, i, j, len1, len2;
       if (groups == null) {
         groups = [];
@@ -6114,20 +5624,20 @@ function hasOwnProperty(obj, prop) {
       throw e;
     };
 
-    Component.prototype.setUp = function(callback) {
+    Component.prototype.setUp = function (callback) {
       return callback();
     };
 
-    Component.prototype.tearDown = function(callback) {
+    Component.prototype.tearDown = function (callback) {
       return callback();
     };
 
-    Component.prototype.start = function(callback) {
+    Component.prototype.start = function (callback) {
       if (this.isStarted()) {
         return callback();
       }
-      return this.setUp((function(_this) {
-        return function(err) {
+      return this.setUp(function (_this) {
+        return function (err) {
           if (err) {
             return callback(err);
           }
@@ -6135,13 +5645,13 @@ function hasOwnProperty(obj, prop) {
           _this.emit('start');
           return callback(null);
         };
-      })(this));
+      }(this));
     };
 
-    Component.prototype.shutdown = function(callback) {
+    Component.prototype.shutdown = function (callback) {
       var finalize;
-      finalize = (function(_this) {
-        return function() {
+      finalize = function (_this) {
+        return function () {
           var inPort, inPorts, portName;
           inPorts = _this.inPorts.ports || _this.inPorts;
           for (portName in inPorts) {
@@ -6162,34 +5672,34 @@ function hasOwnProperty(obj, prop) {
           _this.emit('end');
           return callback();
         };
-      })(this);
-      return this.tearDown((function(_this) {
-        return function(err) {
-          var checkLoad;
+      }(this);
+      return this.tearDown(function (_this) {
+        return function (err) {
+          var _checkLoad;
           if (err) {
             return callback(err);
           }
           if (_this.load > 0) {
-            checkLoad = function(load) {
+            _checkLoad = function checkLoad(load) {
               if (load > 0) {
                 return;
               }
-              this.removeListener('deactivate', checkLoad);
+              this.removeListener('deactivate', _checkLoad);
               return finalize();
             };
-            _this.on('deactivate', checkLoad);
+            _this.on('deactivate', _checkLoad);
             return;
           }
           return finalize();
         };
-      })(this));
+      }(this));
     };
 
-    Component.prototype.isStarted = function() {
+    Component.prototype.isStarted = function () {
       return this.started;
     };
 
-    Component.prototype.prepareForwarding = function() {
+    Component.prototype.prepareForwarding = function () {
       var i, inPort, len1, outPort, outPorts, ref, results, tmp;
       ref = this.forwardBrackets;
       results = [];
@@ -6215,7 +5725,7 @@ function hasOwnProperty(obj, prop) {
       return results;
     };
 
-    Component.prototype.isLegacy = function() {
+    Component.prototype.isLegacy = function () {
       if (this.handle) {
         return false;
       }
@@ -6225,7 +5735,7 @@ function hasOwnProperty(obj, prop) {
       return true;
     };
 
-    Component.prototype.process = function(handle) {
+    Component.prototype.process = function (handle) {
       var fn, name, port, ref;
       if (typeof handle !== 'function') {
         throw new Error("Process handler must be a function");
@@ -6236,16 +5746,16 @@ function hasOwnProperty(obj, prop) {
       this.prepareForwarding();
       this.handle = handle;
       ref = this.inPorts.ports;
-      fn = (function(_this) {
-        return function(name, port) {
+      fn = function (_this) {
+        return function (name, port) {
           if (!port.name) {
             port.name = name;
           }
-          return port.on('ip', function(ip) {
+          return port.on('ip', function (ip) {
             return _this.handleIP(ip, port);
           });
         };
-      })(this);
+      }(this);
       for (name in ref) {
         port = ref[name];
         fn(name, port);
@@ -6253,7 +5763,7 @@ function hasOwnProperty(obj, prop) {
       return this;
     };
 
-    Component.prototype.isForwardingInport = function(port) {
+    Component.prototype.isForwardingInport = function (port) {
       var portName;
       if (typeof port === 'string') {
         portName = port;
@@ -6266,7 +5776,7 @@ function hasOwnProperty(obj, prop) {
       return false;
     };
 
-    Component.prototype.isForwardingOutport = function(inport, outport) {
+    Component.prototype.isForwardingOutport = function (inport, outport) {
       var inportName, outportName;
       if (typeof inport === 'string') {
         inportName = inport;
@@ -6287,7 +5797,7 @@ function hasOwnProperty(obj, prop) {
       return false;
     };
 
-    Component.prototype.isOrdered = function() {
+    Component.prototype.isOrdered = function () {
       if (this.ordered) {
         return true;
       }
@@ -6297,7 +5807,7 @@ function hasOwnProperty(obj, prop) {
       return false;
     };
 
-    Component.prototype.handleIP = function(ip, port) {
+    Component.prototype.handleIP = function (ip, port) {
       var buf, context, dataPackets, e, error1, input, output, result;
       if (!port.options.triggering) {
         return;
@@ -6313,7 +5823,7 @@ function hasOwnProperty(obj, prop) {
         }
         if (ip.type === 'closeBracket') {
           buf = port.getBuffer(ip.scope, ip.index);
-          dataPackets = buf.filter(function(ip) {
+          dataPackets = buf.filter(function (ip) {
             return ip.type === 'data';
           });
           if (this.outputQ.length >= this.load && dataPackets.length === 0) {
@@ -6356,7 +5866,7 @@ function hasOwnProperty(obj, prop) {
       debug(this.nodeId + " packet on '" + port.name + "' didn't match preconditions: " + ip.type);
     };
 
-    Component.prototype.getBracketContext = function(type, port, scope, idx) {
+    Component.prototype.getBracketContext = function (type, port, scope, idx) {
       var index, name, portsList, ref;
       ref = ports.normalizePortName(port), name = ref.name, index = ref.index;
       if (idx != null) {
@@ -6375,7 +5885,7 @@ function hasOwnProperty(obj, prop) {
       return this.bracketContext[type][port][scope];
     };
 
-    Component.prototype.addToResult = function(result, port, ip, before) {
+    Component.prototype.addToResult = function (result, port, ip, before) {
       var idx, index, method, name, ref;
       if (before == null) {
         before = false;
@@ -6400,12 +5910,12 @@ function hasOwnProperty(obj, prop) {
       return result[name][method](ip);
     };
 
-    Component.prototype.getForwardableContexts = function(inport, outport, contexts) {
+    Component.prototype.getForwardableContexts = function (inport, outport, contexts) {
       var forwardable, index, name, ref;
       ref = ports.normalizePortName(outport), name = ref.name, index = ref.index;
       forwardable = [];
-      contexts.forEach((function(_this) {
-        return function(ctx, idx) {
+      contexts.forEach(function (_this) {
+        return function (ctx, idx) {
           var outContext;
           if (!_this.isForwardingOutport(inport, name)) {
             return;
@@ -6421,11 +5931,11 @@ function hasOwnProperty(obj, prop) {
           }
           return forwardable.push(ctx);
         };
-      })(this));
+      }(this));
       return forwardable;
     };
 
-    Component.prototype.addBracketForwards = function(result) {
+    Component.prototype.addBracketForwards = function (result) {
       var context, i, ipClone, j, k, l, len1, len2, len3, len4, port, ref, ref1, ref2, ref3, ref4, ref5;
       if ((ref = result.__bracketClosingBefore) != null ? ref.length : void 0) {
         ref1 = result.__bracketClosingBefore;
@@ -6445,8 +5955,8 @@ function hasOwnProperty(obj, prop) {
         }
       }
       if (result.__bracketContext) {
-        Object.keys(result.__bracketContext).reverse().forEach((function(_this) {
-          return function(inport) {
+        Object.keys(result.__bracketContext).reverse().forEach(function (_this) {
+          return function (inport) {
             var ctx, datas, forwardedOpens, idx, idxIps, ip, ips, k, l, len3, len4, len5, m, outport, portIdentifier, results, unforwarded;
             context = result.__bracketContext[inport];
             if (!context.length) {
@@ -6461,7 +5971,7 @@ function hasOwnProperty(obj, prop) {
               if (_this.outPorts[outport].isAddressable()) {
                 for (idx in ips) {
                   idxIps = ips[idx];
-                  datas = idxIps.filter(function(ip) {
+                  datas = idxIps.filter(function (ip) {
                     return ip.type === 'data';
                   });
                   if (!datas.length) {
@@ -6490,7 +6000,7 @@ function hasOwnProperty(obj, prop) {
                 }
                 continue;
               }
-              datas = ips.filter(function(ip) {
+              datas = ips.filter(function (ip) {
                 return ip.type === 'data';
               });
               if (!datas.length) {
@@ -6509,7 +6019,7 @@ function hasOwnProperty(obj, prop) {
                 _this.getBracketContext('out', outport, ctx.ip.scope).push(ctx);
               }
               forwardedOpens.reverse();
-              results.push((function() {
+              results.push(function () {
                 var len6, n, results1;
                 results1 = [];
                 for (n = 0, len6 = forwardedOpens.length; n < len6; n++) {
@@ -6517,11 +6027,11 @@ function hasOwnProperty(obj, prop) {
                   results1.push(this.addToResult(result, outport, ip, true));
                 }
                 return results1;
-              }).call(_this));
+              }.call(_this));
             }
             return results;
           };
-        })(this));
+        }(this));
       }
       if ((ref3 = result.__bracketClosingAfter) != null ? ref3.length : void 0) {
         ref4 = result.__bracketClosingAfter;
@@ -6545,30 +6055,54 @@ function hasOwnProperty(obj, prop) {
       return delete result.__bracketClosingAfter;
     };
 
-    Component.prototype.processOutputQueue = function() {
-      var i, idx, idxIps, ip, ips, j, len1, len2, port, portIdentifier, result, results;
+    Component.prototype.processOutputQueue = function () {
+      var idx, idxIps, ip, ips, port, portIdentifier, result, results;
       results = [];
       while (this.outputQ.length > 0) {
-        result = this.outputQ[0];
-        if (!result.__resolved) {
+        if (!this.outputQ[0].__resolved) {
           break;
         }
+        result = this.outputQ.shift();
         this.addBracketForwards(result);
-        for (port in result) {
-          ips = result[port];
-          if (port.indexOf('__') === 0) {
-            continue;
-          }
-          if (this.outPorts.ports[port].isAddressable()) {
-            for (idx in ips) {
-              idxIps = ips[idx];
-              idx = parseInt(idx);
-              if (!this.outPorts.ports[port].isAttached(idx)) {
-                continue;
+        results.push(function () {
+          var i, len1, results1;
+          results1 = [];
+          for (port in result) {
+            ips = result[port];
+            if (port.indexOf('__') === 0) {
+              continue;
+            }
+            if (this.outPorts.ports[port].isAddressable()) {
+              for (idx in ips) {
+                idxIps = ips[idx];
+                idx = parseInt(idx);
+                if (!this.outPorts.ports[port].isAttached(idx)) {
+                  continue;
+                }
+                for (i = 0, len1 = idxIps.length; i < len1; i++) {
+                  ip = idxIps[i];
+                  portIdentifier = port + "[" + ip.index + "]";
+                  if (ip.type === 'openBracket') {
+                    debugSend(this.nodeId + " sending " + portIdentifier + " < '" + ip.data + "'");
+                  } else if (ip.type === 'closeBracket') {
+                    debugSend(this.nodeId + " sending " + portIdentifier + " > '" + ip.data + "'");
+                  } else {
+                    debugSend(this.nodeId + " sending " + portIdentifier + " DATA");
+                  }
+                  this.outPorts[port].sendIP(ip);
+                }
               }
-              for (i = 0, len1 = idxIps.length; i < len1; i++) {
-                ip = idxIps[i];
-                portIdentifier = port + "[" + ip.index + "]";
+              continue;
+            }
+            if (!this.outPorts.ports[port].isAttached()) {
+              continue;
+            }
+            results1.push(function () {
+              var j, len2, results2;
+              results2 = [];
+              for (j = 0, len2 = ips.length; j < len2; j++) {
+                ip = ips[j];
+                portIdentifier = port;
                 if (ip.type === 'openBracket') {
                   debugSend(this.nodeId + " sending " + portIdentifier + " < '" + ip.data + "'");
                 } else if (ip.type === 'closeBracket') {
@@ -6576,33 +6110,18 @@ function hasOwnProperty(obj, prop) {
                 } else {
                   debugSend(this.nodeId + " sending " + portIdentifier + " DATA");
                 }
-                this.outPorts[port].sendIP(ip);
+                results2.push(this.outPorts[port].sendIP(ip));
               }
-            }
-            continue;
+              return results2;
+            }.call(this));
           }
-          if (!this.outPorts.ports[port].isAttached()) {
-            continue;
-          }
-          for (j = 0, len2 = ips.length; j < len2; j++) {
-            ip = ips[j];
-            portIdentifier = port;
-            if (ip.type === 'openBracket') {
-              debugSend(this.nodeId + " sending " + portIdentifier + " < '" + ip.data + "'");
-            } else if (ip.type === 'closeBracket') {
-              debugSend(this.nodeId + " sending " + portIdentifier + " > '" + ip.data + "'");
-            } else {
-              debugSend(this.nodeId + " sending " + portIdentifier + " DATA");
-            }
-            this.outPorts[port].sendIP(ip);
-          }
-        }
-        results.push(this.outputQ.shift());
+          return results1;
+        }.call(this));
       }
       return results;
     };
 
-    Component.prototype.activate = function(context) {
+    Component.prototype.activate = function (context) {
       if (context.activated) {
         return;
       }
@@ -6615,7 +6134,7 @@ function hasOwnProperty(obj, prop) {
       }
     };
 
-    Component.prototype.deactivate = function(context) {
+    Component.prototype.deactivate = function (context) {
       if (context.deactivated) {
         return;
       }
@@ -6629,12 +6148,11 @@ function hasOwnProperty(obj, prop) {
     };
 
     return Component;
-
-  })(EventEmitter);
+  }(EventEmitter);
 
   exports.Component = Component;
 
-  ProcessContext = (function() {
+  ProcessContext = function () {
     function ProcessContext(ip1, nodeInstance, port1, result1) {
       this.ip = ip1;
       this.nodeInstance = nodeInstance;
@@ -6645,14 +6163,14 @@ function hasOwnProperty(obj, prop) {
       this.deactivated = false;
     }
 
-    ProcessContext.prototype.activate = function() {
+    ProcessContext.prototype.activate = function () {
       if (this.result.__resolved || this.nodeInstance.outputQ.indexOf(this.result) === -1) {
         this.result = {};
       }
       return this.nodeInstance.activate(this);
     };
 
-    ProcessContext.prototype.deactivate = function() {
+    ProcessContext.prototype.deactivate = function () {
       if (!this.result.__resolved) {
         this.result.__resolved = true;
       }
@@ -6660,10 +6178,9 @@ function hasOwnProperty(obj, prop) {
     };
 
     return ProcessContext;
+  }();
 
-  })();
-
-  ProcessInput = (function() {
+  ProcessInput = function () {
     function ProcessInput(ports1, context1) {
       this.ports = ports1;
       this.context = context1;
@@ -6674,7 +6191,7 @@ function hasOwnProperty(obj, prop) {
       this.scope = this.context.scope;
     }
 
-    ProcessInput.prototype.activate = function() {
+    ProcessInput.prototype.activate = function () {
       if (this.context.activated) {
         return;
       }
@@ -6689,7 +6206,7 @@ function hasOwnProperty(obj, prop) {
       }
     };
 
-    ProcessInput.prototype.attached = function() {
+    ProcessInput.prototype.attached = function () {
       var args, i, len1, port, res;
       args = 1 <= arguments.length ? slice.call(arguments, 0) : [];
       if (!args.length) {
@@ -6706,7 +6223,7 @@ function hasOwnProperty(obj, prop) {
       return res;
     };
 
-    ProcessInput.prototype.has = function() {
+    ProcessInput.prototype.has = function () {
       var args, i, len1, port, validate;
       args = 1 <= arguments.length ? slice.call(arguments, 0) : [];
       if (!args.length) {
@@ -6715,7 +6232,7 @@ function hasOwnProperty(obj, prop) {
       if (typeof args[args.length - 1] === 'function') {
         validate = args.pop();
       } else {
-        validate = function() {
+        validate = function validate() {
           return true;
         };
       }
@@ -6740,19 +6257,19 @@ function hasOwnProperty(obj, prop) {
       return true;
     };
 
-    ProcessInput.prototype.hasData = function() {
+    ProcessInput.prototype.hasData = function () {
       var args;
       args = 1 <= arguments.length ? slice.call(arguments, 0) : [];
       if (!args.length) {
         args = ['in'];
       }
-      args.push(function(ip) {
+      args.push(function (ip) {
         return ip.type === 'data';
       });
       return this.has.apply(this, args);
     };
 
-    ProcessInput.prototype.hasStream = function() {
+    ProcessInput.prototype.hasStream = function () {
       var args, dataBrackets, hasData, i, len1, port, portBrackets, validate, validateStream;
       args = 1 <= arguments.length ? slice.call(arguments, 0) : [];
       if (!args.length) {
@@ -6761,7 +6278,7 @@ function hasOwnProperty(obj, prop) {
       if (typeof args[args.length - 1] === 'function') {
         validateStream = args.pop();
       } else {
-        validateStream = function() {
+        validateStream = function validateStream() {
           return true;
         };
       }
@@ -6770,7 +6287,7 @@ function hasOwnProperty(obj, prop) {
         portBrackets = [];
         dataBrackets = [];
         hasData = false;
-        validate = function(ip) {
+        validate = function validate(ip) {
           if (ip.type === 'openBracket') {
             portBrackets.push(ip.data);
             return false;
@@ -6800,7 +6317,7 @@ function hasOwnProperty(obj, prop) {
       return true;
     };
 
-    ProcessInput.prototype.get = function() {
+    ProcessInput.prototype.get = function () {
       var args, i, idx, ip, len1, port, portname, res;
       args = 1 <= arguments.length ? slice.call(arguments, 0) : [];
       this.activate();
@@ -6836,7 +6353,7 @@ function hasOwnProperty(obj, prop) {
       }
     };
 
-    ProcessInput.prototype.__getForForwarding = function(port, idx) {
+    ProcessInput.prototype.__getForForwarding = function (port, idx) {
       var context, dataIp, i, ip, len1, prefix;
       prefix = [];
       dataIp = null;
@@ -6878,7 +6395,7 @@ function hasOwnProperty(obj, prop) {
       return dataIp;
     };
 
-    ProcessInput.prototype.getData = function() {
+    ProcessInput.prototype.getData = function () {
       var args, datas, i, len1, packet, port;
       args = 1 <= arguments.length ? slice.call(arguments, 0) : [];
       if (!args.length) {
@@ -6906,7 +6423,7 @@ function hasOwnProperty(obj, prop) {
       return datas;
     };
 
-    ProcessInput.prototype.getStream = function() {
+    ProcessInput.prototype.getStream = function () {
       var args, datas, hasData, i, ip, len1, port, portBrackets, portPackets;
       args = 1 <= arguments.length ? slice.call(arguments, 0) : [];
       if (!args.length) {
@@ -6956,10 +6473,9 @@ function hasOwnProperty(obj, prop) {
     };
 
     return ProcessInput;
+  }();
 
-  })();
-
-  ProcessOutput = (function() {
+  ProcessOutput = function () {
     function ProcessOutput(ports1, context1) {
       this.ports = ports1;
       this.context = context1;
@@ -6969,11 +6485,11 @@ function hasOwnProperty(obj, prop) {
       this.scope = this.context.scope;
     }
 
-    ProcessOutput.prototype.isError = function(err) {
+    ProcessOutput.prototype.isError = function (err) {
       return err instanceof Error || Array.isArray(err) && err.length > 0 && err[0] instanceof Error;
     };
 
-    ProcessOutput.prototype.error = function(err) {
+    ProcessOutput.prototype.error = function (err) {
       var e, i, j, len1, len2, multiple, results;
       multiple = Array.isArray(err);
       if (!multiple) {
@@ -7000,7 +6516,7 @@ function hasOwnProperty(obj, prop) {
       }
     };
 
-    ProcessOutput.prototype.sendIP = function(port, packet) {
+    ProcessOutput.prototype.sendIP = function (port, packet) {
       var ip;
       if (!IP.isIP(packet)) {
         ip = new IP('data', packet);
@@ -7020,7 +6536,7 @@ function hasOwnProperty(obj, prop) {
       return this.nodeInstance.outPorts[port].sendIP(ip);
     };
 
-    ProcessOutput.prototype.send = function(outputMap) {
+    ProcessOutput.prototype.send = function (outputMap) {
       var componentPorts, i, len1, mapIsInPorts, packet, port, ref, results;
       if (this.isError(outputMap)) {
         return this.error(outputMap);
@@ -7033,7 +6549,7 @@ function hasOwnProperty(obj, prop) {
         if (port !== 'error' && port !== 'ports' && port !== '_callbacks') {
           componentPorts.push(port);
         }
-        if (!mapIsInPorts && (outputMap != null) && typeof outputMap === 'object' && Object.keys(outputMap).indexOf(port) !== -1) {
+        if (!mapIsInPorts && outputMap != null && (typeof outputMap === 'undefined' ? 'undefined' : _typeof(outputMap)) === 'object' && Object.keys(outputMap).indexOf(port) !== -1) {
           mapIsInPorts = true;
         }
       }
@@ -7052,12 +6568,12 @@ function hasOwnProperty(obj, prop) {
       return results;
     };
 
-    ProcessOutput.prototype.sendDone = function(outputMap) {
+    ProcessOutput.prototype.sendDone = function (outputMap) {
       this.send(outputMap);
       return this.done();
     };
 
-    ProcessOutput.prototype.pass = function(data, options) {
+    ProcessOutput.prototype.pass = function (data, options) {
       var key, val;
       if (options == null) {
         options = {};
@@ -7074,17 +6590,17 @@ function hasOwnProperty(obj, prop) {
       return this.done();
     };
 
-    ProcessOutput.prototype.done = function(error) {
+    ProcessOutput.prototype.done = function (error) {
       var buf, context, contexts, ctx, ip, isLast, nodeContext, port, ref;
       this.result.__resolved = true;
       this.nodeInstance.activate(this.context);
       if (error) {
         this.error(error);
       }
-      isLast = (function(_this) {
-        return function() {
+      isLast = function (_this) {
+        return function () {
           var len, load, pos, resultsOnly;
-          resultsOnly = _this.nodeInstance.outputQ.filter(function(q) {
+          resultsOnly = _this.nodeInstance.outputQ.filter(function (q) {
             if (!q.__resolved) {
               return true;
             }
@@ -7107,7 +6623,7 @@ function hasOwnProperty(obj, prop) {
           }
           return false;
         };
-      })(this);
+      }(this);
       if (this.nodeInstance.isOrdered() && isLast()) {
         ref = this.nodeInstance.bracketContext["in"];
         for (port in ref) {
@@ -7143,28 +6659,41 @@ function hasOwnProperty(obj, prop) {
     };
 
     return ProcessOutput;
-
-  })();
-
-}).call(this);
-
+  }();
+}).call(undefined);
 
 /***/ }),
-/* 19 */
+/* 18 */
 /***/ (function(module, exports, __webpack_require__) {
 
-(function() {
-  var EventEmitter, InPort, InPorts, OutPort, OutPorts, Ports,
-    extend = function(child, parent) { for (var key in parent) { if (hasProp.call(parent, key)) child[key] = parent[key]; } function ctor() { this.constructor = child; } ctor.prototype = parent.prototype; child.prototype = new ctor(); child.__super__ = parent.prototype; return child; },
-    hasProp = {}.hasOwnProperty;
+"use strict";
 
-  EventEmitter = __webpack_require__(2).EventEmitter;
 
-  InPort = __webpack_require__(20);
+var _typeof = typeof Symbol === "function" && typeof Symbol.iterator === "symbol" ? function (obj) { return typeof obj; } : function (obj) { return obj && typeof Symbol === "function" && obj.constructor === Symbol && obj !== Symbol.prototype ? "symbol" : typeof obj; };
 
-  OutPort = __webpack_require__(22);
+(function () {
+  var EventEmitter,
+      InPort,
+      InPorts,
+      OutPort,
+      OutPorts,
+      Ports,
+      extend = function extend(child, parent) {
+    for (var key in parent) {
+      if (hasProp.call(parent, key)) child[key] = parent[key];
+    }function ctor() {
+      this.constructor = child;
+    }ctor.prototype = parent.prototype;child.prototype = new ctor();child.__super__ = parent.prototype;return child;
+  },
+      hasProp = {}.hasOwnProperty;
 
-  Ports = (function(superClass) {
+  EventEmitter = __webpack_require__(1).EventEmitter;
+
+  InPort = __webpack_require__(19);
+
+  OutPort = __webpack_require__(21);
+
+  Ports = function (superClass) {
     extend(Ports, superClass);
 
     Ports.prototype.model = InPort;
@@ -7181,7 +6710,7 @@ function hasOwnProperty(obj, prop) {
       }
     }
 
-    Ports.prototype.add = function(name, options, process) {
+    Ports.prototype.add = function (name, options, process) {
       if (name === 'add' || name === 'remove') {
         throw new Error('Add and remove are restricted port names');
       }
@@ -7191,7 +6720,7 @@ function hasOwnProperty(obj, prop) {
       if (this.ports[name]) {
         this.remove(name);
       }
-      if (typeof options === 'object' && options.canAttach) {
+      if ((typeof options === 'undefined' ? 'undefined' : _typeof(options)) === 'object' && options.canAttach) {
         this.ports[name] = options;
       } else {
         this.ports[name] = new this.model(options, process);
@@ -7201,7 +6730,7 @@ function hasOwnProperty(obj, prop) {
       return this;
     };
 
-    Ports.prototype.remove = function(name) {
+    Ports.prototype.remove = function (name) {
       if (!this.ports[name]) {
         throw new Error("Port " + name + " not defined");
       }
@@ -7212,24 +6741,23 @@ function hasOwnProperty(obj, prop) {
     };
 
     return Ports;
+  }(EventEmitter);
 
-  })(EventEmitter);
-
-  exports.InPorts = InPorts = (function(superClass) {
+  exports.InPorts = InPorts = function (superClass) {
     extend(InPorts, superClass);
 
     function InPorts() {
       return InPorts.__super__.constructor.apply(this, arguments);
     }
 
-    InPorts.prototype.on = function(name, event, callback) {
+    InPorts.prototype.on = function (name, event, callback) {
       if (!this.ports[name]) {
         throw new Error("Port " + name + " not available");
       }
       return this.ports[name].on(event, callback);
     };
 
-    InPorts.prototype.once = function(name, event, callback) {
+    InPorts.prototype.once = function (name, event, callback) {
       if (!this.ports[name]) {
         throw new Error("Port " + name + " not available");
       }
@@ -7237,10 +6765,9 @@ function hasOwnProperty(obj, prop) {
     };
 
     return InPorts;
+  }(Ports);
 
-  })(Ports);
-
-  exports.OutPorts = OutPorts = (function(superClass) {
+  exports.OutPorts = OutPorts = function (superClass) {
     extend(OutPorts, superClass);
 
     function OutPorts() {
@@ -7249,35 +6776,35 @@ function hasOwnProperty(obj, prop) {
 
     OutPorts.prototype.model = OutPort;
 
-    OutPorts.prototype.connect = function(name, socketId) {
+    OutPorts.prototype.connect = function (name, socketId) {
       if (!this.ports[name]) {
         throw new Error("Port " + name + " not available");
       }
       return this.ports[name].connect(socketId);
     };
 
-    OutPorts.prototype.beginGroup = function(name, group, socketId) {
+    OutPorts.prototype.beginGroup = function (name, group, socketId) {
       if (!this.ports[name]) {
         throw new Error("Port " + name + " not available");
       }
       return this.ports[name].beginGroup(group, socketId);
     };
 
-    OutPorts.prototype.send = function(name, data, socketId) {
+    OutPorts.prototype.send = function (name, data, socketId) {
       if (!this.ports[name]) {
         throw new Error("Port " + name + " not available");
       }
       return this.ports[name].send(data, socketId);
     };
 
-    OutPorts.prototype.endGroup = function(name, socketId) {
+    OutPorts.prototype.endGroup = function (name, socketId) {
       if (!this.ports[name]) {
         throw new Error("Port " + name + " not available");
       }
       return this.ports[name].endGroup(socketId);
     };
 
-    OutPorts.prototype.disconnect = function(name, socketId) {
+    OutPorts.prototype.disconnect = function (name, socketId) {
       if (!this.ports[name]) {
         throw new Error("Port " + name + " not available");
       }
@@ -7285,10 +6812,9 @@ function hasOwnProperty(obj, prop) {
     };
 
     return OutPorts;
+  }(Ports);
 
-  })(Ports);
-
-  exports.normalizePortName = function(name) {
+  exports.normalizePortName = function (name) {
     var matched, port;
     port = {
       name: name
@@ -7304,26 +6830,36 @@ function hasOwnProperty(obj, prop) {
     port.index = matched[2];
     return port;
   };
-
-}).call(this);
-
+}).call(undefined);
 
 /***/ }),
-/* 20 */
+/* 19 */
 /***/ (function(module, exports, __webpack_require__) {
 
-(function() {
-  var BasePort, IP, InPort, platform,
-    extend = function(child, parent) { for (var key in parent) { if (hasProp.call(parent, key)) child[key] = parent[key]; } function ctor() { this.constructor = child; } ctor.prototype = parent.prototype; child.prototype = new ctor(); child.__super__ = parent.prototype; return child; },
-    hasProp = {}.hasOwnProperty;
+"use strict";
 
-  BasePort = __webpack_require__(21);
+
+(function () {
+  var BasePort,
+      IP,
+      InPort,
+      platform,
+      extend = function extend(child, parent) {
+    for (var key in parent) {
+      if (hasProp.call(parent, key)) child[key] = parent[key];
+    }function ctor() {
+      this.constructor = child;
+    }ctor.prototype = parent.prototype;child.prototype = new ctor();child.__super__ = parent.prototype;return child;
+  },
+      hasProp = {}.hasOwnProperty;
+
+  BasePort = __webpack_require__(20);
 
   IP = __webpack_require__(4);
 
   platform = __webpack_require__(5);
 
-  InPort = (function(superClass) {
+  InPort = function (superClass) {
     extend(InPort, superClass);
 
     function InPort(options, process) {
@@ -7340,6 +6876,9 @@ function hasOwnProperty(obj, prop) {
       }
       if (options.control == null) {
         options.control = false;
+      }
+      if (options.scoped == null) {
+        options.scoped = true;
       }
       if (options.triggering == null) {
         options.triggering = true;
@@ -7367,59 +6906,59 @@ function hasOwnProperty(obj, prop) {
       this.prepareBuffer();
     }
 
-    InPort.prototype.attachSocket = function(socket, localId) {
+    InPort.prototype.attachSocket = function (socket, localId) {
       if (localId == null) {
         localId = null;
       }
       if (this.hasDefault()) {
         if (this.handle) {
-          socket.setDataDelegate((function(_this) {
-            return function() {
+          socket.setDataDelegate(function (_this) {
+            return function () {
               return new IP('data', _this.options["default"]);
             };
-          })(this));
+          }(this));
         } else {
-          socket.setDataDelegate((function(_this) {
-            return function() {
+          socket.setDataDelegate(function (_this) {
+            return function () {
               return _this.options["default"];
             };
-          })(this));
+          }(this));
         }
       }
-      socket.on('connect', (function(_this) {
-        return function() {
+      socket.on('connect', function (_this) {
+        return function () {
           return _this.handleSocketEvent('connect', socket, localId);
         };
-      })(this));
-      socket.on('begingroup', (function(_this) {
-        return function(group) {
+      }(this));
+      socket.on('begingroup', function (_this) {
+        return function (group) {
           return _this.handleSocketEvent('begingroup', group, localId);
         };
-      })(this));
-      socket.on('data', (function(_this) {
-        return function(data) {
+      }(this));
+      socket.on('data', function (_this) {
+        return function (data) {
           _this.validateData(data);
           return _this.handleSocketEvent('data', data, localId);
         };
-      })(this));
-      socket.on('endgroup', (function(_this) {
-        return function(group) {
+      }(this));
+      socket.on('endgroup', function (_this) {
+        return function (group) {
           return _this.handleSocketEvent('endgroup', group, localId);
         };
-      })(this));
-      socket.on('disconnect', (function(_this) {
-        return function() {
+      }(this));
+      socket.on('disconnect', function (_this) {
+        return function () {
           return _this.handleSocketEvent('disconnect', socket, localId);
         };
-      })(this));
-      return socket.on('ip', (function(_this) {
-        return function(ip) {
+      }(this));
+      return socket.on('ip', function (_this) {
+        return function (ip) {
           return _this.handleIP(ip, localId);
         };
-      })(this));
+      }(this));
     };
 
-    InPort.prototype.handleIP = function(ip, id) {
+    InPort.prototype.handleIP = function (ip, id) {
       var buf;
       if (this.process) {
         return;
@@ -7430,6 +6969,12 @@ function hasOwnProperty(obj, prop) {
       ip.owner = this.nodeInstance;
       if (this.isAddressable()) {
         ip.index = id;
+      }
+      if (ip.datatype === 'all') {
+        ip.datatype = this.getDataType();
+      }
+      if (this.getSchema() && !ip.schema) {
+        ip.schema = this.getSchema();
       }
       buf = this.prepareBufferForIP(ip);
       buf.push(ip);
@@ -7442,7 +6987,7 @@ function hasOwnProperty(obj, prop) {
       return this.emit('ip', ip, id);
     };
 
-    InPort.prototype.handleSocketEvent = function(event, payload, id) {
+    InPort.prototype.handleSocketEvent = function (event, payload, id) {
       if (this.isBuffered()) {
         this.buffer.push({
           event: event,
@@ -7475,11 +7020,11 @@ function hasOwnProperty(obj, prop) {
       return this.emit(event, payload);
     };
 
-    InPort.prototype.hasDefault = function() {
+    InPort.prototype.hasDefault = function () {
       return this.options["default"] !== void 0;
     };
 
-    InPort.prototype.prepareBuffer = function() {
+    InPort.prototype.prepareBuffer = function () {
       this.buffer = [];
       if (this.isAddressable()) {
         this.indexedBuffer = {};
@@ -7488,9 +7033,9 @@ function hasOwnProperty(obj, prop) {
       return this.iipBuffer = this.isAddressable() ? {} : [];
     };
 
-    InPort.prototype.prepareBufferForIP = function(ip) {
+    InPort.prototype.prepareBufferForIP = function (ip) {
       if (this.isAddressable()) {
-        if (ip.scope != null) {
+        if (ip.scope != null && this.options.scoped) {
           if (!(ip.scope in this.scopedBuffer)) {
             this.scopedBuffer[ip.scope] = [];
           }
@@ -7510,7 +7055,7 @@ function hasOwnProperty(obj, prop) {
         }
         return this.indexedBuffer[ip.index];
       }
-      if (ip.scope != null) {
+      if (ip.scope != null && this.options.scoped) {
         if (!(ip.scope in this.scopedBuffer)) {
           this.scopedBuffer[ip.scope] = [];
         }
@@ -7522,7 +7067,7 @@ function hasOwnProperty(obj, prop) {
       return this.buffer;
     };
 
-    InPort.prototype.validateData = function(data) {
+    InPort.prototype.validateData = function (data) {
       if (!this.options.values) {
         return;
       }
@@ -7531,7 +7076,7 @@ function hasOwnProperty(obj, prop) {
       }
     };
 
-    InPort.prototype.receive = function() {
+    InPort.prototype.receive = function () {
       platform.deprecated('InPort.receive is deprecated. Use InPort.get instead');
       if (!this.isBuffered()) {
         throw new Error('Receive is only possible on buffered ports');
@@ -7539,24 +7084,24 @@ function hasOwnProperty(obj, prop) {
       return this.buffer.shift();
     };
 
-    InPort.prototype.contains = function() {
+    InPort.prototype.contains = function () {
       platform.deprecated('InPort.contains is deprecated. Use InPort.has instead');
       if (!this.isBuffered()) {
         throw new Error('Contains query is only possible on buffered ports');
       }
-      return this.buffer.filter(function(packet) {
+      return this.buffer.filter(function (packet) {
         if (packet.event === 'data') {
           return true;
         }
       }).length;
     };
 
-    InPort.prototype.getBuffer = function(scope, idx, initial) {
+    InPort.prototype.getBuffer = function (scope, idx, initial) {
       if (initial == null) {
         initial = false;
       }
       if (this.isAddressable()) {
-        if (scope != null) {
+        if (scope != null && this.options.scoped) {
           if (!(scope in this.scopedBuffer)) {
             return void 0;
           }
@@ -7576,7 +7121,7 @@ function hasOwnProperty(obj, prop) {
         }
         return this.indexedBuffer[idx];
       }
-      if (scope != null) {
+      if (scope != null && this.options.scoped) {
         if (!(scope in this.scopedBuffer)) {
           return void 0;
         }
@@ -7588,7 +7133,7 @@ function hasOwnProperty(obj, prop) {
       return this.buffer;
     };
 
-    InPort.prototype.getFromBuffer = function(scope, idx, initial) {
+    InPort.prototype.getFromBuffer = function (scope, idx, initial) {
       var buf;
       if (initial == null) {
         initial = false;
@@ -7604,7 +7149,7 @@ function hasOwnProperty(obj, prop) {
       }
     };
 
-    InPort.prototype.get = function(scope, idx) {
+    InPort.prototype.get = function (scope, idx) {
       var res;
       res = this.getFromBuffer(scope, idx);
       if (res !== void 0) {
@@ -7613,7 +7158,7 @@ function hasOwnProperty(obj, prop) {
       return this.getFromBuffer(null, idx, true);
     };
 
-    InPort.prototype.hasIPinBuffer = function(scope, idx, validate, initial) {
+    InPort.prototype.hasIPinBuffer = function (scope, idx, validate, initial) {
       var buf, i, len, packet;
       if (initial == null) {
         initial = false;
@@ -7631,11 +7176,11 @@ function hasOwnProperty(obj, prop) {
       return false;
     };
 
-    InPort.prototype.hasIIP = function(idx, validate) {
+    InPort.prototype.hasIIP = function (idx, validate) {
       return this.hasIPinBuffer(null, idx, validate, true);
     };
 
-    InPort.prototype.has = function(scope, idx, validate) {
+    InPort.prototype.has = function (scope, idx, validate) {
       if (!this.isAddressable()) {
         validate = idx;
         idx = null;
@@ -7649,7 +7194,7 @@ function hasOwnProperty(obj, prop) {
       return false;
     };
 
-    InPort.prototype.length = function(scope, idx) {
+    InPort.prototype.length = function (scope, idx) {
       var buf;
       buf = this.getBuffer(scope, idx);
       if (!buf) {
@@ -7658,37 +7203,45 @@ function hasOwnProperty(obj, prop) {
       return buf.length;
     };
 
-    InPort.prototype.ready = function(scope, idx) {
+    InPort.prototype.ready = function (scope, idx) {
       return this.length(scope) > 0;
     };
 
-    InPort.prototype.clear = function() {
+    InPort.prototype.clear = function () {
       return this.prepareBuffer();
     };
 
     return InPort;
-
-  })(BasePort);
+  }(BasePort);
 
   module.exports = InPort;
-
-}).call(this);
-
+}).call(undefined);
 
 /***/ }),
-/* 21 */
+/* 20 */
 /***/ (function(module, exports, __webpack_require__) {
 
-(function() {
-  var BasePort, EventEmitter, validTypes,
-    extend = function(child, parent) { for (var key in parent) { if (hasProp.call(parent, key)) child[key] = parent[key]; } function ctor() { this.constructor = child; } ctor.prototype = parent.prototype; child.prototype = new ctor(); child.__super__ = parent.prototype; return child; },
-    hasProp = {}.hasOwnProperty;
+"use strict";
 
-  EventEmitter = __webpack_require__(2).EventEmitter;
+
+(function () {
+  var BasePort,
+      EventEmitter,
+      validTypes,
+      extend = function extend(child, parent) {
+    for (var key in parent) {
+      if (hasProp.call(parent, key)) child[key] = parent[key];
+    }function ctor() {
+      this.constructor = child;
+    }ctor.prototype = parent.prototype;child.prototype = new ctor();child.__super__ = parent.prototype;return child;
+  },
+      hasProp = {}.hasOwnProperty;
+
+  EventEmitter = __webpack_require__(1).EventEmitter;
 
   validTypes = ['all', 'string', 'number', 'int', 'object', 'array', 'boolean', 'color', 'date', 'bang', 'function', 'buffer', 'stream'];
 
-  BasePort = (function(superClass) {
+  BasePort = function (superClass) {
     extend(BasePort, superClass);
 
     function BasePort(options) {
@@ -7698,7 +7251,7 @@ function hasOwnProperty(obj, prop) {
       this.name = null;
     }
 
-    BasePort.prototype.handleOptions = function(options) {
+    BasePort.prototype.handleOptions = function (options) {
       if (!options) {
         options = {};
       }
@@ -7712,30 +7265,38 @@ function hasOwnProperty(obj, prop) {
         options.datatype = 'int';
       }
       if (validTypes.indexOf(options.datatype) === -1) {
-        throw new Error("Invalid port datatype '" + options.datatype + "' specified, valid are " + (validTypes.join(', ')));
+        throw new Error("Invalid port datatype '" + options.datatype + "' specified, valid are " + validTypes.join(', '));
       }
-      if (options.type && options.type.indexOf('/') === -1) {
-        throw new Error("Invalid port type '" + options.type + "' specified. Should be URL or MIME type");
+      if (options.type && !options.schema) {
+        options.schema = options.type;
+        delete options.type;
+      }
+      if (options.schema && options.schema.indexOf('/') === -1) {
+        throw new Error("Invalid port schema '" + options.schema + "' specified. Should be URL or MIME type");
       }
       return this.options = options;
     };
 
-    BasePort.prototype.getId = function() {
+    BasePort.prototype.getId = function () {
       if (!(this.node && this.name)) {
         return 'Port';
       }
-      return this.node + " " + (this.name.toUpperCase());
+      return this.node + " " + this.name.toUpperCase();
     };
 
-    BasePort.prototype.getDataType = function() {
+    BasePort.prototype.getDataType = function () {
       return this.options.datatype;
     };
 
-    BasePort.prototype.getDescription = function() {
+    BasePort.prototype.getSchema = function () {
+      return this.options.schema || null;
+    };
+
+    BasePort.prototype.getDescription = function () {
       return this.options.description;
     };
 
-    BasePort.prototype.attach = function(socket, index) {
+    BasePort.prototype.attach = function (socket, index) {
       if (index == null) {
         index = null;
       }
@@ -7751,9 +7312,9 @@ function hasOwnProperty(obj, prop) {
       return this.emit('attach', socket);
     };
 
-    BasePort.prototype.attachSocket = function() {};
+    BasePort.prototype.attachSocket = function () {};
 
-    BasePort.prototype.detach = function(socket) {
+    BasePort.prototype.detach = function (socket) {
       var index;
       index = this.sockets.indexOf(socket);
       if (index === -1) {
@@ -7767,28 +7328,28 @@ function hasOwnProperty(obj, prop) {
       return this.emit('detach', socket);
     };
 
-    BasePort.prototype.isAddressable = function() {
+    BasePort.prototype.isAddressable = function () {
       if (this.options.addressable) {
         return true;
       }
       return false;
     };
 
-    BasePort.prototype.isBuffered = function() {
+    BasePort.prototype.isBuffered = function () {
       if (this.options.buffered) {
         return true;
       }
       return false;
     };
 
-    BasePort.prototype.isRequired = function() {
+    BasePort.prototype.isRequired = function () {
       if (this.options.required) {
         return true;
       }
       return false;
     };
 
-    BasePort.prototype.isAttached = function(socketId) {
+    BasePort.prototype.isAttached = function (socketId) {
       if (socketId == null) {
         socketId = null;
       }
@@ -7804,7 +7365,7 @@ function hasOwnProperty(obj, prop) {
       return false;
     };
 
-    BasePort.prototype.listAttached = function() {
+    BasePort.prototype.listAttached = function () {
       var attached, i, idx, len, ref, socket;
       attached = [];
       ref = this.sockets;
@@ -7818,22 +7379,22 @@ function hasOwnProperty(obj, prop) {
       return attached;
     };
 
-    BasePort.prototype.isConnected = function(socketId) {
+    BasePort.prototype.isConnected = function (socketId) {
       var connected;
       if (socketId == null) {
         socketId = null;
       }
       if (this.isAddressable()) {
         if (socketId === null) {
-          throw new Error((this.getId()) + ": Socket ID required");
+          throw new Error(this.getId() + ": Socket ID required");
         }
         if (!this.sockets[socketId]) {
-          throw new Error((this.getId()) + ": Socket " + socketId + " not available");
+          throw new Error(this.getId() + ": Socket " + socketId + " not available");
         }
         return this.sockets[socketId].isConnected();
       }
       connected = false;
-      this.sockets.forEach(function(socket) {
+      this.sockets.forEach(function (socket) {
         if (!socket) {
           return;
         }
@@ -7844,33 +7405,41 @@ function hasOwnProperty(obj, prop) {
       return connected;
     };
 
-    BasePort.prototype.canAttach = function() {
+    BasePort.prototype.canAttach = function () {
       return true;
     };
 
     return BasePort;
-
-  })(EventEmitter);
+  }(EventEmitter);
 
   module.exports = BasePort;
-
-}).call(this);
-
+}).call(undefined);
 
 /***/ }),
-/* 22 */
+/* 21 */
 /***/ (function(module, exports, __webpack_require__) {
 
-(function() {
-  var BasePort, IP, OutPort,
-    extend = function(child, parent) { for (var key in parent) { if (hasProp.call(parent, key)) child[key] = parent[key]; } function ctor() { this.constructor = child; } ctor.prototype = parent.prototype; child.prototype = new ctor(); child.__super__ = parent.prototype; return child; },
-    hasProp = {}.hasOwnProperty;
+"use strict";
 
-  BasePort = __webpack_require__(21);
+
+(function () {
+  var BasePort,
+      IP,
+      OutPort,
+      extend = function extend(child, parent) {
+    for (var key in parent) {
+      if (hasProp.call(parent, key)) child[key] = parent[key];
+    }function ctor() {
+      this.constructor = child;
+    }ctor.prototype = parent.prototype;child.prototype = new ctor();child.__super__ = parent.prototype;return child;
+  },
+      hasProp = {}.hasOwnProperty;
+
+  BasePort = __webpack_require__(20);
 
   IP = __webpack_require__(4);
 
-  OutPort = (function(superClass) {
+  OutPort = function (superClass) {
     extend(OutPort, superClass);
 
     function OutPort(options) {
@@ -7878,17 +7447,17 @@ function hasOwnProperty(obj, prop) {
       OutPort.__super__.constructor.call(this, options);
     }
 
-    OutPort.prototype.attach = function(socket, index) {
+    OutPort.prototype.attach = function (socket, index) {
       if (index == null) {
         index = null;
       }
       OutPort.__super__.attach.call(this, socket, index);
-      if (this.isCaching() && (this.cache[index] != null)) {
+      if (this.isCaching() && this.cache[index] != null) {
         return this.send(this.cache[index], index);
       }
     };
 
-    OutPort.prototype.connect = function(socketId) {
+    OutPort.prototype.connect = function (socketId) {
       var i, len, results, socket, sockets;
       if (socketId == null) {
         socketId = null;
@@ -7906,14 +7475,14 @@ function hasOwnProperty(obj, prop) {
       return results;
     };
 
-    OutPort.prototype.beginGroup = function(group, socketId) {
+    OutPort.prototype.beginGroup = function (group, socketId) {
       var sockets;
       if (socketId == null) {
         socketId = null;
       }
       sockets = this.getSockets(socketId);
       this.checkRequired(sockets);
-      return sockets.forEach(function(socket) {
+      return sockets.forEach(function (socket) {
         if (!socket) {
           return;
         }
@@ -7921,7 +7490,7 @@ function hasOwnProperty(obj, prop) {
       });
     };
 
-    OutPort.prototype.send = function(data, socketId) {
+    OutPort.prototype.send = function (data, socketId) {
       var sockets;
       if (socketId == null) {
         socketId = null;
@@ -7931,7 +7500,7 @@ function hasOwnProperty(obj, prop) {
       if (this.isCaching() && data !== this.cache[socketId]) {
         this.cache[socketId] = data;
       }
-      return sockets.forEach(function(socket) {
+      return sockets.forEach(function (socket) {
         if (!socket) {
           return;
         }
@@ -7939,7 +7508,7 @@ function hasOwnProperty(obj, prop) {
       });
     };
 
-    OutPort.prototype.endGroup = function(socketId) {
+    OutPort.prototype.endGroup = function (socketId) {
       var i, len, results, socket, sockets;
       if (socketId == null) {
         socketId = null;
@@ -7957,7 +7526,7 @@ function hasOwnProperty(obj, prop) {
       return results;
     };
 
-    OutPort.prototype.disconnect = function(socketId) {
+    OutPort.prototype.disconnect = function (socketId) {
       var i, len, results, socket, sockets;
       if (socketId == null) {
         socketId = null;
@@ -7975,7 +7544,7 @@ function hasOwnProperty(obj, prop) {
       return results;
     };
 
-    OutPort.prototype.sendIP = function(type, data, options, socketId, autoConnect) {
+    OutPort.prototype.sendIP = function (type, data, options, socketId, autoConnect) {
       var i, ip, len, pristine, ref, socket, sockets;
       if (autoConnect == null) {
         autoConnect = true;
@@ -7988,6 +7557,12 @@ function hasOwnProperty(obj, prop) {
       }
       sockets = this.getSockets(socketId);
       this.checkRequired(sockets);
+      if (ip.datatype === 'all') {
+        ip.datatype = this.getDataType();
+      }
+      if (this.getSchema() && !ip.schema) {
+        ip.schema = this.getSchema();
+      }
       if (this.isCaching() && data !== ((ref = this.cache[socketId]) != null ? ref.data : void 0)) {
         this.cache[socketId] = ip;
       }
@@ -8010,7 +7585,7 @@ function hasOwnProperty(obj, prop) {
       return this;
     };
 
-    OutPort.prototype.openBracket = function(data, options, socketId) {
+    OutPort.prototype.openBracket = function (data, options, socketId) {
       if (data == null) {
         data = null;
       }
@@ -8023,7 +7598,7 @@ function hasOwnProperty(obj, prop) {
       return this.sendIP('openBracket', data, options, socketId);
     };
 
-    OutPort.prototype.data = function(data, options, socketId) {
+    OutPort.prototype.data = function (data, options, socketId) {
       if (options == null) {
         options = {};
       }
@@ -8033,7 +7608,7 @@ function hasOwnProperty(obj, prop) {
       return this.sendIP('data', data, options, socketId);
     };
 
-    OutPort.prototype.closeBracket = function(data, options, socketId) {
+    OutPort.prototype.closeBracket = function (data, options, socketId) {
       if (data == null) {
         data = null;
       }
@@ -8046,16 +7621,16 @@ function hasOwnProperty(obj, prop) {
       return this.sendIP('closeBracket', data, options, socketId);
     };
 
-    OutPort.prototype.checkRequired = function(sockets) {
+    OutPort.prototype.checkRequired = function (sockets) {
       if (sockets.length === 0 && this.isRequired()) {
-        throw new Error((this.getId()) + ": No connections available");
+        throw new Error(this.getId() + ": No connections available");
       }
     };
 
-    OutPort.prototype.getSockets = function(socketId) {
+    OutPort.prototype.getSockets = function (socketId) {
       if (this.isAddressable()) {
         if (socketId === null) {
-          throw new Error((this.getId()) + " Socket ID required");
+          throw new Error(this.getId() + " Socket ID required");
         }
         if (!this.sockets[socketId]) {
           return [];
@@ -8065,7 +7640,7 @@ function hasOwnProperty(obj, prop) {
       return this.sockets;
     };
 
-    OutPort.prototype.isCaching = function() {
+    OutPort.prototype.isCaching = function () {
       if (this.options.caching) {
         return true;
       }
@@ -8073,23 +7648,23 @@ function hasOwnProperty(obj, prop) {
     };
 
     return OutPort;
-
-  })(BasePort);
+  }(BasePort);
 
   module.exports = OutPort;
-
-}).call(this);
-
+}).call(undefined);
 
 /***/ }),
-/* 23 */
+/* 22 */
 /***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
 
 (function (context) {
   var noflo = __webpack_require__(0);
-  var Base = __webpack_require__(24);
+  var Base = __webpack_require__(23);
 
-  var PostMessage = function (options) {
+  var PostMessage = function PostMessage(options) {
     if (!options) {
       options = {};
     }
@@ -8097,9 +7672,7 @@ function hasOwnProperty(obj, prop) {
     if (options.catchExceptions) {
       context.onerror = function (err) {
         if (this.client) {
-          self.send('network', 'error', {
-            message: err.toString()
-          }, {
+          this.send('network', 'error', err, {
             href: this.context ? this.context.href : this.client.location.href
           });
         }
@@ -8110,14 +7683,7 @@ function hasOwnProperty(obj, prop) {
 
     if (!options.defaultPermissions) {
       // The iframe runtime is run on user's own computer, so default to all access allowed
-      options.defaultPermissions = [
-        'protocol:graph',
-        'protocol:component',
-        'protocol:network',
-        'protocol:runtime',
-        'component:setsource',
-        'component:getsource'
-      ];
+      options.defaultPermissions = ['protocol:graph', 'protocol:component', 'protocol:network', 'protocol:runtime', 'component:setsource', 'component:getsource'];
     }
 
     this.prototype.constructor.apply(this, arguments);
@@ -8136,7 +7702,8 @@ function hasOwnProperty(obj, prop) {
     }
     if (payload instanceof Error) {
       payload = {
-        message: payload.toString()
+        message: payload.message,
+        stack: payload.stack
       };
     }
     if (this.context) {
@@ -8187,12 +7754,14 @@ function hasOwnProperty(obj, prop) {
   module.exports = PostMessage;
 })(window);
 
-
 /***/ }),
-/* 24 */
+/* 23 */
 /***/ (function(module, exports, __webpack_require__) {
 
-(function() {
+"use strict";
+
+
+(function () {
   var BaseTransport, debugMessagingReceive, debugMessagingReceivePayload, debugMessagingSend, debugMessagingSendPayload, protocols;
 
   protocols = {
@@ -8210,7 +7779,7 @@ function hasOwnProperty(obj, prop) {
 
   debugMessagingSendPayload = __webpack_require__(3)('noflo-runtime-base:messaging:send:payload');
 
-  BaseTransport = (function() {
+  BaseTransport = function () {
     function BaseTransport(options) {
       var path;
       this.options = options;
@@ -8232,7 +7801,7 @@ function hasOwnProperty(obj, prop) {
           graph: path
         }, this.context);
       }
-      if ((this.options.captureOutput != null) && this.options.captureOutput) {
+      if (this.options.captureOutput != null && this.options.captureOutput) {
         this.startCapture();
       }
       if (!this.options.defaultPermissions) {
@@ -8243,7 +7812,7 @@ function hasOwnProperty(obj, prop) {
       }
     }
 
-    BaseTransport.prototype.canDo = function(capability, secret) {
+    BaseTransport.prototype.canDo = function (capability, secret) {
       var permitted;
       permitted = this.getPermitted(secret);
       if (permitted.indexOf(capability) !== -1) {
@@ -8252,7 +7821,7 @@ function hasOwnProperty(obj, prop) {
       return false;
     };
 
-    BaseTransport.prototype.getPermitted = function(secret) {
+    BaseTransport.prototype.getPermitted = function (secret) {
       if (!secret) {
         return this.options.defaultPermissions;
       }
@@ -8262,14 +7831,14 @@ function hasOwnProperty(obj, prop) {
       return this.options.permissions[secret];
     };
 
-    BaseTransport.prototype.send = function(protocol, topic, payload, context) {
+    BaseTransport.prototype.send = function (protocol, topic, payload, context) {
       debugMessagingSend(protocol + " " + topic);
       return debugMessagingSendPayload(payload);
     };
 
-    BaseTransport.prototype.sendAll = function(protocol, topic, payload, context) {};
+    BaseTransport.prototype.sendAll = function (protocol, topic, payload, context) {};
 
-    BaseTransport.prototype.receive = function(protocol, topic, payload, context) {
+    BaseTransport.prototype.receive = function (protocol, topic, payload, context) {
       if (!payload) {
         payload = {};
       }
@@ -8289,251 +7858,17 @@ function hasOwnProperty(obj, prop) {
     };
 
     return BaseTransport;
-
-  })();
+  }();
 
   module.exports = BaseTransport;
 
-  module.exports.trace = __webpack_require__(100);
+  module.exports.trace = __webpack_require__(101);
 
-  module.exports.direct = __webpack_require__(107);
-
-}).call(this);
-
+  module.exports.direct = __webpack_require__(104);
+}).call(undefined);
 
 /***/ }),
-/* 25 */
-/***/ (function(module, exports, __webpack_require__) {
-
-/* WEBPACK VAR INJECTION */(function(process) {// Copyright Joyent, Inc. and other Node contributors.
-//
-// Permission is hereby granted, free of charge, to any person obtaining a
-// copy of this software and associated documentation files (the
-// "Software"), to deal in the Software without restriction, including
-// without limitation the rights to use, copy, modify, merge, publish,
-// distribute, sublicense, and/or sell copies of the Software, and to permit
-// persons to whom the Software is furnished to do so, subject to the
-// following conditions:
-//
-// The above copyright notice and this permission notice shall be included
-// in all copies or substantial portions of the Software.
-//
-// THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS
-// OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF
-// MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN
-// NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM,
-// DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR
-// OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE
-// USE OR OTHER DEALINGS IN THE SOFTWARE.
-
-// resolves . and .. elements in a path array with directory names there
-// must be no slashes, empty elements, or device names (c:\) in the array
-// (so also no leading and trailing slashes - it does not distinguish
-// relative and absolute paths)
-function normalizeArray(parts, allowAboveRoot) {
-  // if the path tries to go above the root, `up` ends up > 0
-  var up = 0;
-  for (var i = parts.length - 1; i >= 0; i--) {
-    var last = parts[i];
-    if (last === '.') {
-      parts.splice(i, 1);
-    } else if (last === '..') {
-      parts.splice(i, 1);
-      up++;
-    } else if (up) {
-      parts.splice(i, 1);
-      up--;
-    }
-  }
-
-  // if the path is allowed to go above the root, restore leading ..s
-  if (allowAboveRoot) {
-    for (; up--; up) {
-      parts.unshift('..');
-    }
-  }
-
-  return parts;
-}
-
-// Split a filename into [root, dir, basename, ext], unix version
-// 'root' is just a slash, or nothing.
-var splitPathRe =
-    /^(\/?|)([\s\S]*?)((?:\.{1,2}|[^\/]+?|)(\.[^.\/]*|))(?:[\/]*)$/;
-var splitPath = function(filename) {
-  return splitPathRe.exec(filename).slice(1);
-};
-
-// path.resolve([from ...], to)
-// posix version
-exports.resolve = function() {
-  var resolvedPath = '',
-      resolvedAbsolute = false;
-
-  for (var i = arguments.length - 1; i >= -1 && !resolvedAbsolute; i--) {
-    var path = (i >= 0) ? arguments[i] : process.cwd();
-
-    // Skip empty and invalid entries
-    if (typeof path !== 'string') {
-      throw new TypeError('Arguments to path.resolve must be strings');
-    } else if (!path) {
-      continue;
-    }
-
-    resolvedPath = path + '/' + resolvedPath;
-    resolvedAbsolute = path.charAt(0) === '/';
-  }
-
-  // At this point the path should be resolved to a full absolute path, but
-  // handle relative paths to be safe (might happen when process.cwd() fails)
-
-  // Normalize the path
-  resolvedPath = normalizeArray(filter(resolvedPath.split('/'), function(p) {
-    return !!p;
-  }), !resolvedAbsolute).join('/');
-
-  return ((resolvedAbsolute ? '/' : '') + resolvedPath) || '.';
-};
-
-// path.normalize(path)
-// posix version
-exports.normalize = function(path) {
-  var isAbsolute = exports.isAbsolute(path),
-      trailingSlash = substr(path, -1) === '/';
-
-  // Normalize the path
-  path = normalizeArray(filter(path.split('/'), function(p) {
-    return !!p;
-  }), !isAbsolute).join('/');
-
-  if (!path && !isAbsolute) {
-    path = '.';
-  }
-  if (path && trailingSlash) {
-    path += '/';
-  }
-
-  return (isAbsolute ? '/' : '') + path;
-};
-
-// posix version
-exports.isAbsolute = function(path) {
-  return path.charAt(0) === '/';
-};
-
-// posix version
-exports.join = function() {
-  var paths = Array.prototype.slice.call(arguments, 0);
-  return exports.normalize(filter(paths, function(p, index) {
-    if (typeof p !== 'string') {
-      throw new TypeError('Arguments to path.join must be strings');
-    }
-    return p;
-  }).join('/'));
-};
-
-
-// path.relative(from, to)
-// posix version
-exports.relative = function(from, to) {
-  from = exports.resolve(from).substr(1);
-  to = exports.resolve(to).substr(1);
-
-  function trim(arr) {
-    var start = 0;
-    for (; start < arr.length; start++) {
-      if (arr[start] !== '') break;
-    }
-
-    var end = arr.length - 1;
-    for (; end >= 0; end--) {
-      if (arr[end] !== '') break;
-    }
-
-    if (start > end) return [];
-    return arr.slice(start, end - start + 1);
-  }
-
-  var fromParts = trim(from.split('/'));
-  var toParts = trim(to.split('/'));
-
-  var length = Math.min(fromParts.length, toParts.length);
-  var samePartsLength = length;
-  for (var i = 0; i < length; i++) {
-    if (fromParts[i] !== toParts[i]) {
-      samePartsLength = i;
-      break;
-    }
-  }
-
-  var outputParts = [];
-  for (var i = samePartsLength; i < fromParts.length; i++) {
-    outputParts.push('..');
-  }
-
-  outputParts = outputParts.concat(toParts.slice(samePartsLength));
-
-  return outputParts.join('/');
-};
-
-exports.sep = '/';
-exports.delimiter = ':';
-
-exports.dirname = function(path) {
-  var result = splitPath(path),
-      root = result[0],
-      dir = result[1];
-
-  if (!root && !dir) {
-    // No dirname whatsoever
-    return '.';
-  }
-
-  if (dir) {
-    // It has a dirname, strip trailing slash
-    dir = dir.substr(0, dir.length - 1);
-  }
-
-  return root + dir;
-};
-
-
-exports.basename = function(path, ext) {
-  var f = splitPath(path)[2];
-  // TODO: make this comparison case-insensitive on windows?
-  if (ext && f.substr(-1 * ext.length) === ext) {
-    f = f.substr(0, f.length - ext.length);
-  }
-  return f;
-};
-
-
-exports.extname = function(path) {
-  return splitPath(path)[3];
-};
-
-function filter (xs, f) {
-    if (xs.filter) return xs.filter(f);
-    var res = [];
-    for (var i = 0; i < xs.length; i++) {
-        if (f(xs[i], i, xs)) res.push(xs[i]);
-    }
-    return res;
-}
-
-// String.prototype.substr - negative index don't work in IE8
-var substr = 'ab'.substr(-1) === 'b'
-    ? function (str, start, len) { return str.substr(start, len) }
-    : function (str, start, len) {
-        if (start < 0) start = str.length + start;
-        return str.substr(start, len);
-    }
-;
-
-/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(1)))
-
-/***/ }),
-/* 26 */
+/* 24 */
 /***/ (function(module, exports, __webpack_require__) {
 
 var exported = {
@@ -8552,21 +7887,35 @@ if (window) {
 
 
 /***/ }),
-/* 27 */
+/* 25 */
 /***/ (function(module, exports, __webpack_require__) {
 
-(function() {
-  var EventEmitter, Graph, clone, mergeResolveTheirsNaive, platform, resetGraph,
-    extend = function(child, parent) { for (var key in parent) { if (hasProp.call(parent, key)) child[key] = parent[key]; } function ctor() { this.constructor = child; } ctor.prototype = parent.prototype; child.prototype = new ctor(); child.__super__ = parent.prototype; return child; },
-    hasProp = {}.hasOwnProperty;
+"use strict";
 
-  EventEmitter = __webpack_require__(2).EventEmitter;
+
+(function () {
+  var EventEmitter,
+      Graph,
+      clone,
+      mergeResolveTheirsNaive,
+      platform,
+      resetGraph,
+      extend = function extend(child, parent) {
+    for (var key in parent) {
+      if (hasProp.call(parent, key)) child[key] = parent[key];
+    }function ctor() {
+      this.constructor = child;
+    }ctor.prototype = parent.prototype;child.prototype = new ctor();child.__super__ = parent.prototype;return child;
+  },
+      hasProp = {}.hasOwnProperty;
+
+  EventEmitter = __webpack_require__(1).EventEmitter;
 
   clone = __webpack_require__(13);
 
-  platform = __webpack_require__(31);
+  platform = __webpack_require__(29);
 
-  Graph = (function(superClass) {
+  Graph = function (superClass) {
     extend(Graph, superClass);
 
     Graph.prototype.name = '';
@@ -8609,7 +7958,7 @@ if (window) {
       this.caseSensitive = options.caseSensitive || false;
     }
 
-    Graph.prototype.getPortName = function(port) {
+    Graph.prototype.getPortName = function (port) {
       if (this.caseSensitive) {
         return port;
       } else {
@@ -8617,7 +7966,7 @@ if (window) {
       }
     };
 
-    Graph.prototype.startTransaction = function(id, metadata) {
+    Graph.prototype.startTransaction = function (id, metadata) {
       if (this.transaction.id) {
         throw Error("Nested transactions not supported");
       }
@@ -8626,7 +7975,7 @@ if (window) {
       return this.emit('startTransaction', id, metadata);
     };
 
-    Graph.prototype.endTransaction = function(id, metadata) {
+    Graph.prototype.endTransaction = function (id, metadata) {
       if (!this.transaction.id) {
         throw Error("Attempted to end non-existing transaction");
       }
@@ -8635,7 +7984,7 @@ if (window) {
       return this.emit('endTransaction', id, metadata);
     };
 
-    Graph.prototype.checkTransactionStart = function() {
+    Graph.prototype.checkTransactionStart = function () {
       if (!this.transaction.id) {
         return this.startTransaction('implicit');
       } else if (this.transaction.id === 'implicit') {
@@ -8643,7 +7992,7 @@ if (window) {
       }
     };
 
-    Graph.prototype.checkTransactionEnd = function() {
+    Graph.prototype.checkTransactionEnd = function () {
       if (this.transaction.id === 'implicit') {
         this.transaction.depth -= 1;
       }
@@ -8652,7 +8001,7 @@ if (window) {
       }
     };
 
-    Graph.prototype.setProperties = function(properties) {
+    Graph.prototype.setProperties = function (properties) {
       var before, item, val;
       this.checkTransactionStart();
       before = clone(this.properties);
@@ -8664,7 +8013,7 @@ if (window) {
       return this.checkTransactionEnd();
     };
 
-    Graph.prototype.addExport = function(publicPort, nodeKey, portKey, metadata) {
+    Graph.prototype.addExport = function (publicPort, nodeKey, portKey, metadata) {
       var exported;
       if (metadata == null) {
         metadata = {
@@ -8688,7 +8037,7 @@ if (window) {
       return this.checkTransactionEnd();
     };
 
-    Graph.prototype.removeExport = function(publicPort) {
+    Graph.prototype.removeExport = function (publicPort) {
       var exported, found, i, idx, len, ref;
       platform.deprecated('fbp-graph.Graph exports is deprecated: please use specific inport or outport instead');
       publicPort = this.getPortName(publicPort);
@@ -8709,7 +8058,7 @@ if (window) {
       return this.checkTransactionEnd();
     };
 
-    Graph.prototype.addInport = function(publicPort, nodeKey, portKey, metadata) {
+    Graph.prototype.addInport = function (publicPort, nodeKey, portKey, metadata) {
       if (!this.getNode(nodeKey)) {
         return;
       }
@@ -8724,7 +8073,7 @@ if (window) {
       return this.checkTransactionEnd();
     };
 
-    Graph.prototype.removeInport = function(publicPort) {
+    Graph.prototype.removeInport = function (publicPort) {
       var port;
       publicPort = this.getPortName(publicPort);
       if (!this.inports[publicPort]) {
@@ -8738,7 +8087,7 @@ if (window) {
       return this.checkTransactionEnd();
     };
 
-    Graph.prototype.renameInport = function(oldPort, newPort) {
+    Graph.prototype.renameInport = function (oldPort, newPort) {
       oldPort = this.getPortName(oldPort);
       newPort = this.getPortName(newPort);
       if (!this.inports[oldPort]) {
@@ -8751,7 +8100,7 @@ if (window) {
       return this.checkTransactionEnd();
     };
 
-    Graph.prototype.setInportMetadata = function(publicPort, metadata) {
+    Graph.prototype.setInportMetadata = function (publicPort, metadata) {
       var before, item, val;
       publicPort = this.getPortName(publicPort);
       if (!this.inports[publicPort]) {
@@ -8774,7 +8123,7 @@ if (window) {
       return this.checkTransactionEnd();
     };
 
-    Graph.prototype.addOutport = function(publicPort, nodeKey, portKey, metadata) {
+    Graph.prototype.addOutport = function (publicPort, nodeKey, portKey, metadata) {
       if (!this.getNode(nodeKey)) {
         return;
       }
@@ -8789,7 +8138,7 @@ if (window) {
       return this.checkTransactionEnd();
     };
 
-    Graph.prototype.removeOutport = function(publicPort) {
+    Graph.prototype.removeOutport = function (publicPort) {
       var port;
       publicPort = this.getPortName(publicPort);
       if (!this.outports[publicPort]) {
@@ -8803,7 +8152,7 @@ if (window) {
       return this.checkTransactionEnd();
     };
 
-    Graph.prototype.renameOutport = function(oldPort, newPort) {
+    Graph.prototype.renameOutport = function (oldPort, newPort) {
       oldPort = this.getPortName(oldPort);
       newPort = this.getPortName(newPort);
       if (!this.outports[oldPort]) {
@@ -8816,7 +8165,7 @@ if (window) {
       return this.checkTransactionEnd();
     };
 
-    Graph.prototype.setOutportMetadata = function(publicPort, metadata) {
+    Graph.prototype.setOutportMetadata = function (publicPort, metadata) {
       var before, item, val;
       publicPort = this.getPortName(publicPort);
       if (!this.outports[publicPort]) {
@@ -8839,7 +8188,7 @@ if (window) {
       return this.checkTransactionEnd();
     };
 
-    Graph.prototype.addGroup = function(group, nodes, metadata) {
+    Graph.prototype.addGroup = function (group, nodes, metadata) {
       var g;
       this.checkTransactionStart();
       g = {
@@ -8852,7 +8201,7 @@ if (window) {
       return this.checkTransactionEnd();
     };
 
-    Graph.prototype.renameGroup = function(oldName, newName) {
+    Graph.prototype.renameGroup = function (oldName, newName) {
       var group, i, len, ref;
       this.checkTransactionStart();
       ref = this.groups;
@@ -8870,7 +8219,7 @@ if (window) {
       return this.checkTransactionEnd();
     };
 
-    Graph.prototype.removeGroup = function(groupName) {
+    Graph.prototype.removeGroup = function (groupName) {
       var group, i, len, ref;
       this.checkTransactionStart();
       ref = this.groups;
@@ -8889,7 +8238,7 @@ if (window) {
       return this.checkTransactionEnd();
     };
 
-    Graph.prototype.setGroupMetadata = function(groupName, metadata) {
+    Graph.prototype.setGroupMetadata = function (groupName, metadata) {
       var before, group, i, item, len, ref, val;
       this.checkTransactionStart();
       ref = this.groups;
@@ -8915,7 +8264,7 @@ if (window) {
       return this.checkTransactionEnd();
     };
 
-    Graph.prototype.addNode = function(id, component, metadata) {
+    Graph.prototype.addNode = function (id, component, metadata) {
       var node;
       this.checkTransactionStart();
       if (!metadata) {
@@ -8932,7 +8281,7 @@ if (window) {
       return node;
     };
 
-    Graph.prototype.removeNode = function(id) {
+    Graph.prototype.removeNode = function (id) {
       var edge, exported, group, i, index, initializer, j, k, l, len, len1, len2, len3, len4, len5, len6, len7, len8, m, n, node, o, p, priv, pub, q, ref, ref1, ref2, ref3, ref4, ref5, toRemove;
       node = this.getNode(id);
       if (!node) {
@@ -8943,7 +8292,7 @@ if (window) {
       ref = this.edges;
       for (i = 0, len = ref.length; i < len; i++) {
         edge = ref[i];
-        if ((edge.from.node === node.id) || (edge.to.node === node.id)) {
+        if (edge.from.node === node.id || edge.to.node === node.id) {
           toRemove.push(edge);
         }
       }
@@ -9019,7 +8368,7 @@ if (window) {
       return this.checkTransactionEnd();
     };
 
-    Graph.prototype.getNode = function(id) {
+    Graph.prototype.getNode = function (id) {
       var i, len, node, ref;
       ref = this.nodes;
       for (i = 0, len = ref.length; i < len; i++) {
@@ -9034,7 +8383,7 @@ if (window) {
       return null;
     };
 
-    Graph.prototype.renameNode = function(oldId, newId) {
+    Graph.prototype.renameNode = function (oldId, newId) {
       var edge, exported, group, i, iip, index, j, k, l, len, len1, len2, len3, node, priv, pub, ref, ref1, ref2, ref3, ref4, ref5;
       this.checkTransactionStart();
       node = this.getNode(oldId);
@@ -9102,7 +8451,7 @@ if (window) {
       return this.checkTransactionEnd();
     };
 
-    Graph.prototype.setNodeMetadata = function(id, metadata) {
+    Graph.prototype.setNodeMetadata = function (id, metadata) {
       var before, item, node, val;
       node = this.getNode(id);
       if (!node) {
@@ -9125,7 +8474,7 @@ if (window) {
       return this.checkTransactionEnd();
     };
 
-    Graph.prototype.addEdge = function(outNode, outPort, inNode, inPort, metadata) {
+    Graph.prototype.addEdge = function (outNode, outPort, inNode, inPort, metadata) {
       var edge, i, len, ref;
       if (metadata == null) {
         metadata = {};
@@ -9163,7 +8512,7 @@ if (window) {
       return edge;
     };
 
-    Graph.prototype.addEdgeIndex = function(outNode, outPort, outIndex, inNode, inPort, inIndex, metadata) {
+    Graph.prototype.addEdgeIndex = function (outNode, outPort, outIndex, inNode, inPort, inIndex, metadata) {
       var edge;
       if (metadata == null) {
         metadata = {};
@@ -9205,7 +8554,7 @@ if (window) {
       return edge;
     };
 
-    Graph.prototype.removeEdge = function(node, port, node2, port2) {
+    Graph.prototype.removeEdge = function (node, port, node2, port2) {
       var edge, i, index, j, k, len, len1, len2, ref, ref1, toKeep, toRemove;
       this.checkTransactionStart();
       port = this.getPortName(port);
@@ -9227,7 +8576,7 @@ if (window) {
         ref1 = this.edges;
         for (index = j = 0, len1 = ref1.length; j < len1; index = ++j) {
           edge = ref1[index];
-          if ((edge.from.node === node && edge.from.port === port) || (edge.to.node === node && edge.to.port === port)) {
+          if (edge.from.node === node && edge.from.port === port || edge.to.node === node && edge.to.port === port) {
             this.setEdgeMetadata(edge.from.node, edge.from.port, edge.to.node, edge.to.port, {});
             toRemove.push(edge);
           } else {
@@ -9243,7 +8592,7 @@ if (window) {
       return this.checkTransactionEnd();
     };
 
-    Graph.prototype.getEdge = function(node, port, node2, port2) {
+    Graph.prototype.getEdge = function (node, port, node2, port2) {
       var edge, i, index, len, ref;
       port = this.getPortName(port);
       port2 = this.getPortName(port2);
@@ -9262,7 +8611,7 @@ if (window) {
       return null;
     };
 
-    Graph.prototype.setEdgeMetadata = function(node, port, node2, port2, metadata) {
+    Graph.prototype.setEdgeMetadata = function (node, port, node2, port2, metadata) {
       var before, edge, item, val;
       edge = this.getEdge(node, port, node2, port2);
       if (!edge) {
@@ -9285,7 +8634,7 @@ if (window) {
       return this.checkTransactionEnd();
     };
 
-    Graph.prototype.addInitial = function(data, node, port, metadata) {
+    Graph.prototype.addInitial = function (data, node, port, metadata) {
       var initializer;
       if (!this.getNode(node)) {
         return;
@@ -9308,7 +8657,7 @@ if (window) {
       return initializer;
     };
 
-    Graph.prototype.addInitialIndex = function(data, node, port, index, metadata) {
+    Graph.prototype.addInitialIndex = function (data, node, port, index, metadata) {
       var initializer;
       if (!this.getNode(node)) {
         return;
@@ -9335,7 +8684,7 @@ if (window) {
       return initializer;
     };
 
-    Graph.prototype.addGraphInitial = function(data, node, metadata) {
+    Graph.prototype.addGraphInitial = function (data, node, metadata) {
       var inport;
       inport = this.inports[node];
       if (!inport) {
@@ -9344,7 +8693,7 @@ if (window) {
       return this.addInitial(data, inport.process, inport.port, metadata);
     };
 
-    Graph.prototype.addGraphInitialIndex = function(data, node, index, metadata) {
+    Graph.prototype.addGraphInitialIndex = function (data, node, index, metadata) {
       var inport;
       inport = this.inports[node];
       if (!inport) {
@@ -9353,7 +8702,7 @@ if (window) {
       return this.addInitialIndex(data, inport.process, inport.port, index, metadata);
     };
 
-    Graph.prototype.removeInitial = function(node, port) {
+    Graph.prototype.removeInitial = function (node, port) {
       var edge, i, index, j, len, len1, ref, toKeep, toRemove;
       port = this.getPortName(port);
       this.checkTransactionStart();
@@ -9376,7 +8725,7 @@ if (window) {
       return this.checkTransactionEnd();
     };
 
-    Graph.prototype.removeGraphInitial = function(node) {
+    Graph.prototype.removeGraphInitial = function (node) {
       var inport;
       inport = this.inports[node];
       if (!inport) {
@@ -9385,19 +8734,19 @@ if (window) {
       return this.removeInitial(inport.process, inport.port);
     };
 
-    Graph.prototype.toDOT = function() {
+    Graph.prototype.toDOT = function () {
       var cleanID, cleanPort, data, dot, edge, i, id, initializer, j, k, len, len1, len2, node, ref, ref1, ref2;
-      cleanID = function(id) {
+      cleanID = function cleanID(id) {
         return id.replace(/\s*/g, "");
       };
-      cleanPort = function(port) {
+      cleanPort = function cleanPort(port) {
         return port.replace(/\./g, "");
       };
       dot = "digraph {\n";
       ref = this.nodes;
       for (i = 0, len = ref.length; i < len; i++) {
         node = ref[i];
-        dot += "    " + (cleanID(node.id)) + " [label=" + node.id + " shape=box]\n";
+        dot += "    " + cleanID(node.id) + " [label=" + node.id + " shape=box]\n";
       }
       ref1 = this.initializers;
       for (id = j = 0, len1 = ref1.length; j < len1; id = ++j) {
@@ -9408,18 +8757,18 @@ if (window) {
           data = initializer.from.data;
         }
         dot += "    data" + id + " [label=\"'" + data + "'\" shape=plaintext]\n";
-        dot += "    data" + id + " -> " + (cleanID(initializer.to.node)) + "[headlabel=" + (cleanPort(initializer.to.port)) + " labelfontcolor=blue labelfontsize=8.0]\n";
+        dot += "    data" + id + " -> " + cleanID(initializer.to.node) + "[headlabel=" + cleanPort(initializer.to.port) + " labelfontcolor=blue labelfontsize=8.0]\n";
       }
       ref2 = this.edges;
       for (k = 0, len2 = ref2.length; k < len2; k++) {
         edge = ref2[k];
-        dot += "    " + (cleanID(edge.from.node)) + " -> " + (cleanID(edge.to.node)) + "[taillabel=" + (cleanPort(edge.from.port)) + " headlabel=" + (cleanPort(edge.to.port)) + " labelfontcolor=blue labelfontsize=8.0]\n";
+        dot += "    " + cleanID(edge.from.node) + " -> " + cleanID(edge.to.node) + "[taillabel=" + cleanPort(edge.from.port) + " headlabel=" + cleanPort(edge.to.port) + " labelfontcolor=blue labelfontsize=8.0]\n";
       }
       dot += "}";
       return dot;
     };
 
-    Graph.prototype.toYUML = function() {
+    Graph.prototype.toYUML = function () {
       var edge, i, initializer, j, len, len1, ref, ref1, yuml;
       yuml = [];
       ref = this.initializers;
@@ -9435,7 +8784,7 @@ if (window) {
       return yuml.join(",");
     };
 
-    Graph.prototype.toJSON = function() {
+    Graph.prototype.toJSON = function () {
       var connection, edge, exported, group, groupData, i, initializer, j, json, k, l, len, len1, len2, len3, len4, m, node, priv, property, pub, ref, ref1, ref2, ref3, ref4, ref5, ref6, ref7, value;
       json = {
         caseSensitive: this.caseSensitive,
@@ -9529,13 +8878,13 @@ if (window) {
       return json;
     };
 
-    Graph.prototype.save = function(file, callback) {
+    Graph.prototype.save = function (file, callback) {
       var json;
       if (platform.isBrowser()) {
         return callback(new Error("Saving graphs not supported on browser"));
       }
       json = JSON.stringify(this.toJSON(), null, 4);
-      return __webpack_require__(6).writeFile(file + ".json", json, "utf-8", function(err, data) {
+      return __webpack_require__(9).writeFile(file + ".json", json, "utf-8", function (err, data) {
         if (err) {
           throw err;
         }
@@ -9544,16 +8893,15 @@ if (window) {
     };
 
     return Graph;
-
-  })(EventEmitter);
+  }(EventEmitter);
 
   exports.Graph = Graph;
 
-  exports.createGraph = function(name, options) {
+  exports.createGraph = function (name, options) {
     return new Graph(name, options);
   };
 
-  exports.loadJSON = function(definition, callback, metadata) {
+  exports.loadJSON = function (definition, callback, metadata) {
     var caseSensitive, conn, def, exported, graph, group, i, id, j, k, len, len1, len2, portId, priv, processId, properties, property, pub, ref, ref1, ref2, ref3, ref4, ref5, ref6, split, value;
     if (metadata == null) {
       metadata = {};
@@ -9659,7 +9007,7 @@ if (window) {
     return callback(null, graph);
   };
 
-  exports.loadFBP = function(fbpData, callback, metadata, caseSensitive) {
+  exports.loadFBP = function (fbpData, callback, metadata, caseSensitive) {
     var definition, e, error;
     if (metadata == null) {
       metadata = {};
@@ -9668,7 +9016,7 @@ if (window) {
       caseSensitive = false;
     }
     try {
-      definition = __webpack_require__(32).parse(fbpData, {
+      definition = __webpack_require__(30).parse(fbpData, {
         caseSensitive: caseSensitive
       });
     } catch (error) {
@@ -9678,10 +9026,10 @@ if (window) {
     return exports.loadJSON(definition, callback, metadata);
   };
 
-  exports.loadHTTP = function(url, callback) {
+  exports.loadHTTP = function (url, callback) {
     var req;
-    req = new XMLHttpRequest;
-    req.onreadystatechange = function() {
+    req = new XMLHttpRequest();
+    req.onreadystatechange = function () {
       if (req.readyState !== 4) {
         return;
       }
@@ -9694,7 +9042,7 @@ if (window) {
     return req.send();
   };
 
-  exports.loadFile = function(file, callback, metadata, caseSensitive) {
+  exports.loadFile = function (file, callback, metadata, caseSensitive) {
     if (metadata == null) {
       metadata = {};
     }
@@ -9702,7 +9050,7 @@ if (window) {
       caseSensitive = false;
     }
     if (platform.isBrowser()) {
-      exports.loadHTTP(file, function(err, data) {
+      exports.loadHTTP(file, function (err, data) {
         var definition;
         if (err) {
           return callback(err);
@@ -9715,7 +9063,7 @@ if (window) {
       });
       return;
     }
-    return __webpack_require__(6).readFile(file, "utf-8", function(err, data) {
+    return __webpack_require__(9).readFile(file, "utf-8", function (err, data) {
       var definition;
       if (err) {
         return callback(err);
@@ -9728,9 +9076,9 @@ if (window) {
     });
   };
 
-  resetGraph = function(graph) {
+  resetGraph = function resetGraph(graph) {
     var edge, exp, group, i, iip, j, k, l, len, len1, len2, len3, len4, m, node, port, ref, ref1, ref2, ref3, ref4, ref5, ref6, results, v;
-    ref = (clone(graph.groups)).reverse();
+    ref = clone(graph.groups).reverse();
     for (i = 0, len = ref.length; i < len; i++) {
       group = ref[i];
       if (group != null) {
@@ -9753,17 +9101,17 @@ if (window) {
       graph.removeExport(exp["public"]);
     }
     graph.setProperties({});
-    ref4 = (clone(graph.initializers)).reverse();
+    ref4 = clone(graph.initializers).reverse();
     for (k = 0, len2 = ref4.length; k < len2; k++) {
       iip = ref4[k];
       graph.removeInitial(iip.to.node, iip.to.port);
     }
-    ref5 = (clone(graph.edges)).reverse();
+    ref5 = clone(graph.edges).reverse();
     for (l = 0, len3 = ref5.length; l < len3; l++) {
       edge = ref5[l];
       graph.removeEdge(edge.from.node, edge.from.port, edge.to.node, edge.to.port);
     }
-    ref6 = (clone(graph.nodes)).reverse();
+    ref6 = clone(graph.nodes).reverse();
     results = [];
     for (m = 0, len4 = ref6.length; m < len4; m++) {
       node = ref6[m];
@@ -9772,7 +9120,7 @@ if (window) {
     return results;
   };
 
-  mergeResolveTheirsNaive = function(base, to) {
+  mergeResolveTheirsNaive = function mergeResolveTheirsNaive(base, to) {
     var edge, exp, group, i, iip, j, k, l, len, len1, len2, len3, len4, m, node, priv, pub, ref, ref1, ref2, ref3, ref4, ref5, ref6, results;
     resetGraph(base);
     ref = to.nodes;
@@ -9815,7 +9163,7 @@ if (window) {
     return results;
   };
 
-  exports.equivalent = function(a, b, options) {
+  exports.equivalent = function (a, b, options) {
     var A, B;
     if (options == null) {
       options = {};
@@ -9826,12 +9174,10 @@ if (window) {
   };
 
   exports.mergeResolveTheirs = mergeResolveTheirsNaive;
-
-}).call(this);
-
+}).call(undefined);
 
 /***/ }),
-/* 28 */
+/* 26 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -9851,68 +9197,102 @@ for (var i = 0, len = code.length; i < len; ++i) {
   revLookup[code.charCodeAt(i)] = i
 }
 
+// Support decoding URL-safe base64 strings, as Node.js does.
+// See: https://en.wikipedia.org/wiki/Base64#URL_applications
 revLookup['-'.charCodeAt(0)] = 62
 revLookup['_'.charCodeAt(0)] = 63
 
-function placeHoldersCount (b64) {
+function getLens (b64) {
   var len = b64.length
+
   if (len % 4 > 0) {
     throw new Error('Invalid string. Length must be a multiple of 4')
   }
 
-  // the number of equal signs (place holders)
-  // if there are two placeholders, than the two characters before it
-  // represent one byte
-  // if there is only one, then the three characters before it represent 2 bytes
-  // this is just a cheap hack to not do indexOf twice
-  return b64[len - 2] === '=' ? 2 : b64[len - 1] === '=' ? 1 : 0
+  // Trim off extra bytes after placeholder bytes are found
+  // See: https://github.com/beatgammit/base64-js/issues/42
+  var validLen = b64.indexOf('=')
+  if (validLen === -1) validLen = len
+
+  var placeHoldersLen = validLen === len
+    ? 0
+    : 4 - (validLen % 4)
+
+  return [validLen, placeHoldersLen]
 }
 
+// base64 is 4/3 + up to two characters of the original data
 function byteLength (b64) {
-  // base64 is 4/3 + up to two characters of the original data
-  return (b64.length * 3 / 4) - placeHoldersCount(b64)
+  var lens = getLens(b64)
+  var validLen = lens[0]
+  var placeHoldersLen = lens[1]
+  return ((validLen + placeHoldersLen) * 3 / 4) - placeHoldersLen
+}
+
+function _byteLength (b64, validLen, placeHoldersLen) {
+  return ((validLen + placeHoldersLen) * 3 / 4) - placeHoldersLen
 }
 
 function toByteArray (b64) {
-  var i, l, tmp, placeHolders, arr
-  var len = b64.length
-  placeHolders = placeHoldersCount(b64)
+  var tmp
+  var lens = getLens(b64)
+  var validLen = lens[0]
+  var placeHoldersLen = lens[1]
 
-  arr = new Arr((len * 3 / 4) - placeHolders)
+  var arr = new Arr(_byteLength(b64, validLen, placeHoldersLen))
+
+  var curByte = 0
 
   // if there are placeholders, only get up to the last complete 4 chars
-  l = placeHolders > 0 ? len - 4 : len
+  var len = placeHoldersLen > 0
+    ? validLen - 4
+    : validLen
 
-  var L = 0
-
-  for (i = 0; i < l; i += 4) {
-    tmp = (revLookup[b64.charCodeAt(i)] << 18) | (revLookup[b64.charCodeAt(i + 1)] << 12) | (revLookup[b64.charCodeAt(i + 2)] << 6) | revLookup[b64.charCodeAt(i + 3)]
-    arr[L++] = (tmp >> 16) & 0xFF
-    arr[L++] = (tmp >> 8) & 0xFF
-    arr[L++] = tmp & 0xFF
+  for (var i = 0; i < len; i += 4) {
+    tmp =
+      (revLookup[b64.charCodeAt(i)] << 18) |
+      (revLookup[b64.charCodeAt(i + 1)] << 12) |
+      (revLookup[b64.charCodeAt(i + 2)] << 6) |
+      revLookup[b64.charCodeAt(i + 3)]
+    arr[curByte++] = (tmp >> 16) & 0xFF
+    arr[curByte++] = (tmp >> 8) & 0xFF
+    arr[curByte++] = tmp & 0xFF
   }
 
-  if (placeHolders === 2) {
-    tmp = (revLookup[b64.charCodeAt(i)] << 2) | (revLookup[b64.charCodeAt(i + 1)] >> 4)
-    arr[L++] = tmp & 0xFF
-  } else if (placeHolders === 1) {
-    tmp = (revLookup[b64.charCodeAt(i)] << 10) | (revLookup[b64.charCodeAt(i + 1)] << 4) | (revLookup[b64.charCodeAt(i + 2)] >> 2)
-    arr[L++] = (tmp >> 8) & 0xFF
-    arr[L++] = tmp & 0xFF
+  if (placeHoldersLen === 2) {
+    tmp =
+      (revLookup[b64.charCodeAt(i)] << 2) |
+      (revLookup[b64.charCodeAt(i + 1)] >> 4)
+    arr[curByte++] = tmp & 0xFF
+  }
+
+  if (placeHoldersLen === 1) {
+    tmp =
+      (revLookup[b64.charCodeAt(i)] << 10) |
+      (revLookup[b64.charCodeAt(i + 1)] << 4) |
+      (revLookup[b64.charCodeAt(i + 2)] >> 2)
+    arr[curByte++] = (tmp >> 8) & 0xFF
+    arr[curByte++] = tmp & 0xFF
   }
 
   return arr
 }
 
 function tripletToBase64 (num) {
-  return lookup[num >> 18 & 0x3F] + lookup[num >> 12 & 0x3F] + lookup[num >> 6 & 0x3F] + lookup[num & 0x3F]
+  return lookup[num >> 18 & 0x3F] +
+    lookup[num >> 12 & 0x3F] +
+    lookup[num >> 6 & 0x3F] +
+    lookup[num & 0x3F]
 }
 
 function encodeChunk (uint8, start, end) {
   var tmp
   var output = []
   for (var i = start; i < end; i += 3) {
-    tmp = (uint8[i] << 16) + (uint8[i + 1] << 8) + (uint8[i + 2])
+    tmp =
+      ((uint8[i] << 16) & 0xFF0000) +
+      ((uint8[i + 1] << 8) & 0xFF00) +
+      (uint8[i + 2] & 0xFF)
     output.push(tripletToBase64(tmp))
   }
   return output.join('')
@@ -9922,42 +9302,45 @@ function fromByteArray (uint8) {
   var tmp
   var len = uint8.length
   var extraBytes = len % 3 // if we have 1 byte left, pad 2 bytes
-  var output = ''
   var parts = []
   var maxChunkLength = 16383 // must be multiple of 3
 
   // go through the array every three bytes, we'll deal with trailing stuff later
   for (var i = 0, len2 = len - extraBytes; i < len2; i += maxChunkLength) {
-    parts.push(encodeChunk(uint8, i, (i + maxChunkLength) > len2 ? len2 : (i + maxChunkLength)))
+    parts.push(encodeChunk(
+      uint8, i, (i + maxChunkLength) > len2 ? len2 : (i + maxChunkLength)
+    ))
   }
 
   // pad the end with zeros, but make sure to not forget the extra bytes
   if (extraBytes === 1) {
     tmp = uint8[len - 1]
-    output += lookup[tmp >> 2]
-    output += lookup[(tmp << 4) & 0x3F]
-    output += '=='
+    parts.push(
+      lookup[tmp >> 2] +
+      lookup[(tmp << 4) & 0x3F] +
+      '=='
+    )
   } else if (extraBytes === 2) {
-    tmp = (uint8[len - 2] << 8) + (uint8[len - 1])
-    output += lookup[tmp >> 10]
-    output += lookup[(tmp >> 4) & 0x3F]
-    output += lookup[(tmp << 2) & 0x3F]
-    output += '='
+    tmp = (uint8[len - 2] << 8) + uint8[len - 1]
+    parts.push(
+      lookup[tmp >> 10] +
+      lookup[(tmp >> 4) & 0x3F] +
+      lookup[(tmp << 2) & 0x3F] +
+      '='
+    )
   }
-
-  parts.push(output)
 
   return parts.join('')
 }
 
 
 /***/ }),
-/* 29 */
+/* 27 */
 /***/ (function(module, exports) {
 
 exports.read = function (buffer, offset, isLE, mLen, nBytes) {
   var e, m
-  var eLen = nBytes * 8 - mLen - 1
+  var eLen = (nBytes * 8) - mLen - 1
   var eMax = (1 << eLen) - 1
   var eBias = eMax >> 1
   var nBits = -7
@@ -9970,12 +9353,12 @@ exports.read = function (buffer, offset, isLE, mLen, nBytes) {
   e = s & ((1 << (-nBits)) - 1)
   s >>= (-nBits)
   nBits += eLen
-  for (; nBits > 0; e = e * 256 + buffer[offset + i], i += d, nBits -= 8) {}
+  for (; nBits > 0; e = (e * 256) + buffer[offset + i], i += d, nBits -= 8) {}
 
   m = e & ((1 << (-nBits)) - 1)
   e >>= (-nBits)
   nBits += mLen
-  for (; nBits > 0; m = m * 256 + buffer[offset + i], i += d, nBits -= 8) {}
+  for (; nBits > 0; m = (m * 256) + buffer[offset + i], i += d, nBits -= 8) {}
 
   if (e === 0) {
     e = 1 - eBias
@@ -9990,7 +9373,7 @@ exports.read = function (buffer, offset, isLE, mLen, nBytes) {
 
 exports.write = function (buffer, value, offset, isLE, mLen, nBytes) {
   var e, m, c
-  var eLen = nBytes * 8 - mLen - 1
+  var eLen = (nBytes * 8) - mLen - 1
   var eMax = (1 << eLen) - 1
   var eBias = eMax >> 1
   var rt = (mLen === 23 ? Math.pow(2, -24) - Math.pow(2, -77) : 0)
@@ -10023,7 +9406,7 @@ exports.write = function (buffer, value, offset, isLE, mLen, nBytes) {
       m = 0
       e = eMax
     } else if (e + eBias >= 1) {
-      m = (value * c - 1) * Math.pow(2, mLen)
+      m = ((value * c) - 1) * Math.pow(2, mLen)
       e = e + eBias
     } else {
       m = value * Math.pow(2, eBias - 1) * Math.pow(2, mLen)
@@ -10042,7 +9425,7 @@ exports.write = function (buffer, value, offset, isLE, mLen, nBytes) {
 
 
 /***/ }),
-/* 30 */
+/* 28 */
 /***/ (function(module, exports) {
 
 var toString = {}.toString;
@@ -10053,18 +9436,21 @@ module.exports = Array.isArray || function (arr) {
 
 
 /***/ }),
-/* 31 */
+/* 29 */
 /***/ (function(module, exports, __webpack_require__) {
 
-/* WEBPACK VAR INJECTION */(function(process) {(function() {
-  exports.isBrowser = function() {
+"use strict";
+/* WEBPACK VAR INJECTION */(function(process) {
+
+(function () {
+  exports.isBrowser = function () {
     if (typeof process !== 'undefined' && process.execPath && process.execPath.match(/node|iojs/)) {
       return false;
     }
     return true;
   };
 
-  exports.deprecated = function(message) {
+  exports.deprecated = function (message) {
     if (exports.isBrowser()) {
       if (window.NOFLO_FATAL_DEPRECATED) {
         throw new Error(message);
@@ -10077,13 +9463,11 @@ module.exports = Array.isArray || function (arr) {
     }
     return console.warn(message);
   };
-
-}).call(this);
-
-/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(1)))
+}).call(undefined);
+/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(2)))
 
 /***/ }),
-/* 32 */
+/* 30 */
 /***/ (function(module, exports, __webpack_require__) {
 
 module.exports = (function() {
@@ -13002,7 +12386,7 @@ module.exports = (function() {
           if (typeof(tv4) === 'undefined') {
             var tv4 = __webpack_require__(!(function webpackMissingModule() { var e = new Error("Cannot find module \"tv4\""); e.code = 'MODULE_NOT_FOUND'; throw e; }()));
           }
-          var schema = __webpack_require__(33);
+          var schema = __webpack_require__(31);
           var validation = tv4.validateMultiple(result, schema);
           if (!validation.valid) {
             throw new Error("fbp: Did not validate againt graph schema:\n" + JSON.stringify(validation.errors, null, 2));
@@ -13144,26 +12528,45 @@ module.exports = (function() {
 })();
 
 /***/ }),
-/* 33 */
+/* 31 */
 /***/ (function(module, exports) {
 
 module.exports = {"$schema":"http://json-schema.org/draft-04/schema","id":"graph.json","title":"FBP graph","description":"A graph of FBP processes and connections between them.\nThis is the primary way of specifying FBP programs.\n","name":"graph","type":"object","additionalProperties":false,"properties":{"properties":{"type":"object","description":"User-defined properties attached to the graph.","additionalProperties":true,"properties":{"name":{"type":"string"}}},"inports":{"type":["object","undefined"],"description":"Exported inports of the graph","additionalProperties":true,"patternProperties":{"[a-z0-9]+":{"type":"object","properties":{"process":{"type":"string"},"port":{"type":"string"},"metadata":{"type":"object","additionalProperties":true}}}}},"outports":{"type":["object","undefined"],"description":"Exported outports of the graph","additionalProperties":true,"patternProperties":{"[a-z0-9]+":{"type":"object","properties":{"process":{"type":"string"},"port":{"type":"string"},"metadata":{"type":"object","additionalProperties":true}}}}},"exports":{"type":["array","undefined"],"description":"Deprecated, use inports and outports instead"},"groups":{"type":"array","description":"List of groups of processes","items":{"type":"object","additionalProperties":false,"properties":{"name":{"type":"string"},"nodes":{"type":"array","items":{"type":"string"}},"metadata":{"additionalProperties":true}}}},"processes":{"type":"object","description":"The processes of this graph.\nEach process is an instance of a component.\n","additionalProperties":false,"patternProperties":{"[a-zA-Z0-9_]+":{"type":"object","properties":{"component":{"type":"string"},"metadata":{"type":"object","additionalProperties":true}}}}},"connections":{"type":"array","description":"Connections of the graph.\nA connection either connects ports of two processes, or specifices an IIP as initial input packet to a port.\n","items":{"type":"object","additionalProperties":false,"properties":{"src":{"type":"object","additionalProperties":false,"properties":{"process":{"type":"string"},"port":{"type":"string"},"index":{"type":"integer"}}},"tgt":{"type":"object","additionalProperties":false,"properties":{"process":{"type":"string"},"port":{"type":"string"},"index":{"type":"integer"}}},"data":{},"metadata":{"type":"object","additionalProperties":true}}}}}}
 
 /***/ }),
-/* 34 */
+/* 32 */
 /***/ (function(module, exports, __webpack_require__) {
 
-(function() {
-  var EventEmitter, Journal, JournalStore, MemoryJournalStore, calculateMeta, clone, entryToPrettyString,
-    extend = function(child, parent) { for (var key in parent) { if (hasProp.call(parent, key)) child[key] = parent[key]; } function ctor() { this.constructor = child; } ctor.prototype = parent.prototype; child.prototype = new ctor(); child.__super__ = parent.prototype; return child; },
-    hasProp = {}.hasOwnProperty,
-    bind = function(fn, me){ return function(){ return fn.apply(me, arguments); }; };
+"use strict";
 
-  EventEmitter = __webpack_require__(2).EventEmitter;
+
+(function () {
+  var EventEmitter,
+      Journal,
+      JournalStore,
+      MemoryJournalStore,
+      calculateMeta,
+      clone,
+      entryToPrettyString,
+      extend = function extend(child, parent) {
+    for (var key in parent) {
+      if (hasProp.call(parent, key)) child[key] = parent[key];
+    }function ctor() {
+      this.constructor = child;
+    }ctor.prototype = parent.prototype;child.prototype = new ctor();child.__super__ = parent.prototype;return child;
+  },
+      hasProp = {}.hasOwnProperty,
+      bind = function bind(fn, me) {
+    return function () {
+      return fn.apply(me, arguments);
+    };
+  };
+
+  EventEmitter = __webpack_require__(1).EventEmitter;
 
   clone = __webpack_require__(13);
 
-  entryToPrettyString = function(entry) {
+  entryToPrettyString = function entryToPrettyString(entry) {
     var a;
     a = entry.args;
     switch (entry.cmd) {
@@ -13220,7 +12623,7 @@ module.exports = {"$schema":"http://json-schema.org/draft-04/schema","id":"graph
     }
   };
 
-  calculateMeta = function(oldMeta, newMeta) {
+  calculateMeta = function calculateMeta(oldMeta, newMeta) {
     var k, setMeta, v;
     setMeta = {};
     for (k in oldMeta) {
@@ -13234,7 +12637,7 @@ module.exports = {"$schema":"http://json-schema.org/draft-04/schema","id":"graph
     return setMeta;
   };
 
-  JournalStore = (function(superClass) {
+  JournalStore = function (superClass) {
     extend(JournalStore, superClass);
 
     JournalStore.prototype.lastRevision = 0;
@@ -13244,20 +12647,19 @@ module.exports = {"$schema":"http://json-schema.org/draft-04/schema","id":"graph
       this.lastRevision = 0;
     }
 
-    JournalStore.prototype.putTransaction = function(revId, entries) {
+    JournalStore.prototype.putTransaction = function (revId, entries) {
       if (revId > this.lastRevision) {
         this.lastRevision = revId;
       }
       return this.emit('transaction', revId);
     };
 
-    JournalStore.prototype.fetchTransaction = function(revId, entries) {};
+    JournalStore.prototype.fetchTransaction = function (revId, entries) {};
 
     return JournalStore;
+  }(EventEmitter);
 
-  })(EventEmitter);
-
-  MemoryJournalStore = (function(superClass) {
+  MemoryJournalStore = function (superClass) {
     extend(MemoryJournalStore, superClass);
 
     function MemoryJournalStore(graph) {
@@ -13265,20 +12667,19 @@ module.exports = {"$schema":"http://json-schema.org/draft-04/schema","id":"graph
       this.transactions = [];
     }
 
-    MemoryJournalStore.prototype.putTransaction = function(revId, entries) {
+    MemoryJournalStore.prototype.putTransaction = function (revId, entries) {
       MemoryJournalStore.__super__.putTransaction.call(this, revId, entries);
       return this.transactions[revId] = entries;
     };
 
-    MemoryJournalStore.prototype.fetchTransaction = function(revId) {
+    MemoryJournalStore.prototype.fetchTransaction = function (revId) {
       return this.transactions[revId];
     };
 
     return MemoryJournalStore;
+  }(JournalStore);
 
-  })(JournalStore);
-
-  Journal = (function(superClass) {
+  Journal = function (superClass) {
     extend(Journal, superClass);
 
     Journal.prototype.graph = null;
@@ -13341,18 +12742,18 @@ module.exports = {"$schema":"http://json-schema.org/draft-04/schema","id":"graph
       } else {
         this.currentRevision = this.store.lastRevision;
       }
-      this.graph.on('addNode', (function(_this) {
-        return function(node) {
+      this.graph.on('addNode', function (_this) {
+        return function (node) {
           return _this.appendCommand('addNode', node);
         };
-      })(this));
-      this.graph.on('removeNode', (function(_this) {
-        return function(node) {
+      }(this));
+      this.graph.on('removeNode', function (_this) {
+        return function (node) {
           return _this.appendCommand('removeNode', node);
         };
-      })(this));
-      this.graph.on('renameNode', (function(_this) {
-        return function(oldId, newId) {
+      }(this));
+      this.graph.on('renameNode', function (_this) {
+        return function (oldId, newId) {
           var args;
           args = {
             oldId: oldId,
@@ -13360,28 +12761,28 @@ module.exports = {"$schema":"http://json-schema.org/draft-04/schema","id":"graph
           };
           return _this.appendCommand('renameNode', args);
         };
-      })(this));
-      this.graph.on('changeNode', (function(_this) {
-        return function(node, oldMeta) {
+      }(this));
+      this.graph.on('changeNode', function (_this) {
+        return function (node, oldMeta) {
           return _this.appendCommand('changeNode', {
             id: node.id,
             "new": node.metadata,
             old: oldMeta
           });
         };
-      })(this));
-      this.graph.on('addEdge', (function(_this) {
-        return function(edge) {
+      }(this));
+      this.graph.on('addEdge', function (_this) {
+        return function (edge) {
           return _this.appendCommand('addEdge', edge);
         };
-      })(this));
-      this.graph.on('removeEdge', (function(_this) {
-        return function(edge) {
+      }(this));
+      this.graph.on('removeEdge', function (_this) {
+        return function (edge) {
           return _this.appendCommand('removeEdge', edge);
         };
-      })(this));
-      this.graph.on('changeEdge', (function(_this) {
-        return function(edge, oldMeta) {
+      }(this));
+      this.graph.on('changeEdge', function (_this) {
+        return function (edge, oldMeta) {
           return _this.appendCommand('changeEdge', {
             from: edge.from,
             to: edge.to,
@@ -13389,141 +12790,141 @@ module.exports = {"$schema":"http://json-schema.org/draft-04/schema","id":"graph
             old: oldMeta
           });
         };
-      })(this));
-      this.graph.on('addInitial', (function(_this) {
-        return function(iip) {
+      }(this));
+      this.graph.on('addInitial', function (_this) {
+        return function (iip) {
           return _this.appendCommand('addInitial', iip);
         };
-      })(this));
-      this.graph.on('removeInitial', (function(_this) {
-        return function(iip) {
+      }(this));
+      this.graph.on('removeInitial', function (_this) {
+        return function (iip) {
           return _this.appendCommand('removeInitial', iip);
         };
-      })(this));
-      this.graph.on('changeProperties', (function(_this) {
-        return function(newProps, oldProps) {
+      }(this));
+      this.graph.on('changeProperties', function (_this) {
+        return function (newProps, oldProps) {
           return _this.appendCommand('changeProperties', {
             "new": newProps,
             old: oldProps
           });
         };
-      })(this));
-      this.graph.on('addGroup', (function(_this) {
-        return function(group) {
+      }(this));
+      this.graph.on('addGroup', function (_this) {
+        return function (group) {
           return _this.appendCommand('addGroup', group);
         };
-      })(this));
-      this.graph.on('renameGroup', (function(_this) {
-        return function(oldName, newName) {
+      }(this));
+      this.graph.on('renameGroup', function (_this) {
+        return function (oldName, newName) {
           return _this.appendCommand('renameGroup', {
             oldName: oldName,
             newName: newName
           });
         };
-      })(this));
-      this.graph.on('removeGroup', (function(_this) {
-        return function(group) {
+      }(this));
+      this.graph.on('removeGroup', function (_this) {
+        return function (group) {
           return _this.appendCommand('removeGroup', group);
         };
-      })(this));
-      this.graph.on('changeGroup', (function(_this) {
-        return function(group, oldMeta) {
+      }(this));
+      this.graph.on('changeGroup', function (_this) {
+        return function (group, oldMeta) {
           return _this.appendCommand('changeGroup', {
             name: group.name,
             "new": group.metadata,
             old: oldMeta
           });
         };
-      })(this));
-      this.graph.on('addExport', (function(_this) {
-        return function(exported) {
+      }(this));
+      this.graph.on('addExport', function (_this) {
+        return function (exported) {
           return _this.appendCommand('addExport', exported);
         };
-      })(this));
-      this.graph.on('removeExport', (function(_this) {
-        return function(exported) {
+      }(this));
+      this.graph.on('removeExport', function (_this) {
+        return function (exported) {
           return _this.appendCommand('removeExport', exported);
         };
-      })(this));
-      this.graph.on('addInport', (function(_this) {
-        return function(name, port) {
+      }(this));
+      this.graph.on('addInport', function (_this) {
+        return function (name, port) {
           return _this.appendCommand('addInport', {
             name: name,
             port: port
           });
         };
-      })(this));
-      this.graph.on('removeInport', (function(_this) {
-        return function(name, port) {
+      }(this));
+      this.graph.on('removeInport', function (_this) {
+        return function (name, port) {
           return _this.appendCommand('removeInport', {
             name: name,
             port: port
           });
         };
-      })(this));
-      this.graph.on('renameInport', (function(_this) {
-        return function(oldId, newId) {
+      }(this));
+      this.graph.on('renameInport', function (_this) {
+        return function (oldId, newId) {
           return _this.appendCommand('renameInport', {
             oldId: oldId,
             newId: newId
           });
         };
-      })(this));
-      this.graph.on('changeInport', (function(_this) {
-        return function(name, port, oldMeta) {
+      }(this));
+      this.graph.on('changeInport', function (_this) {
+        return function (name, port, oldMeta) {
           return _this.appendCommand('changeInport', {
             name: name,
             "new": port.metadata,
             old: oldMeta
           });
         };
-      })(this));
-      this.graph.on('addOutport', (function(_this) {
-        return function(name, port) {
+      }(this));
+      this.graph.on('addOutport', function (_this) {
+        return function (name, port) {
           return _this.appendCommand('addOutport', {
             name: name,
             port: port
           });
         };
-      })(this));
-      this.graph.on('removeOutport', (function(_this) {
-        return function(name, port) {
+      }(this));
+      this.graph.on('removeOutport', function (_this) {
+        return function (name, port) {
           return _this.appendCommand('removeOutport', {
             name: name,
             port: port
           });
         };
-      })(this));
-      this.graph.on('renameOutport', (function(_this) {
-        return function(oldId, newId) {
+      }(this));
+      this.graph.on('renameOutport', function (_this) {
+        return function (oldId, newId) {
           return _this.appendCommand('renameOutport', {
             oldId: oldId,
             newId: newId
           });
         };
-      })(this));
-      this.graph.on('changeOutport', (function(_this) {
-        return function(name, port, oldMeta) {
+      }(this));
+      this.graph.on('changeOutport', function (_this) {
+        return function (name, port, oldMeta) {
           return _this.appendCommand('changeOutport', {
             name: name,
             "new": port.metadata,
             old: oldMeta
           });
         };
-      })(this));
-      this.graph.on('startTransaction', (function(_this) {
-        return function(id, meta) {
+      }(this));
+      this.graph.on('startTransaction', function (_this) {
+        return function (id, meta) {
           return _this.startTransaction(id, meta);
         };
-      })(this));
-      this.graph.on('endTransaction', (function(_this) {
-        return function(id, meta) {
+      }(this));
+      this.graph.on('endTransaction', function (_this) {
+        return function (id, meta) {
           return _this.endTransaction(id, meta);
         };
-      })(this));
+      }(this));
     }
 
-    Journal.prototype.startTransaction = function(id, meta) {
+    Journal.prototype.startTransaction = function (id, meta) {
       if (!this.subscribed) {
         return;
       }
@@ -13537,7 +12938,7 @@ module.exports = {"$schema":"http://json-schema.org/draft-04/schema","id":"graph
       }, this.currentRevision);
     };
 
-    Journal.prototype.endTransaction = function(id, meta) {
+    Journal.prototype.endTransaction = function (id, meta) {
       if (!this.subscribed) {
         return;
       }
@@ -13549,7 +12950,7 @@ module.exports = {"$schema":"http://json-schema.org/draft-04/schema","id":"graph
       return this.entries = [];
     };
 
-    Journal.prototype.appendCommand = function(cmd, args, rev) {
+    Journal.prototype.appendCommand = function (cmd, args, rev) {
       var entry;
       if (!this.subscribed) {
         return;
@@ -13564,7 +12965,7 @@ module.exports = {"$schema":"http://json-schema.org/draft-04/schema","id":"graph
       return this.entries.push(entry);
     };
 
-    Journal.prototype.executeEntry = function(entry) {
+    Journal.prototype.executeEntry = function (entry) {
       var a;
       a = entry.args;
       switch (entry.cmd) {
@@ -13621,7 +13022,7 @@ module.exports = {"$schema":"http://json-schema.org/draft-04/schema","id":"graph
       }
     };
 
-    Journal.prototype.executeEntryInversed = function(entry) {
+    Journal.prototype.executeEntryInversed = function (entry) {
       var a;
       a = entry.args;
       switch (entry.cmd) {
@@ -13678,7 +13079,7 @@ module.exports = {"$schema":"http://json-schema.org/draft-04/schema","id":"graph
       }
     };
 
-    Journal.prototype.moveToRevision = function(revId) {
+    Journal.prototype.moveToRevision = function (revId) {
       var entries, entry, i, j, l, len, m, n, r, ref, ref1, ref2, ref3, ref4, ref5;
       if (revId === this.currentRevision) {
         return;
@@ -13704,29 +13105,29 @@ module.exports = {"$schema":"http://json-schema.org/draft-04/schema","id":"graph
       return this.subscribed = true;
     };
 
-    Journal.prototype.undo = function() {
+    Journal.prototype.undo = function () {
       if (!this.canUndo()) {
         return;
       }
       return this.moveToRevision(this.currentRevision - 1);
     };
 
-    Journal.prototype.canUndo = function() {
+    Journal.prototype.canUndo = function () {
       return this.currentRevision > 0;
     };
 
-    Journal.prototype.redo = function() {
+    Journal.prototype.redo = function () {
       if (!this.canRedo()) {
         return;
       }
       return this.moveToRevision(this.currentRevision + 1);
     };
 
-    Journal.prototype.canRedo = function() {
+    Journal.prototype.canRedo = function () {
       return this.currentRevision < this.store.lastRevision;
     };
 
-    Journal.prototype.toPrettyString = function(startRev, endRev) {
+    Journal.prototype.toPrettyString = function (startRev, endRev) {
       var e, entry, j, l, len, lines, r, ref, ref1;
       startRev |= 0;
       endRev |= this.store.lastRevision;
@@ -13741,7 +13142,7 @@ module.exports = {"$schema":"http://json-schema.org/draft-04/schema","id":"graph
       return lines.join('\n');
     };
 
-    Journal.prototype.toJSON = function(startRev, endRev) {
+    Journal.prototype.toJSON = function (startRev, endRev) {
       var entries, entry, j, l, len, r, ref, ref1, ref2;
       startRev |= 0;
       endRev |= this.store.lastRevision;
@@ -13756,10 +13157,10 @@ module.exports = {"$schema":"http://json-schema.org/draft-04/schema","id":"graph
       return entries;
     };
 
-    Journal.prototype.save = function(file, success) {
+    Journal.prototype.save = function (file, success) {
       var json;
       json = JSON.stringify(this.toJSON(), null, 4);
-      return __webpack_require__(6).writeFile(file + ".json", json, "utf-8", function(err, data) {
+      return __webpack_require__(9).writeFile(file + ".json", json, "utf-8", function (err, data) {
         if (err) {
           throw err;
         }
@@ -13768,23 +13169,94 @@ module.exports = {"$schema":"http://json-schema.org/draft-04/schema","id":"graph
     };
 
     return Journal;
-
-  })(EventEmitter);
+  }(EventEmitter);
 
   exports.Journal = Journal;
 
   exports.JournalStore = JournalStore;
 
   exports.MemoryJournalStore = MemoryJournalStore;
-
-}).call(this);
-
+}).call(undefined);
 
 /***/ }),
-/* 35 */
+/* 33 */
 /***/ (function(module, exports, __webpack_require__) {
 
-var registerCustomLoaders = function (loader, loaders, callback) {
+"use strict";
+
+
+// File generated by noflo-component-loader on 2018-11-01T01:33:08.390Z
+var baseLoader = __webpack_require__(34);
+var sources = { "browser-app/DoSomething": { "language": "coffeescript", "source": "noflo = require 'noflo'\n\nexports.getComponent = ->\n  c = new noflo.Component\n\n  # Define a meaningful icon for component from http://fontawesome.io/icons/\n  c.icon = 'cog'\n\n  # Provide a description on component usage\n  c.description = 'do X'\n\n  # Add input ports\n  c.inPorts.add 'in',\n    datatype: 'string'\n\n  # Add output ports\n  c.outPorts.add 'out',\n    datatype: 'string'\n\n  # What to do when port receives a packet\n  c.process (input, output) ->\n    # Check that input has received data packet\n    return unless input.hasData 'in'\n    # Read the contents of the data packet\n    data = input.getData 'in'\n    # Send the contents to output port\n    output.send\n      out: data\n    # Finish processing\n    output.done()\n" }, "Graph": { "language": "javascript", "source": "(function() {\n  var Graph, noflo,\n    extend = function(child, parent) { for (var key in parent) { if (hasProp.call(parent, key)) child[key] = parent[key]; } function ctor() { this.constructor = child; } ctor.prototype = parent.prototype; child.prototype = new ctor(); child.__super__ = parent.prototype; return child; },\n    hasProp = {}.hasOwnProperty;\n\n  noflo = require(\"../lib/NoFlo\");\n\n  Graph = (function(superClass) {\n    extend(Graph, superClass);\n\n    function Graph(metadata1) {\n      this.metadata = metadata1;\n      this.network = null;\n      this.ready = true;\n      this.started = false;\n      this.starting = false;\n      this.baseDir = null;\n      this.loader = null;\n      this.load = 0;\n      this.inPorts = new noflo.InPorts({\n        graph: {\n          datatype: 'all',\n          description: 'NoFlo graph definition to be used with the subgraph component',\n          required: true\n        }\n      });\n      this.outPorts = new noflo.OutPorts;\n      this.inPorts.graph.on('ip', (function(_this) {\n        return function(packet) {\n          if (packet.type !== 'data') {\n            return;\n          }\n          return _this.setGraph(packet.data, function(err) {\n            if (err) {\n              return _this.error(err);\n            }\n          });\n        };\n      })(this));\n    }\n\n    Graph.prototype.setGraph = function(graph, callback) {\n      this.ready = false;\n      if (typeof graph === 'object') {\n        if (typeof graph.addNode === 'function') {\n          this.createNetwork(graph, callback);\n          return;\n        }\n        noflo.graph.loadJSON(graph, (function(_this) {\n          return function(err, instance) {\n            if (err) {\n              return callback(err);\n            }\n            instance.baseDir = _this.baseDir;\n            return _this.createNetwork(instance, callback);\n          };\n        })(this));\n        return;\n      }\n      if (graph.substr(0, 1) !== \"/\" && graph.substr(1, 1) !== \":\" && process && process.cwd) {\n        graph = (process.cwd()) + \"/\" + graph;\n      }\n      return noflo.graph.loadFile(graph, (function(_this) {\n        return function(err, instance) {\n          if (err) {\n            return callback(err);\n          }\n          instance.baseDir = _this.baseDir;\n          return _this.createNetwork(instance, callback);\n        };\n      })(this));\n    };\n\n    Graph.prototype.createNetwork = function(graph, callback) {\n      this.description = graph.properties.description || '';\n      this.icon = graph.properties.icon || this.icon;\n      if (!graph.name) {\n        graph.name = this.nodeId;\n      }\n      graph.componentLoader = this.loader;\n      return noflo.createNetwork(graph, (function(_this) {\n        return function(err, network1) {\n          _this.network = network1;\n          if (err) {\n            return callback(err);\n          }\n          _this.emit('network', _this.network);\n          _this.subscribeNetwork(_this.network);\n          return _this.network.connect(function(err) {\n            var name, node, ref;\n            if (err) {\n              return callback(err);\n            }\n            ref = _this.network.processes;\n            for (name in ref) {\n              node = ref[name];\n              _this.findEdgePorts(name, node);\n            }\n            _this.setToReady();\n            return callback();\n          });\n        };\n      })(this), true);\n    };\n\n    Graph.prototype.subscribeNetwork = function(network) {\n      var contexts;\n      contexts = [];\n      this.network.on('start', (function(_this) {\n        return function() {\n          var ctx;\n          ctx = {};\n          contexts.push(ctx);\n          return _this.activate(ctx);\n        };\n      })(this));\n      return this.network.on('end', (function(_this) {\n        return function() {\n          var ctx;\n          ctx = contexts.pop();\n          if (!ctx) {\n            return;\n          }\n          return _this.deactivate(ctx);\n        };\n      })(this));\n    };\n\n    Graph.prototype.isExportedInport = function(port, nodeName, portName) {\n      var exported, i, len, priv, pub, ref, ref1;\n      ref = this.network.graph.inports;\n      for (pub in ref) {\n        priv = ref[pub];\n        if (!(priv.process === nodeName && priv.port === portName)) {\n          continue;\n        }\n        return pub;\n      }\n      ref1 = this.network.graph.exports;\n      for (i = 0, len = ref1.length; i < len; i++) {\n        exported = ref1[i];\n        if (!(exported.process === nodeName && exported.port === portName)) {\n          continue;\n        }\n        this.network.graph.checkTransactionStart();\n        this.network.graph.removeExport(exported[\"public\"]);\n        this.network.graph.addInport(exported[\"public\"], exported.process, exported.port, exported.metadata);\n        this.network.graph.checkTransactionEnd();\n        return exported[\"public\"];\n      }\n      return false;\n    };\n\n    Graph.prototype.isExportedOutport = function(port, nodeName, portName) {\n      var exported, i, len, priv, pub, ref, ref1;\n      ref = this.network.graph.outports;\n      for (pub in ref) {\n        priv = ref[pub];\n        if (!(priv.process === nodeName && priv.port === portName)) {\n          continue;\n        }\n        return pub;\n      }\n      ref1 = this.network.graph.exports;\n      for (i = 0, len = ref1.length; i < len; i++) {\n        exported = ref1[i];\n        if (!(exported.process === nodeName && exported.port === portName)) {\n          continue;\n        }\n        this.network.graph.checkTransactionStart();\n        this.network.graph.removeExport(exported[\"public\"]);\n        this.network.graph.addOutport(exported[\"public\"], exported.process, exported.port, exported.metadata);\n        this.network.graph.checkTransactionEnd();\n        return exported[\"public\"];\n      }\n      return false;\n    };\n\n    Graph.prototype.setToReady = function() {\n      if (typeof process !== 'undefined' && process.execPath && process.execPath.indexOf('node') !== -1) {\n        return process.nextTick((function(_this) {\n          return function() {\n            _this.ready = true;\n            return _this.emit('ready');\n          };\n        })(this));\n      } else {\n        return setTimeout((function(_this) {\n          return function() {\n            _this.ready = true;\n            return _this.emit('ready');\n          };\n        })(this), 0);\n      }\n    };\n\n    Graph.prototype.findEdgePorts = function(name, process) {\n      var inPorts, outPorts, port, portName, targetPortName;\n      inPorts = process.component.inPorts.ports || process.component.inPorts;\n      outPorts = process.component.outPorts.ports || process.component.outPorts;\n      for (portName in inPorts) {\n        port = inPorts[portName];\n        targetPortName = this.isExportedInport(port, name, portName);\n        if (targetPortName === false) {\n          continue;\n        }\n        this.inPorts.add(targetPortName, port);\n        this.inPorts[targetPortName].once('connect', (function(_this) {\n          return function() {\n            if (_this.starting) {\n              return;\n            }\n            if (_this.isStarted()) {\n              return;\n            }\n            return _this.start(function() {});\n          };\n        })(this));\n      }\n      for (portName in outPorts) {\n        port = outPorts[portName];\n        targetPortName = this.isExportedOutport(port, name, portName);\n        if (targetPortName === false) {\n          continue;\n        }\n        this.outPorts.add(targetPortName, port);\n      }\n      return true;\n    };\n\n    Graph.prototype.isReady = function() {\n      return this.ready;\n    };\n\n    Graph.prototype.isSubgraph = function() {\n      return true;\n    };\n\n    Graph.prototype.setUp = function(callback) {\n      this.starting = true;\n      if (!this.isReady()) {\n        this.once('ready', (function(_this) {\n          return function() {\n            return _this.setUp(callback);\n          };\n        })(this));\n        return;\n      }\n      if (!this.network) {\n        return callback(null);\n      }\n      return this.network.start(function(err) {\n        if (err) {\n          return callback(err);\n        }\n        this.starting = false;\n        return callback();\n      });\n    };\n\n    Graph.prototype.tearDown = function(callback) {\n      this.starting = false;\n      if (!this.network) {\n        return callback(null);\n      }\n      return this.network.stop(function(err) {\n        if (err) {\n          return callback(err);\n        }\n        return callback();\n      });\n    };\n\n    return Graph;\n\n  })(noflo.Component);\n\n  exports.getComponent = function(metadata) {\n    return new Graph(metadata);\n  };\n\n}).call(this);\n" }, "core/Callback": { "language": "coffeescript", "source": "noflo = require 'noflo'\n\nexports.getComponent = ->\n  c = new noflo.Component\n  c.description = 'This component calls a given callback function for each\n  IP it receives.  The Callback component is typically used to connect\n  NoFlo with external Node.js code.'\n  c.icon = 'sign-out'\n\n  c.inPorts.add 'in',\n    description: 'Object passed as argument of the callback'\n    datatype: 'all'\n  c.inPorts.add 'callback',\n    description: 'Callback to invoke'\n    datatype: 'function'\n    control: true\n    required: true\n  c.outPorts.add 'error',\n    datatype: 'object'\n\n  c.process (input, output) ->\n    return unless input.hasData 'callback', 'in'\n    [callback, data] = input.getData 'callback', 'in'\n    unless typeof callback is 'function'\n      output.done new Error 'The provided callback must be a function'\n      return\n\n    # Call the callback when receiving data\n    try\n      callback data\n    catch e\n      return output.done e\n    output.done()\n" }, "core/Copy": { "language": "coffeescript", "source": "noflo = require 'noflo'\nowl = require 'owl-deepcopy'\n\nexports.getComponent = ->\n  c = new noflo.Component\n  c.description = 'deep (i.e. recursively) copy an object'\n  c.icon = 'copy'\n\n  c.inPorts.add 'in',\n    datatype: 'all'\n    description: 'Packet to be copied'\n  c.outPorts.add 'out',\n    datatype: 'all'\n    description: 'Copy of the original packet'\n\n  c.process (input, output) ->\n    return unless input.hasData 'in'\n    data = input.getData 'in'\n\n    copy = owl.deepCopy data\n    output.sendDone\n      out: copy\n    return\n" }, "core/DisconnectAfterPacket": { "language": "coffeescript", "source": "noflo = require 'noflo'\n\nexports.getComponent = ->\n  c = new noflo.Component\n  c.description = 'Makes each data packet a stream of its own'\n  c.icon = 'pause'\n  c.forwardBrackets = {}\n  c.autoOrdering = false\n\n  c.inPorts.add 'in',\n    datatype: 'all'\n    description: 'Packet to be forward with disconnection'\n  c.outPorts.add 'out',\n    datatype: 'all'\n\n  brackets = {}\n  c.tearDown = (callback) ->\n    brackets = {}\n  c.process (input, output) ->\n    # Force auto-ordering to be off for this one\n    c.autoOrdering = false\n\n    data = input.get 'in'\n    brackets[input.scope] = [] unless brackets[input.scope]\n    if data.type is 'openBracket'\n      brackets[input.scope].push data.data\n      output.done()\n      return\n    if data.type is 'closeBracket'\n      brackets[input.scope].pop()\n      output.done()\n      return\n\n    return unless data.type is 'data'\n\n    for bracket in brackets[input.scope]\n      output.sendIP 'out', new noflo.IP 'openBracket', bracket\n    output.sendIP 'out', data\n    closes = brackets[input.scope].slice 0\n    closes.reverse()\n    for bracket in closes\n      output.sendIP 'out', new noflo.IP 'closeBracket', bracket\n\n    output.done()\n" }, "core/Drop": { "language": "coffeescript", "source": "noflo = require 'noflo'\n\nexports.getComponent = ->\n  c = new noflo.Component\n  c.description = 'This component drops every packet it receives with no\n  action'\n  c.icon = 'trash-o'\n\n  c.inPorts.add 'in',\n    datatypes: 'all'\n    description: 'Packet to be dropped'\n\n  c.process (input, output) ->\n    data = input.get 'in'\n    data.drop()\n    output.done()\n    return\n" }, "core/Kick": { "language": "coffeescript", "source": "noflo = require 'noflo'\n\nexports.getComponent = ->\n  c = new noflo.Component\n  c.description = 'This component generates a single packet and sends it to\n  the output port. Mostly usable for debugging, but can also be useful\n  for starting up networks.'\n  c.icon = 'share'\n\n  c.inPorts.add 'in',\n    datatype: 'bang'\n    description: 'Signal to send the data packet'\n  c.inPorts.add 'data',\n    datatype: 'all'\n    description: 'Packet to be sent'\n    control: true\n    default: null\n  c.outPorts.add 'out',\n    datatype: 'all'\n\n  c.process (input, output) ->\n    return unless input.hasStream 'in'\n    return if input.attached('data').length and not input.hasData 'data'\n    bang = input.getData 'in'\n    data = input.getData 'data'\n    output.send\n      out: data\n    output.done()\n" }, "core/MakeFunction": { "language": "coffeescript", "source": "noflo = require 'noflo'\n\nexports.getComponent = ->\n  c = new noflo.Component\n  c.description = 'Evaluates a function each time data hits the \"in\" port\n  and sends the return value to \"out\". Within the function \"x\" will\n  be the variable from the in port. For example, to make a ^2 function\n  input \"return x*x;\" to the function port.'\n  c.icon = 'code'\n\n  c.inPorts.add 'in',\n    datatype: 'all'\n    description: 'Packet to be processed'\n  c.inPorts.add 'function',\n    datatype: 'string'\n    description: 'Function to evaluate'\n    control: true\n  c.outPorts.add 'out',\n    datatype: 'all'\n  c.outPorts.add 'function',\n    datatype: 'function'\n  c.outPorts.add 'error',\n    datatype: 'object'\n\n  prepareFunction = (func, callback) ->\n    if typeof func is 'function'\n      callback null, func\n      return\n    try\n      newFunc = Function 'x', func\n    catch e\n      callback e\n      return\n    callback null, newFunc\n\n  c.process (input, output) ->\n    return if input.attached('in').length and not input.hasData 'in'\n    if input.hasData 'function', 'in'\n      # Both function and input data\n      prepareFunction input.getData('function'), (err, func) ->\n        if err\n          output.done e\n          return\n        data = input.getData 'in'\n        try\n          result = func data\n        catch e\n          output.done e\n          return\n        output.sendDone\n          function: func\n          out: result\n        return\n      return\n    return unless input.hasData 'function'\n    prepareFunction input.getData('function'), (err, func) ->\n      if err\n        output.done e\n        return\n      output.sendDone\n        function: func\n      return\n    return\n" }, "core/Merge": { "language": "coffeescript", "source": "noflo = require 'noflo'\n\nexports.getComponent = ->\n  c = new noflo.Component\n  c.description = 'This component receives data on multiple input ports and\n    sends the same data out to the connected output port'\n  c.icon = 'compress'\n\n  c.inPorts.add 'in',\n    datatype: 'all'\n    description: 'Packet to be forwarded'\n  c.outPorts.add 'out',\n    datatype: 'all'\n\n  c.process (input, output) ->\n    data = input.get 'in'\n    output.sendDone\n      out: data\n" }, "core/Output": { "language": "coffeescript", "source": "noflo = require 'noflo'\n\nunless noflo.isBrowser()\n  util = require 'util'\nelse\n  util =\n    inspect: (data) -> data\n\nlog = (options, data) ->\n  if options?\n    console.log util.inspect data,\n      options.showHidden, options.depth, options.colors\n  else\n    console.log data\n\nexports.getComponent = ->\n  c = new noflo.Component\n  c.description = 'Sends the data items to console.log'\n  c.icon = 'bug'\n\n  c.inPorts.add 'in',\n    datatype: 'all'\n    description: 'Packet to be printed through console.log'\n  c.inPorts.add 'options',\n    datatype: 'object'\n    description: 'Options to be passed to console.log'\n    control: true\n  c.outPorts.add 'out',\n    datatype: 'all'\n\n  c.process (input, output) ->\n    return unless input.hasData 'in'\n    return if input.attached('options').length and not input.hasData 'options'\n\n    options = null\n    if input.has 'options'\n      options = input.getData 'options'\n\n    data = input.getData 'in'\n    log options, data\n    output.sendDone\n      out: data\n" }, "core/ReadGlobal": { "language": "coffeescript", "source": "noflo = require 'noflo'\n\nexports.getComponent = ->\n  c = new noflo.Component\n  c.description = 'Returns the value of a global variable.'\n  c.icon = 'usd'\n\n  # inPorts\n  c.inPorts.add 'name',\n    description: 'The name of the global variable.'\n\n  # outPorts\n  c.outPorts.add 'value',\n    description: 'The value of the variable.'\n\n  c.outPorts.add 'error',\n    description: 'Any errors that occured reading the variables value.'\n\n  c.forwardBrackets =\n    name: ['value', 'error']\n\n  c.process (input, output) ->\n    return unless input.hasData 'name'\n    data = input.getData 'name'\n\n    value = unless noflo.isBrowser() then global[data] else window[data]\n\n    if typeof value is 'undefined'\n      err = new Error \"\\\"#{data}\\\" is undefined on the global object.\"\n      output.sendDone err\n      return\n    output.sendDone\n      value: value\n" }, "core/Repeat": { "language": "coffeescript", "source": "noflo = require 'noflo'\n\nexports.getComponent = ->\n  c = new noflo.Component\n  c.description = 'Forwards packets and metadata in the same way\n  it receives them'\n  c.icon = 'forward'\n  c.inPorts.add 'in',\n    datatype: 'all'\n    description: 'Packet to forward'\n  c.outPorts.add 'out',\n    datatype: 'all'\n\n  c.process (input, output) ->\n    data = input.get 'in'\n    output.sendDone\n      out: data\n" }, "core/RepeatAsync": { "language": "coffeescript", "source": "noflo = require 'noflo'\n\nexports.getComponent = ->\n  c = new noflo.Component\n  c.description = \"Like 'Repeat', except repeat on next tick\"\n  c.icon = 'step-forward'\n  c.inPorts.add 'in',\n    datatype: 'all'\n    description: 'Packet to forward'\n  c.outPorts.add 'out',\n    datatype: 'all'\n\n  c.process (input, output) ->\n    data = input.get 'in'\n    setTimeout ->\n      output.sendDone\n        out: data\n    , 0\n" }, "core/RepeatDelayed": { "language": "coffeescript", "source": "noflo = require 'noflo'\n\nexports.getComponent = ->\n  c = new noflo.Component\n  c.description = 'Forward packet after a set delay'\n  c.icon = 'clock-o'\n\n  c.timers = []\n\n  c.inPorts.add 'in',\n    datatype: 'all'\n    description: 'Packet to be forwarded with a delay'\n  c.inPorts.add 'delay',\n    datatype: 'number'\n    description: 'How much to delay'\n    default: 500\n    control: true\n\n  c.outPorts.add 'out',\n    datatype: 'all'\n\n  c.tearDown = (callback) ->\n    clearTimeout timer for timer in c.timers\n    c.timers = []\n    callback()\n\n  c.process (input, output) ->\n    return unless input.hasData 'in'\n    return if input.attached('delay').length and not input.hasData 'delay'\n\n    delay = 500\n    if input.hasData 'delay'\n      delay = input.getData 'delay'\n    payload = input.get 'in'\n\n    timer = setTimeout ->\n      c.timers.splice c.timers.indexOf(timer), 1\n      output.sendDone\n        out: payload\n    , delay\n    c.timers.push timer\n" }, "core/RunInterval": { "language": "coffeescript", "source": "noflo = require 'noflo'\n\nexports.getComponent = ->\n  c = new noflo.Component\n  c.description = 'Send a packet at the given interval'\n  c.icon = 'clock-o'\n  c.inPorts.add 'interval',\n    datatype: 'number'\n    description: 'Interval at which output packets are emitted (ms)'\n    required: true\n    control: true\n  c.inPorts.add 'start',\n    datatype: 'bang'\n    description: 'Start the emission'\n  c.inPorts.add 'stop',\n    datatype: 'bang'\n    description: 'Stop the emission'\n  c.outPorts.add 'out',\n    datatype: 'bang'\n\n  c.timers = {}\n\n  cleanUp = (scope) ->\n    return unless c.timers[scope]\n    clearInterval c.timers[scope].interval\n    c.timers[scope].deactivate()\n    c.timers[scope] = null\n\n  c.tearDown = (callback) ->\n    for scope, context of c.timers\n      cleanUp scope\n    c.timers = {}\n    callback()\n\n  c.forwardBrackets = {}\n  c.process (input, output, context) ->\n    if input.hasData 'start'\n      return unless input.hasData 'interval'\n      start = input.get 'start'\n      return unless start.type is 'data'\n      interval = parseInt input.getData 'interval'\n      # Ensure we deactivate previous interval in this scope, if any\n      cleanUp start.scope\n\n      # Set up interval\n      context.interval = setInterval ->\n        bang = new noflo.IP 'data', true\n        bang.scope = start.scope\n        c.outPorts.out.sendIP bang\n      , interval\n\n      # Register scope, we keep it active until stopped\n      c.timers[start.scope] = context\n      return\n\n    if input.hasData 'stop'\n      stop = input.get 'stop'\n      return unless stop.type is 'data'\n      # Deactivate interval in this scope\n      cleanUp stop.scope\n      return\n" }, "core/RunTimeout": { "language": "coffeescript", "source": "noflo = require 'noflo'\n\nexports.getComponent = ->\n  c = new noflo.Component\n  c.description = 'Send a packet after the given time in ms'\n  c.icon = 'clock-o'\n\n  c.timer = {}\n\n  c.inPorts.add 'time',\n    datatype: 'number'\n    description: 'Time after which a packet will be sent'\n    required: true\n    control: true\n  c.inPorts.add 'start',\n    datatype: 'bang'\n    description: 'Start the timeout before sending a packet'\n  c.outPorts.add 'out',\n    datatype: 'bang'\n\n  c.forwardBrackets =\n    start: ['out']\n\n  c.stopTimer = (scope) ->\n    return unless c.timer[scope]\n    clearTimeout c.timer[scope].timeout\n    c.timer[scope].deactivate()\n    delete c.timer[scope]\n\n  c.tearDown = (callback) ->\n    for scope, timer of c.timer\n      c.stopTimer scope\n    callback()\n\n  c.process (input, output, context) ->\n    return unless input.hasData 'time', 'start'\n    time = input.getData 'time'\n    bang = input.getData 'start'\n    # Ensure we deactivate previous timeout, if any\n    c.stopTimer input.scope\n    # Set up new timer\n    context.timeout = setTimeout ->\n      c.timer = null\n      output.sendDone\n        out: true\n    , time\n    c.timer[input.scope] = context\n    return\n" }, "core/SendNext": { "language": "coffeescript", "source": "noflo = require 'noflo'\n\nexports.getComponent = ->\n  c = new noflo.Component\n  c.description = 'Sends next packet in buffer when receiving a bang'\n  c.icon = 'forward'\n\n  c.inPorts.add 'data',\n    datatype: 'all'\n  c.inPorts.add 'in',\n    datatype: 'bang'\n  c.outPorts.add 'out',\n    datatype: 'all'\n  c.outPorts.add 'empty',\n    datatype: 'bang'\n    required: false\n\n  c.forwardBrackets = {}\n  c.process (input, output) ->\n    return unless input.hasData 'in'\n    bang = input.getData 'in'\n\n    unless input.hasData 'data'\n      # No data packets in the buffer, send \"empty\"\n      output.sendDone\n        empty: true\n      return\n\n    sent = false\n    # Loop until we've either drained the buffer completely, or until\n    # we hit the next data packet\n    while input.has 'data'\n      if sent\n        # If we already sent data, we look ahead to see if next packet is data and bail out\n        buf = c.inPorts.data.getBuffer bang.scope\n        break if buf[0].type is 'data'\n\n      packet = input.get 'data'\n      output.send\n        out: packet\n      sent = true if packet.type is 'data'\n    # After the loop we can deactivate\n    output.done()\n" }, "core/Split": { "language": "coffeescript", "source": "noflo = require 'noflo'\n\nexports.getComponent = ->\n  c = new noflo.Component\n  c.icon = 'expand'\n  c.description = 'This component receives data on a single input port and\n    sends the same data out to all connected output ports'\n\n  c.inPorts.add 'in',\n    datatype: 'all'\n    description: 'Packet to be forwarded'\n\n  c.outPorts.add 'out',\n    datatype: 'all'\n\n  c.process (input, output) ->\n    data = input.get 'in'\n    output.sendDone\n      out: data\n" }, "dom/AddClass": { "language": "coffeescript", "source": "noflo = require 'noflo'\n\nclass AddClass extends noflo.Component\n  description: 'Add a class to an element'\n  constructor: ->\n    @element = null\n    @class = null\n    @inPorts =\n      element: new noflo.Port 'object'\n      class: new noflo.Port 'string'\n    @outPorts = {}\n\n    @inPorts.element.on 'data', (data) =>\n      @element = data\n      do @addClass if @class\n    @inPorts.class.on 'data', (data) =>\n      @class = data\n      do @addClass if @element\n\n  addClass: ->\n    @element.classList.add @class\n\nexports.getComponent = -> new AddClass\n" }, "dom/AppendChild": { "language": "coffeescript", "source": "noflo = require 'noflo'\n\nclass AppendChild extends noflo.Component\n  description: 'Append elements as children of a parent element'\n  constructor: ->\n    @parent = null\n    @children = []\n    @inPorts =\n      parent: new noflo.Port 'object'\n      child: new noflo.Port 'object'\n    @outPorts = {}\n\n    @inPorts.parent.on 'data', (data) =>\n      @parent = data\n      do @append if @children.length\n\n    @inPorts.child.on 'data', (data) =>\n      unless @parent\n        @children.push data\n        return\n      @parent.appendChild data\n\n  append: ->\n    for child in @children\n      @parent.appendChild child\n    @children = []\n\nexports.getComponent = -> new AppendChild\n" }, "dom/CreateElement": { "language": "coffeescript", "source": "noflo = require 'noflo'\n\nclass CreateElement extends noflo.Component\n  description: 'Create a new DOM Element'\n  constructor: ->\n    @tagName = null\n    @container = null\n    @inPorts =\n      tagname: new noflo.Port 'string'\n      container: new noflo.Port 'object'\n    @outPorts =\n      element: new noflo.Port 'object'\n\n    @inPorts.tagname.on 'data', (@tagName) =>\n      do @createElement\n    @inPorts.tagname.on 'disconnect', =>\n      unless @inPorts.container.isAttached()\n        @outPorts.element.disconnect()\n    @inPorts.container.on 'data', (@container) =>\n      do @createElement\n    @inPorts.container.on 'disconnect', =>\n      @outPorts.element.disconnect()\n\n  createElement: ->\n    return unless @tagName\n    if @inPorts.container.isAttached()\n      return unless @container\n    el = document.createElement @tagName\n    if @container\n      @container.appendChild el\n    @outPorts.element.send el\n\nexports.getComponent = -> new CreateElement\n" }, "dom/CreateFragment": { "language": "coffeescript", "source": "noflo = require 'noflo'\n\nclass CreateFragment extends noflo.Component\n  description: 'Create a new DOM DocumentFragment'\n  constructor: ->\n    @inPorts =\n      in: new noflo.Port 'bang'\n    @outPorts =\n      fragment: new noflo.Port 'object'\n\n    @inPorts.in.on 'data', =>\n      @outPorts.fragment.send document.createDocumentFragment()\n    @inPorts.in.on 'disconnect', =>\n      @outPorts.fragment.disconnect()\n\nexports.getComponent = -> new CreateFragment\n" }, "dom/GetAttribute": { "language": "coffeescript", "source": "'use strict'\n\nnoflo = require 'noflo'\n\n\nexports.getComponent = ->\n  c = new noflo.Component\n  c.description = \"Reads the given attribute from the DOM element on the in\n    port.\"\n\n  # Define in ports.\n  c.inPorts.add 'element',\n    datatype: 'object'\n    description: 'The element from which to read the attribute from.'\n    required: true\n\n  c.inPorts.add 'attribute',\n    datatype: 'string'\n    description: 'The attribute which is read from the DOM element.'\n    required: true\n\n  # Define out ports.\n  c.outPorts.add 'out',\n    datatype: 'string'\n    description: 'Value of the attribute being read.'\n\n  # On data flow.\n  noflo.helpers.WirePattern c,\n    in: ['element']\n    out: ['out']\n    params: ['attribute']\n    forwardGroups: true\n  ,\n    (data, groups, out) ->\n      attr = c.params.attribute\n      value = data.getAttribute attr\n\n      out.send value\n" }, "dom/GetElement": { "language": "coffeescript", "source": "noflo = require 'noflo'\n\nclass GetElement extends noflo.Component\n  description: 'Get a DOM element matching a query'\n  constructor: ->\n    @container = null\n\n    @inPorts =\n      in: new noflo.Port 'object'\n      selector: new noflo.Port 'string'\n    @outPorts =\n      element: new noflo.Port 'object'\n      error: new noflo.Port 'object'\n\n    @inPorts.in.on 'data', (data) =>\n      unless typeof data.querySelector is 'function'\n        @error 'Given container doesn\\'t support querySelectors'\n        return\n      @container = data\n\n    @inPorts.selector.on 'data', (data) =>\n      @select data\n\n  select: (selector) ->\n    if @container\n      el = @container.querySelectorAll selector\n    else\n      el = document.querySelectorAll selector\n    unless el.length\n      @error \"No element matching '#{selector}' found\"\n      return\n    @outPorts.element.send element for element in el\n    @outPorts.element.disconnect()\n\n  error: (msg) ->\n    if @outPorts.error.isAttached()\n      @outPorts.error.send new Error msg\n      @outPorts.error.disconnect()\n      return\n    throw new Error msg\n\nexports.getComponent = -> new GetElement\n" }, "dom/HasClass": { "language": "coffeescript", "source": "noflo = require 'noflo'\n\nclass HasClass extends noflo.Component\n  description: 'Check if an element has a given class'\n  constructor: ->\n    @element = null\n    @class = null\n    @inPorts =\n      element: new noflo.Port 'object'\n      class: new noflo.Port 'string'\n    @outPorts =\n      element: new noflo.Port 'object'\n      missed: new noflo.Port 'object'\n\n    @inPorts.element.on 'data', (data) =>\n      @element = data\n      do @checkClass if @class\n    @inPorts.element.on 'disconnect', =>\n      @outPorts.element.disconnect()\n      return unless @outPorts.missed.isAttached()\n      @outPorts.missed.disconnect()\n    @inPorts.class.on 'data', (data) =>\n      @class = data\n      do @checkClass if @element\n\n  checkClass: ->\n    if @element.classList.contains @class\n      @outPorts.element.send @element\n      return\n    return unless @outPorts.missed.isAttached()\n    @outPorts.missed.send @element\n\nexports.getComponent = -> new HasClass\n" }, "dom/Listen": { "language": "coffeescript", "source": "noflo = require 'noflo'\n\nclass Listen extends noflo.Component\n  description: 'addEventListener for specified event type'\n  icon: 'stethoscope'\n\n  constructor: ->\n    @element = null\n    @type = null\n    @preventDefault = false\n\n    @inPorts =\n      element: new noflo.Port 'object'\n      type: new noflo.Port 'string'\n      preventdefault: new noflo.Port 'boolean'\n    @outPorts =\n      element: new noflo.Port 'object'\n      event: new noflo.Port 'object'\n\n    @inPorts.element.on 'data', (data) =>\n      if @element and @type\n        @unsubscribe @element, @type\n\n      @element = data\n\n      if @type\n        @subscribe @element, @type\n\n    @inPorts.type.on 'data', (data) =>\n      if @element and @type\n        @unsubscribe @element, @type\n\n      @type = data\n\n      if @element\n        @subscribe @element, @type\n\n    @inPorts.preventdefault.on 'data', (data) =>\n      @preventDefault = data\n\n  unsubscribe: (element, type) ->\n    element.removeEventListener type, @change\n\n  subscribe: (element, type) ->\n    element.addEventListener type, @change\n\n  change: (event) =>\n    if @preventDefault\n      event.preventDefault()\n    if @outPorts.element.isAttached()\n      @outPorts.element.send @element\n    if @outPorts.event.isAttached()\n      @outPorts.event.send event\n\nexports.getComponent = -> new Listen\n" }, "dom/ReadHtml": { "language": "coffeescript", "source": "noflo = require 'noflo'\n\nclass ReadHtml extends noflo.Component\n  description: 'Read HTML from an existing element'\n  constructor: ->\n    @inPorts =\n      container: new noflo.Port 'object'\n    @outPorts =\n      html: new noflo.Port 'string'\n\n    @inPorts.container.on 'data', (data) =>\n      @outPorts.html.send data.innerHTML\n      @outPorts.html.disconnect()\n\nexports.getComponent = -> new ReadHtml\n" }, "dom/RemoveClass": { "language": "coffeescript", "source": "noflo = require 'noflo'\n\nclass RemoveClass extends noflo.Component\n  description: 'Remove a class from an element'\n  constructor: ->\n    @element = null\n    @class = null\n    @inPorts =\n      element: new noflo.Port 'object'\n      class: new noflo.Port 'string'\n    @outPorts = {}\n\n    @inPorts.element.on 'data', (data) =>\n      @element = data\n      do @removeClass if @class\n    @inPorts.class.on 'data', (data) =>\n      @class = data\n      do @removeClass if @element\n\n  removeClass: ->\n    @element.classList.remove @class\n\nexports.getComponent = -> new RemoveClass\n" }, "dom/RemoveElement": { "language": "coffeescript", "source": "noflo = require 'noflo'\n\nclass RemoveElement extends noflo.Component\n  description: 'Remove an element from DOM'\n  constructor: ->\n    @inPorts =\n      element: new noflo.Port 'object'\n    @inPorts.element.on 'data', (element) ->\n      return unless element.parentNode\n      element.parentNode.removeChild element\n\nexports.getComponent = -> new RemoveElement\n" }, "dom/RequestAnimationFrame": { "language": "coffeescript", "source": "noflo = require 'noflo'\n\nrequestAnimationFrame =\n  window.requestAnimationFrame       ||\n  window.webkitRequestAnimationFrame ||\n  window.mozRequestAnimationFrame    ||\n  window.oRequestAnimationFrame      ||\n  window.msRequestAnimationFrame     ||\n  (callback, element) ->\n    window.setTimeout( ->\n      callback(+new Date())\n    , 1000 / 60)\n\nclass RequestAnimationFrame extends noflo.Component\n  description: 'Sends bangs that correspond with screen refresh rate.'\n  icon: 'film'\n\n  constructor: ->\n    @running = false\n\n    @inPorts =\n      start: new noflo.Port 'bang'\n      stop: new noflo.Port 'bang'\n    @outPorts =\n      out: new noflo.Port 'bang'\n\n    @inPorts.start.on 'data', (data) =>\n      @running = true\n      @animate()\n\n    @inPorts.stop.on 'data', (data) =>\n      @running = false\n\n  animate: ->\n    if @running\n      requestAnimationFrame @animate.bind(@)\n      @outPorts.out.send true\n\n  shutdown: ->\n    @running = false\n\nexports.getComponent = -> new RequestAnimationFrame\n" }, "dom/SetAttribute": { "language": "coffeescript", "source": "'use strict'\n\nnoflo = require 'noflo'\n\nexports.getComponent = ->\n  c = new noflo.Component\n  c.description = \"Set the given attribute on the DOM element to the received\n    value.\"\n    \n  # Define in ports.\n  c.inPorts.add 'element',\n    datatype: 'object'\n    description: 'The element on which to set the attribute.'\n    required: true\n\n  c.inPorts.add 'attribute',\n    datatype: 'string'\n    description: 'The attribute which is set on the DOM element.'\n    required: true\n\n  c.inPorts.add 'value',\n    datatype: 'string'\n    description: 'Value of the attribute being set.'\n  \n  # Define out ports.\n  c.outPorts.add 'element',\n    datatype: 'object'\n    description: 'The element that was updated.'\n\n  # On data flow.\n  noflo.helpers.WirePattern c,\n    in: ['element', 'value']\n    out: ['element']\n    params: ['attribute']\n    forwardGroups: true\n  ,\n    (data, groups, out) ->\n      attr = c.params.attribute\n      value = data.value\n      if typeof value is 'object'\n        if toString.call(value) is '[object Array]'\n          value = value.join ' '\n        else\n          newVal = []\n          newVal.push val for key, val of value\n          value = newVal.join ' '\n      if attr == \"value\"\n        data.element.value = value\n      else\n        data.element.setAttribute attr, value\n\n      out.send data.element\n  \n" }, "dom/WriteHtml": { "language": "coffeescript", "source": "noflo = require 'noflo'\n\nclass WriteHtml extends noflo.Component\n  description: 'Write HTML inside an existing element'\n  constructor: ->\n    @container = null\n    @html = null\n\n    @inPorts =\n      html: new noflo.Port 'string'\n      container: new noflo.Port 'object'\n    @outPorts =\n      container: new noflo.Port 'object'\n\n    @inPorts.html.on 'data', (data) =>\n      @html = data\n      do @writeHtml if @container\n    @inPorts.container.on 'data', (data) =>\n      @container = data\n      do @writeHtml unless @html is null\n\n  writeHtml: ->\n    @container.innerHTML = @html\n    @html = null\n\n    if @outPorts.container.isAttached()\n      @outPorts.container.send @container\n      @outPorts.container.disconnect()\n\nexports.getComponent = -> new WriteHtml\n" }, "interaction/Focus": { "language": "coffeescript", "source": "noflo = require 'noflo'\n\n# @runtime noflo-browser\n\nclass Focus extends noflo.Component\n  description: 'focus element'\n  element: null\n  constructor: ->\n    super\n\n    @inPorts.add 'element',\n      datatype: 'all'\n      description: 'element to be focused'\n    , (event, payload) =>\n      if event is 'data'\n        @element = payload\n\n    @inPorts.add 'trigger',\n      datatype: 'bang'\n      description: 'trigger focus'\n    , (event, payload) =>\n      if event is 'data'\n        window.setTimeout =>\n          @element.focus()\n          @outPorts.out.send payload\n        , 0\n\n    @outPorts.add 'out'\n\nexports.getComponent = -> new Focus\n\n" }, "interaction/ListenChange": { "language": "coffeescript", "source": "noflo = require 'noflo'\n\n# @runtime noflo-browser\n\nclass ListenChange extends noflo.Component\n  description: 'Listen to mouse events on a DOM element'\n  constructor: ->\n    @elements = []\n    @inPorts =\n      element: new noflo.Port 'object'\n    @outPorts =\n      value: new noflo.ArrayPort 'all'\n\n    @inPorts.element.on 'data', (element) =>\n      @subscribe element\n\n  subscribe: (element) ->\n    element.addEventListener 'change', @change, false\n    @elements.push element\n\n  unsubscribe: ->\n    for element in @elements\n      element.removeEventListener 'change', @change, false\n    @elements = []\n\n  change: (event) =>\n    return unless @outPorts.value.sockets.length\n    event.preventDefault()\n    event.stopPropagation()\n\n    @outPorts.value.send event.target.value\n    @outPorts.value.disconnect()\n\n  shutdown: ->\n    @unsubscribe()\n\nexports.getComponent = -> new ListenChange\n" }, "interaction/ListenDrag": { "language": "coffeescript", "source": "noflo = require 'noflo'\n\n# @runtime noflo-browser\n\nclass ListenDrag extends noflo.Component\n  description: 'Listen to drag events on a DOM element'\n  icon: 'arrows'\n  constructor: ->\n    @inPorts =\n      element: new noflo.Port 'object'\n    @outPorts =\n      start: new noflo.ArrayPort 'object'\n      movex: new noflo.ArrayPort 'number'\n      movey: new noflo.ArrayPort 'number'\n      end: new noflo.ArrayPort 'object'\n\n    @inPorts.element.on 'data', (element) =>\n      @subscribe element\n\n  subscribe: (element) ->\n    element.addEventListener 'dragstart', @dragstart, false\n    element.addEventListener 'drag', @dragmove, false\n    element.addEventListener 'dragend', @dragend, false\n\n  dragstart: (event) =>\n    event.preventDefault()\n    event.stopPropagation()\n\n    @outPorts.start.send event\n    @outPorts.start.disconnect()\n\n  dragmove: (event) =>\n    event.preventDefault()\n    event.stopPropagation()\n    @outPorts.movex.send event.clientX\n    @outPorts.movey.send event.clientY\n\n  dragend: (event) =>\n    event.preventDefault()\n    event.stopPropagation()\n\n    @outPorts.movex.disconnect() if @outPorts.movex.isConnected()\n    @outPorts.movey.disconnect() if @outPorts.movey.isConnected()\n\n    @outPorts.end.send event\n    @outPorts.end.disconnect()\n\nexports.getComponent = -> new ListenDrag\n" }, "interaction/ListenHash": { "language": "coffeescript", "source": "noflo = require 'noflo'\n\n# @runtime noflo-browser\n\nclass ListenHash extends noflo.Component\n  description: 'Listen for hash changes in browser\\'s URL bar'\n  icon: 'slack'\n  constructor: ->\n    @current = null\n    @inPorts = new noflo.InPorts\n      start:\n        datatype: 'bang'\n        description: 'Start listening for hash changes'\n      stop:\n        datatype: 'bang'\n        description: 'Stop listening for hash changes'\n    @outPorts = new noflo.OutPorts\n      initial:\n        datatype: 'string'\n        required: false\n      change:\n        datatype: 'string'\n        required: false\n\n    @inPorts.start.on 'data', =>\n      @subscribe()\n\n    @inPorts.stop.on 'data', =>\n      @unsubscribe()\n\n  subscribe: ->\n    @current = @getHash()\n    window.addEventListener 'hashchange', @hashChange, false\n    @outPorts.initial.send @current\n    @outPorts.initial.disconnect()\n\n  unsubscribe: ->\n    window.removeEventListener 'hashchange', @hashChange, false\n    @outPorts.change.disconnect()\n\n  hashChange: (event) =>\n    oldHash = @current\n    @current = @getHash()\n    @outPorts.change.beginGroup oldHash if oldHash\n    @outPorts.change.send @current\n    @outPorts.change.endGroup oldHash if oldHash\n\n  getHash: ->\n    window.location.href.split('#')[1] or ''\n\n  shutdown: ->\n    @unsubscribe()\n\nexports.getComponent = -> new ListenHash\n" }, "interaction/ListenKeyboard": { "language": "coffeescript", "source": "noflo = require 'noflo'\n\n# @runtime noflo-browser\n\nclass ListenKeyboard extends noflo.Component\n  description: 'Listen for key presses on a given DOM element'\n  icon: 'keyboard-o'\n  constructor: ->\n    @elements = []\n    @inPorts =\n      element: new noflo.Port 'object'\n      stop: new noflo.Port 'object'\n    @outPorts =\n      keypress: new noflo.Port 'int'\n\n    @inPorts.element.on 'data', (element) =>\n      @subscribe element\n\n    @inPorts.stop.on 'data', (element) =>\n      @unsubscribe element\n\n  subscribe: (element) ->\n    element.addEventListener 'keypress', @keypress, false\n    @elements.push element\n\n  unsubscribe: (element) ->\n    if -1 is @elements.indexOf element\n      return\n    element.removeEventListener 'keypress', @keypress, false\n    @elements.splice @elements.indexOf(element), 1\n\n  keypress: (event) =>\n    return unless @outPorts.keypress.isAttached()\n\n    @outPorts.keypress.send event.keyCode\n    @outPorts.keypress.disconnect()\n\n  shutdown: ->\n    for element in @elements\n      @unsubscribe element\n\nexports.getComponent = -> new ListenKeyboard\n" }, "interaction/ListenKeyboardShortcuts": { "language": "coffeescript", "source": "noflo = require 'noflo'\n\n# @runtime noflo-browser\n\nclass ListenKeyboardShortcuts extends noflo.Component\n  description: 'Listen for keyboard shortcuts and route them'\n  icon: 'keyboard-o'\n  constructor: ->\n    @keys = []\n    @ignoreInput = true\n    @inPorts =\n      keys: new noflo.Port 'string'\n      ignoreinput: new noflo.Port 'boolean'\n      stop: new noflo.Port 'bang'\n    @outPorts =\n      shortcut: new noflo.ArrayPort 'bang'\n      missed: new noflo.Port 'int'\n\n    @inPorts.keys.on 'data', (data) =>\n      @keys = @normalizeKeys data\n      do @subscribe\n\n    @inPorts.ignoreinput.on 'data', (data) =>\n      @ignoreInput = String(data) is 'true'\n\n    @inPorts.stop.on 'data', =>\n      do @unsubscribe\n\n  subscribe: ->\n    document.addEventListener 'keydown', @keypress, false\n\n  unsubscribe: ->\n    document.removeEventListener 'keydown', @keypress, false\n\n  normalizeKeys: (data) ->\n    keys = data.split ','\n    \n    # We allow some common keyboard shortcuts to be passed as strings\n    for key, index in keys\n      switch key\n        when '-' then keys[index] = 189\n        when '=' then keys[index] = 187\n        when '0' then keys[index] = 48\n        when 'a' then keys[index] = 65\n        when 'x' then keys[index] = 88\n        when 'c' then keys[index] = 67\n        when 'v' then keys[index] = 86\n        when 'z' then keys[index] = 90\n        when 'r' then keys[index] = 82\n        when 's' then keys[index] = 83\n    keys\n\n  validateTarget: (event) ->\n    return true unless @ignoreInput\n    return false if event.target.tagName is 'TEXTAREA'\n    return false if event.target.tagName is 'INPUT'\n    return false if String(event.target.contentEditable) is 'true'\n    true\n\n  keypress: (event) =>\n    return unless event.ctrlKey or event.metaKey\n    return unless @validateTarget event\n\n    route = @keys.indexOf event.keyCode\n    if route is -1\n      if @outPorts.missed.isAttached()\n        @outPorts.missed.send event.keyCode\n        @outPorts.missed.disconnect()\n      return\n\n    event.preventDefault()\n    event.stopPropagation()\n    @outPorts.shortcut.send event.keyCode, route\n    @outPorts.shortcut.disconnect()\n\n  shutdown: ->\n    do @unsubscribe\n\nexports.getComponent = -> new ListenKeyboardShortcuts\n" }, "interaction/ListenMouse": { "language": "coffeescript", "source": "noflo = require 'noflo'\n\n# @runtime noflo-browser\n\nclass ListenMouse extends noflo.Component\n  description: 'Listen to mouse events on a DOM element'\n  constructor: ->\n    @elements = []\n    @inPorts =\n      element: new noflo.Port 'object'\n    @outPorts =\n      click: new noflo.ArrayPort 'object'\n      dblclick: new noflo.ArrayPort 'object'\n\n    @inPorts.element.on 'data', (element) =>\n      @subscribe element\n\n  subscribe: (element) ->\n    element.addEventListener 'click', @click, false\n    element.addEventListener 'dblclick', @dblclick, false\n    @elements.push element\n\n  unsubscribe: ->\n    for element in @elements\n      element.removeEventListener 'click', @click, false\n      element.removeEventListener 'dblclick', @dblclick, false\n    @elements = []\n\n  click: (event) =>\n    return unless @outPorts.click.sockets.length\n    event.preventDefault()\n    event.stopPropagation()\n\n    @outPorts.click.send event\n    @outPorts.click.disconnect()\n    do @updateIcon\n\n  dblclick: (event) =>\n    return unless @outPorts.dblclick.sockets.length\n    event.preventDefault()\n    event.stopPropagation()\n\n    @outPorts.dblclick.send event\n    @outPorts.dblclick.disconnect()\n    do @updateIcon\n\n  updateIcon: ->\n    return unless @setIcon\n    return if @timeout\n    @originalIcon = @getIcon()\n    @setIcon 'exclamation-circle'\n    @timeout = setTimeout =>\n      @setIcon @originalIcon\n      @timeout = null\n    , 200\n\n  shutdown: ->\n    @unsubscribe()\n\nexports.getComponent = -> new ListenMouse\n" }, "interaction/ListenPointer": { "language": "coffeescript", "source": "noflo = require 'noflo'\n\n# @runtime noflo-browser\n\nclass ListenPointer extends noflo.Component\n  description: 'Listen to pointer events on a DOM element'\n  constructor: ->\n    @action = 'none'\n    @capture = false\n    @propagate = false\n    @elements = []\n\n    @inPorts =\n      element: new noflo.Port 'object'\n      action: new noflo.Port 'string'\n      capture: new noflo.Port 'boolean'\n      propagate: new noflo.Port 'boolean'\n    @outPorts =\n      down: new noflo.Port 'object'\n      up: new noflo.Port 'object'\n      cancel: new noflo.Port 'object'\n      move: new noflo.Port 'object'\n      over: new noflo.Port 'object'\n      out: new noflo.Port 'object'\n      enter: new noflo.Port 'object'\n      leave: new noflo.Port 'object'\n\n    @inPorts.element.on 'data', (element) =>\n      @subscribe element\n\n    @inPorts.action.on 'data', (@action) =>\n    @inPorts.capture.on 'data', (@capture) =>\n    @inPorts.propagate.on 'data', (@propagate) =>\n\n  subscribe: (element) ->\n    if element.setAttribute\n      element.setAttribute 'touch-action', @action\n\n    element.addEventListener 'pointerdown', @pointerDown, @capture\n    element.addEventListener 'pointerup', @pointerUp, @capture\n    element.addEventListener 'pointercancel', @pointerCancel, @capture\n    element.addEventListener 'pointermove', @pointerMove, @capture\n    element.addEventListener 'pointerover', @pointerOver, @capture\n    element.addEventListener 'pointerout', @pointerOut, @capture\n    element.addEventListener 'pointerenter', @pointerEnter, @capture\n    element.addEventListener 'pointerleave', @pointerLeave, @capture\n    @elements.push element\n\n  unsubscribe: (element) ->\n    if element.removeAttribute\n      element.removeAttribute 'touch-action'\n\n    element.removeEventListener 'pointerdown', @pointerDown, @capture\n    element.removeEventListener 'pointerup', @pointerUp, @capture\n    element.removeEventListener 'pointercancel', @pointerCancel, @capture\n    element.removeEventListener 'pointermove', @pointerMove, @capture\n    element.removeEventListener 'pointerover', @pointerOver, @capture\n    element.removeEventListener 'pointerout', @pointerOut, @capture\n    element.removeEventListener 'pointerenter', @pointerEnter, @capture\n    element.removeEventListener 'pointerleave', @pointerLeave, @capture\n\n    for name, port of @outPorts\n      continue unless port.isAttached()\n      port.disconnect()\n\n  shutdown: ->\n    @unsubscribe element for element in @elements\n    @elements = []\n\n  pointerDown: (event) =>\n    @handle event, 'down'\n  pointerUp: (event) =>\n    @handle event, 'up'\n  pointerCancel: (event) =>\n    @handle event, 'cancel'\n  pointerMove: (event) =>\n    @handle event, 'move'\n  pointerOver: (event) =>\n    @handle event, 'over'\n  pointerOut: (event) =>\n    @handle event, 'out'\n  pointerEnter: (event) =>\n    @handle event, 'enter'\n  pointerLeave: (event) =>\n    @handle event, 'leave'\n\n  handle: (event, type) ->\n    event.preventDefault()\n    event.stopPropagation() unless @propagate\n\n    unless @outPorts[type].isAttached()\n      return\n    @outPorts[type].beginGroup event.pointerId\n    @outPorts[type].send event\n    @outPorts[type].endGroup()\n\n    # End of interaction, send EOTs\n    if type is 'up' or type is 'cancel' or type is 'leave'\n      for name, port of @outPorts\n        continue unless port.isAttached()\n        port.disconnect()\n\nexports.getComponent = -> new ListenPointer\n" }, "interaction/ListenResize": { "language": "coffeescript", "source": "noflo = require 'noflo'\n\n# @runtime noflo-browser\n\nclass ListenResize extends noflo.Component\n  description: 'Listen to window resize events'\n  icon: 'desktop'\n\n  constructor: ->\n    @inPorts =\n      start: new noflo.Port 'bang'\n      stop: new noflo.Port 'bang'\n    @outPorts =\n      width: new noflo.Port 'number'\n      height: new noflo.Port 'number'\n\n    @inPorts.start.on 'data', =>\n      @sendSize()\n      @subscribe()\n\n    @inPorts.stop.on 'data', =>\n      @unsubscribe()\n\n  subscribe: ->\n    window.addEventListener 'resize', @sendSize, false\n  unsubscribe: ->\n    window.removeEventListener 'resize', @sendSize, false\n\n  sendSize: =>\n    if @outPorts.width.isAttached()\n      @outPorts.width.send window.innerWidth\n      @outPorts.width.disconnect()\n    if @outPorts.height.isAttached()\n      @outPorts.height.send window.innerHeight\n      @outPorts.height.disconnect()\n\n  shutdown: ->\n    @unsubscribe()\n\nexports.getComponent = -> new ListenResize\n" }, "interaction/ListenScroll": { "language": "coffeescript", "source": "noflo = require 'noflo'\n\n# @runtime noflo-browser\n\nclass ListenScroll extends noflo.Component\n  description: 'Listen to scroll events on the browser window'\n  icon: 'arrows-v'\n  constructor: ->\n    @inPorts =\n      start: new noflo.Port 'bang'\n      stop: new noflo.Port 'bang'\n    @outPorts =\n      top: new noflo.Port 'number'\n      bottom: new noflo.Port 'number'\n      left: new noflo.Port 'number'\n      right: new noflo.Port 'number'\n\n    @inPorts.start.on 'data', =>\n      @subscribe()\n\n    @inPorts.stop.on 'data', =>\n      @unsubscribe()\n\n  subscribe: ->\n    window.addEventListener 'scroll', @scroll, false\n\n  unsubscribe: ->\n    window.removeEventListener 'scroll', @scroll, false\n\n  scroll: (event) =>\n    top = window.scrollY\n    left = window.scrollX\n    if @outPorts.top.isAttached()\n      @outPorts.top.send top\n      @outPorts.top.disconnect()\n    if @outPorts.bottom.isAttached()\n      bottom = top + window.innerHeight\n      @outPorts.bottom.send bottom\n      @outPorts.bottom.disconnect()\n    if @outPorts.left.isAttached()\n      @outPorts.left.send left\n      @outPorts.left.disconnect()\n    if @outPorts.right.isAttached()\n      right = left + window.innerWidth\n      @outPorts.right.send right\n      @outPorts.right.disconnect()\n\n  shutdown: ->\n    @unsubscribe()\n\nexports.getComponent = -> new ListenScroll\n" }, "interaction/ListenSpeech": { "language": "coffeescript", "source": "noflo = require 'noflo'\n\n# @runtime noflo-browser\n\nclass ListenSpeech extends noflo.Component\n  description: 'Listen for user\\'s microphone and recognize phrases'\n  icon: 'microphone'\n  constructor: ->\n    @recognition = false\n    @sent = []\n    @inPorts =\n      start: new noflo.Port 'bang'\n      stop: new noflo.Port 'bang'\n    @outPorts =\n      result: new noflo.Port 'string'\n      error: new noflo.Port 'object'\n\n    @inPorts.start.on 'data', =>\n      @startListening()\n    @inPorts.stop.on 'data', =>\n      @stopListening()\n\n  startListening: ->\n    unless window.webkitSpeechRecognition\n      @handleError new Error 'Speech recognition support not available'\n    @recognition = new window.webkitSpeechRecognition\n    @recognition.continuous = true\n    @recognition.start()\n    @outPorts.result.connect()\n    @recognition.onresult = @handleResult\n    @recognition.onerror = @handleError\n\n  handleResult: (event) =>\n    for result, idx in event.results\n      continue unless result.isFinal\n      if @sent.indexOf(idx) isnt -1\n        continue\n      @outPorts.result.send result[0].transcript\n      @sent.push idx\n\n  handleError: (error) =>\n    if @outPorts.error.isAttached()\n      @outPorts.error.send error\n      @outPorts.error.disconnect()\n      return\n    throw error\n\n  stopListening: ->\n    return unless @recognition\n    @outPorts.result.disconnect()\n    @recognition.stop()\n    @recognition = null\n    @sent = []\n\n  shutdown: ->\n    @stopListening()\n\nexports.getComponent = -> new ListenSpeech\n" }, "interaction/ListenTouch": { "language": "coffeescript", "source": "noflo = require 'noflo'\n\n# @runtime noflo-browser\n\nclass ListenTouch extends noflo.Component\n  description: 'Listen to touch events on a DOM element'\n  icon: 'hand-o-up'\n  constructor: ->\n    @elements = []\n    @inPorts =\n      element: new noflo.Port 'object'\n    @outPorts =\n      start: new noflo.ArrayPort 'object'\n      movex: new noflo.ArrayPort 'number'\n      movey: new noflo.ArrayPort 'number'\n      end: new noflo.ArrayPort 'object'\n\n    @inPorts.element.on 'data', (element) =>\n      @subscribe element\n\n  subscribe: (element) ->\n    element.addEventListener 'touchstart', @touchstart, false\n    element.addEventListener 'touchmove', @touchmove, false\n    element.addEventListener 'touchend', @touchend, false\n    @elements.push element\n\n  unsubscribe: ->\n    for element in @elements\n      element.removeEventListener 'touchstart', @touchstart, false\n      element.removeEventListener 'touchmove', @touchmove, false\n      element.removeEventListener 'touchend', @touchend, false\n    @elements = []\n\n  touchstart: (event) =>\n    event.preventDefault()\n    event.stopPropagation()\n\n    return unless event.changedTouches\n    return unless event.changedTouches.length\n\n    for touch, idx in event.changedTouches\n      @outPorts.start.beginGroup idx\n      @outPorts.start.send event\n      @outPorts.start.endGroup()\n\n    @outPorts.start.disconnect()\n\n  touchmove: (event) =>\n    event.preventDefault()\n    event.stopPropagation()\n\n    return unless event.changedTouches\n    return unless event.changedTouches.length\n\n    for touch, idx in event.changedTouches\n      @outPorts.movex.beginGroup idx\n      @outPorts.movex.send touch.pageX\n      @outPorts.movex.endGroup()\n      @outPorts.movey.beginGroup idx\n      @outPorts.movey.send touch.pageY\n      @outPorts.movey.endGroup()\n\n  touchend: (event) =>\n    event.preventDefault()\n    event.stopPropagation()\n\n    return unless event.changedTouches\n    return unless event.changedTouches.length\n\n    @outPorts.movex.disconnect() if @outPorts.movex.isConnected()\n    @outPorts.movey.disconnect() if @outPorts.movey.isConnected()\n\n    for touch, idx in event.changedTouches\n      @outPorts.end.beginGroup idx\n      @outPorts.end.send event\n      @outPorts.end.endGroup()\n\n    @outPorts.end.disconnect()\n\n  shutdown: ->\n    @unsubscribe()\n\nexports.getComponent = -> new ListenTouch\n" }, "interaction/ReadCoordinates": { "language": "coffeescript", "source": "noflo = require 'noflo'\n\n# @runtime noflo-browser\n\nclass ReadCoordinates extends noflo.Component\n  description: 'Read the coordinates from a DOM event'\n  constructor: ->\n    @inPorts =\n      event: new noflo.Port 'object'\n    @outPorts =\n      screen: new noflo.Port 'object'\n      client: new noflo.Port 'object'\n      page: new noflo.Port 'object'\n\n    @inPorts.event.on 'begingroup', (group) =>\n      @outPorts.screen.beginGroup group if @outPorts.screen.isAttached()\n      @outPorts.client.beginGroup group if @outPorts.client.isAttached()\n      @outPorts.page.beginGroup group if @outPorts.page.isAttached()\n    @inPorts.event.on 'data', (data) =>\n      @read data\n    @inPorts.event.on 'endgroup', =>\n      @outPorts.screen.endGroup() if @outPorts.screen.isAttached()\n      @outPorts.client.endGroup() if @outPorts.client.isAttached()\n      @outPorts.page.endGroup() if @outPorts.page.isAttached()\n    @inPorts.event.on 'disconnect', =>\n      @outPorts.screen.disconnect() if @outPorts.screen.isAttached()\n      @outPorts.client.disconnect() if @outPorts.client.isAttached()\n      @outPorts.page.disconnect() if @outPorts.page.isAttached()\n\n  read: (event) ->\n    return unless event\n    if @outPorts.screen.isAttached() and event.screenX isnt undefined\n      @outPorts.screen.send\n        x: event.screenX\n        y: event.screenY\n    if @outPorts.client.isAttached() and event.clientX isnt undefined\n      @outPorts.client.send\n        x: event.clientX\n        y: event.clientY\n    if @outPorts.page.isAttached() and event.pageX isnt undefined\n      @outPorts.page.send\n        x: event.pageX\n        y: event.pageY\n\nexports.getComponent = -> new ReadCoordinates\n" }, "interaction/ReadGamepad": { "language": "coffeescript", "source": "noflo = require 'noflo'\n\n# @runtime noflo-browser\n\nclass ReadGamepad extends noflo.Component\n  description: 'Read the state of a gamepad'\n  icon: 'gamepad'\n  constructor: ->\n    @lastTimestamp\n    @inPorts =\n      gamepad: new noflo.Port 'int'\n    @outPorts =\n      out: new noflo.Port 'object'\n      error: new noflo.Port 'string'\n\n    @inPorts.gamepad.on 'data', (number) =>\n      @readGamepad number\n\n  readGamepad: (number) ->\n    if !navigator.webkitGetGamepads\n      msg = \"no webkit gamepad api available\"\n      if @outPorts.error.isAttached()\n        @outPorts.error.send msg\n        @outPorts.error.disconnect()\n        return\n      else\n        throw new Error msg\n\n    gamepadState = navigator.webkitGetGamepads()[number]\n    if !gamepadState\n      msg = \"state for gamepad '#{number}' could not been read\"\n      if @outPorts.error.isAttached()\n        @outPorts.error.send msg\n        @outPorts.error.disconnect()\n        return\n      else\n        throw new Error msg\n\n    if @lastTimestamp != gamepadState.timestamp\n      @lastTimestamp = gamepadState.timestamp\n      @outPorts.out.send gamepadState\n\nexports.getComponent = -> new ReadGamepad\n" }, "interaction/SetHash": { "language": "coffeescript", "source": "noflo = require 'noflo'\n\n# @runtime noflo-browser\n\nclass SetHash extends noflo.Component\n  description: 'Set the hash in browser\\'s URL bar'\n  icon: 'slack'\n  constructor: ->\n    @inPorts =\n      hash: new noflo.ArrayPort 'string'\n    @outPorts =\n      out: new noflo.Port 'string'\n\n    @inPorts.hash.on 'data', (data) =>\n      window.location.hash = \"##{data}\"\n      @outPorts.out.send data if @outPorts.out.isAttached()\n\n    @inPorts.hash.on 'disconnect', =>\n      @outPorts.out.disconnect() if @outPorts.out.isAttached()\n\nexports.getComponent = -> new SetHash\n" } };
+
+exports.setSource = function (loader, packageId, name, source, language, callback) {
+  baseLoader.setSource(sources, loader, packageId, name, source, language, callback);
+};
+exports.getSource = function (loader, name, callback) {
+  baseLoader.getSource(sources, loader, name, callback);
+};
+
+exports.register = function (loader, callback) {
+  loader.setLibraryIcon("dom", "html5");
+  loader.registerComponent("browser-app", "DoSomething", __webpack_require__(35));
+  loader.registerComponent("browser-app", "main", __webpack_require__(36));
+  loader.registerComponent(null, "Graph", __webpack_require__(37));
+  loader.registerComponent("core", "Callback", __webpack_require__(38));
+  loader.registerComponent("core", "Copy", __webpack_require__(39));
+  loader.registerComponent("core", "DisconnectAfterPacket", __webpack_require__(41));
+  loader.registerComponent("core", "Drop", __webpack_require__(42));
+  loader.registerComponent("core", "Kick", __webpack_require__(43));
+  loader.registerComponent("core", "MakeFunction", __webpack_require__(44));
+  loader.registerComponent("core", "Merge", __webpack_require__(45));
+  loader.registerComponent("core", "Output", __webpack_require__(46));
+  loader.registerComponent("core", "ReadGlobal", __webpack_require__(50));
+  loader.registerComponent("core", "Repeat", __webpack_require__(51));
+  loader.registerComponent("core", "RepeatAsync", __webpack_require__(52));
+  loader.registerComponent("core", "RepeatDelayed", __webpack_require__(53));
+  loader.registerComponent("core", "RunInterval", __webpack_require__(54));
+  loader.registerComponent("core", "RunTimeout", __webpack_require__(55));
+  loader.registerComponent("core", "SendNext", __webpack_require__(56));
+  loader.registerComponent("core", "Split", __webpack_require__(57));
+  loader.registerComponent("dom", "AddClass", __webpack_require__(58));
+  loader.registerComponent("dom", "AppendChild", __webpack_require__(59));
+  loader.registerComponent("dom", "CreateElement", __webpack_require__(60));
+  loader.registerComponent("dom", "CreateFragment", __webpack_require__(61));
+  loader.registerComponent("dom", "GetAttribute", __webpack_require__(62));
+  loader.registerComponent("dom", "GetElement", __webpack_require__(63));
+  loader.registerComponent("dom", "HasClass", __webpack_require__(64));
+  loader.registerComponent("dom", "Listen", __webpack_require__(65));
+  loader.registerComponent("dom", "ReadHtml", __webpack_require__(66));
+  loader.registerComponent("dom", "RemoveClass", __webpack_require__(67));
+  loader.registerComponent("dom", "RemoveElement", __webpack_require__(68));
+  loader.registerComponent("dom", "RequestAnimationFrame", __webpack_require__(69));
+  loader.registerComponent("dom", "SetAttribute", __webpack_require__(70));
+  loader.registerComponent("dom", "WriteHtml", __webpack_require__(71));
+  loader.registerComponent("interaction", "Focus", __webpack_require__(72));
+  loader.registerComponent("interaction", "ListenChange", __webpack_require__(73));
+  loader.registerComponent("interaction", "ListenDrag", __webpack_require__(74));
+  loader.registerComponent("interaction", "ListenHash", __webpack_require__(75));
+  loader.registerComponent("interaction", "ListenKeyboard", __webpack_require__(76));
+  loader.registerComponent("interaction", "ListenKeyboardShortcuts", __webpack_require__(77));
+  loader.registerComponent("interaction", "ListenMouse", __webpack_require__(78));
+  loader.registerComponent("interaction", "ListenPointer", __webpack_require__(79));
+  loader.registerComponent("interaction", "ListenResize", __webpack_require__(80));
+  loader.registerComponent("interaction", "ListenScroll", __webpack_require__(81));
+  loader.registerComponent("interaction", "ListenSpeech", __webpack_require__(82));
+  loader.registerComponent("interaction", "ListenTouch", __webpack_require__(83));
+  loader.registerComponent("interaction", "ReadCoordinates", __webpack_require__(84));
+  loader.registerComponent("interaction", "ReadGamepad", __webpack_require__(85));
+  loader.registerComponent("interaction", "SetHash", __webpack_require__(86));
+  var loaders = [];
+
+  baseLoader.registerCustomLoaders(loader, loaders, callback);
+};
+
+/***/ }),
+/* 34 */
+/***/ (function(module, exports) {
+
+/* eslint-disable */
+exports.registerCustomLoaders = function (loader, loaders, callback) {
   if (!loaders.length) {
     return callback();
   }
@@ -13793,16 +13265,18 @@ var registerCustomLoaders = function (loader, loaders, callback) {
     if (err) {
       return callback(err);
     }
-    registerCustomLoaders(loader, loaders, callback);
+    exports.registerCustomLoaders(loader, loaders, callback);
   });
 };
 
-exports.setSource = function (loader, packageId, name, source, language, callback) {
+
+exports.setSource = function (sources, loader, packageId, name, source, language, callback) {
   var implementation;
+  var originalSource = source;
   // Transpiling
   if (language === 'coffeescript') {
-    if (!window.CoffeeScript) {
-      return callback(new Error('CoffeeScript compiler not available'));
+    if (typeof window !== 'undefined' && !window.CoffeeScript) {
+      return callback(new Error('CoffeeScript compiler needed for ' + packageId + '/' + name + ' not available'));
     }
     try {
       source = window.CoffeeScript.compile(source, {
@@ -13813,13 +13287,12 @@ exports.setSource = function (loader, packageId, name, source, language, callbac
     }
   }
   if (language === 'es6' || language === 'es2015') {
-    if (!window.babel) {
-      return callback(new Error('Babel compiler not available'));
-    }
-    try {
-      source = window.babel.transform(source).code;
-    } catch (e) {
-      return callback(e);
+    if (typeof window !== 'undefined' && window.babel) {
+      try {
+        source = window.babel.transform(source).code;
+      } catch (e) {
+        return callback(e);
+      }
     }
   }
   // Eval the contents to get a runnable component
@@ -13830,26 +13303,43 @@ exports.setSource = function (loader, packageId, name, source, language, callbac
     return callback(e);
   }
 
-  if (!implementation && !implementation.getComponent) {
-    return callback(new Error('Provided source failed to create a runnable component'));
+  if (typeof implementation !== 'function' && (!implementation.getComponent || typeof implementation.getComponent !== 'function')) {
+    return callback(new Error('Provided source for ' + packageId + '/' + name + ' failed to create a runnable component'));
   }
+
+  var fullName = packageId + '/' + name;
+  sources[fullName] = {
+    language: language,
+    source: originalSource
+  };
 
   loader.registerComponent(packageId, name, implementation, callback);
 };
 
-exports.getSource = function (loader, name, callback) {
+exports.getSource = function (sources, loader, name, callback) {
   if (!loader.components[name]) {
     return callback(new Error('Component ' + name + ' not available'));
   }
   var component = loader.components[name];
-  var nameParts = name.split('/');
-  var componentData = {
-    name: nameParts[1],
-    library: nameParts[0]
-  };
+  if (name.indexOf('/') !== -1) {
+    var nameParts = name.split('/');
+    var componentData = {
+      name: nameParts[1],
+      library: nameParts[0]
+    };
+  } else {
+    var componentData = {
+      name: name,
+      library: ''
+    };
+  }
   if (loader.isGraph(component)) {
     componentData.code = JSON.stringify(component, null, 2);
     componentData.language = 'json';
+    return callback(null, componentData);
+  } else if (sources[name]) {
+    componentData.code = sources[name].source;
+    componentData.language = sources[name].language;
     return callback(null, componentData);
   } else if (typeof component === 'function') {
     componentData.code = component.toString();
@@ -13863,85 +13353,9 @@ exports.getSource = function (loader, name, callback) {
   return callback(new Error('Unable to get sources for ' + name));
 };
 
-exports.register = function (loader, callback) {
-  var components = {
-    'browser-app/DoSomething': __webpack_require__(36),
-    'browser-app/main': __webpack_require__(37),
-    'Graph': __webpack_require__(38),
-    'core/Callback': __webpack_require__(39),
-    'core/Copy': __webpack_require__(40),
-    'core/DisconnectAfterPacket': __webpack_require__(42),
-    'core/Drop': __webpack_require__(43),
-    'core/Kick': __webpack_require__(44),
-    'core/MakeFunction': __webpack_require__(45),
-    'core/Merge': __webpack_require__(46),
-    'core/Output': __webpack_require__(47),
-    'core/ReadGlobal': __webpack_require__(50),
-    'core/Repeat': __webpack_require__(51),
-    'core/RepeatAsync': __webpack_require__(52),
-    'core/RepeatDelayed': __webpack_require__(53),
-    'core/RunInterval': __webpack_require__(54),
-    'core/RunTimeout': __webpack_require__(55),
-    'core/SendNext': __webpack_require__(56),
-    'core/Split': __webpack_require__(57),
-    'dom/AddClass': __webpack_require__(58),
-    'dom/AppendChild': __webpack_require__(59),
-    'dom/CreateElement': __webpack_require__(60),
-    'dom/CreateFragment': __webpack_require__(61),
-    'dom/GetAttribute': __webpack_require__(62),
-    'dom/GetElement': __webpack_require__(63),
-    'dom/HasClass': __webpack_require__(64),
-    'dom/Listen': __webpack_require__(65),
-    'dom/ReadHtml': __webpack_require__(66),
-    'dom/RemoveClass': __webpack_require__(67),
-    'dom/RemoveElement': __webpack_require__(68),
-    'dom/RequestAnimationFrame': __webpack_require__(69),
-    'dom/SetAttribute': __webpack_require__(70),
-    'dom/WriteHtml': __webpack_require__(71),
-    'interaction/Focus': __webpack_require__(72),
-    'interaction/ListenChange': __webpack_require__(73),
-    'interaction/ListenDrag': __webpack_require__(74),
-    'interaction/ListenHash': __webpack_require__(75),
-    'interaction/ListenKeyboard': __webpack_require__(76),
-    'interaction/ListenKeyboardShortcuts': __webpack_require__(77),
-    'interaction/ListenMouse': __webpack_require__(78),
-    'interaction/ListenPointer': __webpack_require__(79),
-    'interaction/ListenResize': __webpack_require__(80),
-    'interaction/ListenScroll': __webpack_require__(81),
-    'interaction/ListenSpeech': __webpack_require__(82),
-    'interaction/ListenTouch': __webpack_require__(83),
-    'interaction/ReadCoordinates': __webpack_require__(84),
-    'interaction/ReadGamepad': __webpack_require__(85),
-    'interaction/SetHash': __webpack_require__(86)
-  };
-  var loaders = [
-
-  ];
-  var names = Object.keys(components);
-
-  names.forEach(function (fullname) {
-    var mod = components[fullname];
-    var tok = fullname.split('/');
-    if (tok.length == 2) {
-      var modulename = tok[0];
-      var componentname = tok[1];
-      loader.registerComponent(modulename, componentname, mod);
-    } else {
-      loader.registerComponent(null, fullname, mod);
-    }
-  });
-
-  if (!loaders.length) {
-    return callback();
-  }
-
-  registerCustomLoaders(loader, loaders, callback);
-};
-
-
 
 /***/ }),
-/* 36 */
+/* 35 */
 /***/ (function(module, exports, __webpack_require__) {
 
 var noflo;
@@ -13974,23 +13388,35 @@ exports.getComponent = function() {
 
 
 /***/ }),
-/* 37 */
+/* 36 */
 /***/ (function(module, exports) {
 
 module.exports = {"caseSensitive":false,"properties":{"name":"main","environment":{"type":"noflo-browser","content":"<button id='button'>Go!</button>\n<p id='message'></p>"},"icon":""},"inports":{},"outports":{},"groups":[],"processes":{"dom/GetElement_7amk2":{"component":"dom/GetElement","metadata":{"label":"dom/GetElement","x":216,"y":144,"width":72,"height":72}},"core/Output_cg49":{"component":"core/Output","metadata":{"label":"core/Output","x":432,"y":360,"width":72,"height":72}},"dom/WriteHtml_fpz6j":{"component":"dom/WriteHtml","metadata":{"label":"dom/WriteHtml","x":684,"y":288,"width":72,"height":72}},"dom/GetElement_xvz54":{"component":"dom/GetElement","metadata":{"label":"dom/GetElement","x":252,"y":288,"width":72,"height":72}},"interaction/ListenMouse_1l373":{"component":"interaction/ListenMouse","metadata":{"label":"interaction/ListenMouse","x":396,"y":144,"width":72,"height":72}},"core/Kick_ey1nh":{"component":"core/Kick","metadata":{"label":"core/Kick","x":576,"y":180,"width":72,"height":72}}},"connections":[{"src":{"process":"dom/GetElement_xvz54","port":"element"},"tgt":{"process":"dom/WriteHtml_fpz6j","port":"container"}},{"src":{"process":"dom/GetElement_7amk2","port":"element"},"tgt":{"process":"interaction/ListenMouse_1l373","port":"element"},"metadata":{"route":0}},{"src":{"process":"dom/GetElement_7amk2","port":"error"},"tgt":{"process":"core/Output_cg49","port":"in"},"metadata":{"route":1}},{"src":{"process":"dom/GetElement_xvz54","port":"error"},"tgt":{"process":"core/Output_cg49","port":"in"},"metadata":{"route":1}},{"src":{"process":"interaction/ListenMouse_1l373","port":"click"},"tgt":{"process":"core/Kick_ey1nh","port":"in"}},{"src":{"process":"core/Kick_ey1nh","port":"out"},"tgt":{"process":"dom/WriteHtml_fpz6j","port":"html"}},{"data":"#button","tgt":{"process":"dom/GetElement_7amk2","port":"selector"}},{"data":"#message","tgt":{"process":"dom/GetElement_xvz54","port":"selector"}},{"data":"Hallo Menno!","tgt":{"process":"core/Kick_ey1nh","port":"data"}}]}
 
 /***/ }),
-/* 38 */
+/* 37 */
 /***/ (function(module, exports, __webpack_require__) {
 
-/* WEBPACK VAR INJECTION */(function(process) {(function() {
-  var Graph, noflo,
-    extend = function(child, parent) { for (var key in parent) { if (hasProp.call(parent, key)) child[key] = parent[key]; } function ctor() { this.constructor = child; } ctor.prototype = parent.prototype; child.prototype = new ctor(); child.__super__ = parent.prototype; return child; },
-    hasProp = {}.hasOwnProperty;
+"use strict";
+/* WEBPACK VAR INJECTION */(function(process) {
+
+var _typeof = typeof Symbol === "function" && typeof Symbol.iterator === "symbol" ? function (obj) { return typeof obj; } : function (obj) { return obj && typeof Symbol === "function" && obj.constructor === Symbol && obj !== Symbol.prototype ? "symbol" : typeof obj; };
+
+(function () {
+  var Graph,
+      noflo,
+      extend = function extend(child, parent) {
+    for (var key in parent) {
+      if (hasProp.call(parent, key)) child[key] = parent[key];
+    }function ctor() {
+      this.constructor = child;
+    }ctor.prototype = parent.prototype;child.prototype = new ctor();child.__super__ = parent.prototype;return child;
+  },
+      hasProp = {}.hasOwnProperty;
 
   noflo = __webpack_require__(0);
 
-  Graph = (function(superClass) {
+  Graph = function (superClass) {
     extend(Graph, superClass);
 
     function Graph(metadata1) {
@@ -14009,69 +13435,69 @@ module.exports = {"caseSensitive":false,"properties":{"name":"main","environment
           required: true
         }
       });
-      this.outPorts = new noflo.OutPorts;
-      this.inPorts.graph.on('ip', (function(_this) {
-        return function(packet) {
+      this.outPorts = new noflo.OutPorts();
+      this.inPorts.graph.on('ip', function (_this) {
+        return function (packet) {
           if (packet.type !== 'data') {
             return;
           }
-          return _this.setGraph(packet.data, function(err) {
+          return _this.setGraph(packet.data, function (err) {
             if (err) {
               return _this.error(err);
             }
           });
         };
-      })(this));
+      }(this));
     }
 
-    Graph.prototype.setGraph = function(graph, callback) {
+    Graph.prototype.setGraph = function (graph, callback) {
       this.ready = false;
-      if (typeof graph === 'object') {
+      if ((typeof graph === 'undefined' ? 'undefined' : _typeof(graph)) === 'object') {
         if (typeof graph.addNode === 'function') {
           this.createNetwork(graph, callback);
           return;
         }
-        noflo.graph.loadJSON(graph, (function(_this) {
-          return function(err, instance) {
+        noflo.graph.loadJSON(graph, function (_this) {
+          return function (err, instance) {
             if (err) {
               return callback(err);
             }
             instance.baseDir = _this.baseDir;
             return _this.createNetwork(instance, callback);
           };
-        })(this));
+        }(this));
         return;
       }
       if (graph.substr(0, 1) !== "/" && graph.substr(1, 1) !== ":" && process && process.cwd) {
-        graph = (process.cwd()) + "/" + graph;
+        graph = process.cwd() + "/" + graph;
       }
-      return noflo.graph.loadFile(graph, (function(_this) {
-        return function(err, instance) {
+      return noflo.graph.loadFile(graph, function (_this) {
+        return function (err, instance) {
           if (err) {
             return callback(err);
           }
           instance.baseDir = _this.baseDir;
           return _this.createNetwork(instance, callback);
         };
-      })(this));
+      }(this));
     };
 
-    Graph.prototype.createNetwork = function(graph, callback) {
+    Graph.prototype.createNetwork = function (graph, callback) {
       this.description = graph.properties.description || '';
       this.icon = graph.properties.icon || this.icon;
       if (!graph.name) {
         graph.name = this.nodeId;
       }
       graph.componentLoader = this.loader;
-      return noflo.createNetwork(graph, (function(_this) {
-        return function(err, network1) {
+      return noflo.createNetwork(graph, function (_this) {
+        return function (err, network1) {
           _this.network = network1;
           if (err) {
             return callback(err);
           }
           _this.emit('network', _this.network);
           _this.subscribeNetwork(_this.network);
-          return _this.network.connect(function(err) {
+          return _this.network.connect(function (err) {
             var name, node, ref;
             if (err) {
               return callback(err);
@@ -14085,22 +13511,22 @@ module.exports = {"caseSensitive":false,"properties":{"name":"main","environment
             return callback();
           });
         };
-      })(this), true);
+      }(this), true);
     };
 
-    Graph.prototype.subscribeNetwork = function(network) {
+    Graph.prototype.subscribeNetwork = function (network) {
       var contexts;
       contexts = [];
-      this.network.on('start', (function(_this) {
-        return function() {
+      this.network.on('start', function (_this) {
+        return function () {
           var ctx;
           ctx = {};
           contexts.push(ctx);
           return _this.activate(ctx);
         };
-      })(this));
-      return this.network.on('end', (function(_this) {
-        return function() {
+      }(this));
+      return this.network.on('end', function (_this) {
+        return function () {
           var ctx;
           ctx = contexts.pop();
           if (!ctx) {
@@ -14108,10 +13534,10 @@ module.exports = {"caseSensitive":false,"properties":{"name":"main","environment
           }
           return _this.deactivate(ctx);
         };
-      })(this));
+      }(this));
     };
 
-    Graph.prototype.isExportedInport = function(port, nodeName, portName) {
+    Graph.prototype.isExportedInport = function (port, nodeName, portName) {
       var exported, i, len, priv, pub, ref, ref1;
       ref = this.network.graph.inports;
       for (pub in ref) {
@@ -14136,7 +13562,7 @@ module.exports = {"caseSensitive":false,"properties":{"name":"main","environment
       return false;
     };
 
-    Graph.prototype.isExportedOutport = function(port, nodeName, portName) {
+    Graph.prototype.isExportedOutport = function (port, nodeName, portName) {
       var exported, i, len, priv, pub, ref, ref1;
       ref = this.network.graph.outports;
       for (pub in ref) {
@@ -14161,25 +13587,25 @@ module.exports = {"caseSensitive":false,"properties":{"name":"main","environment
       return false;
     };
 
-    Graph.prototype.setToReady = function() {
+    Graph.prototype.setToReady = function () {
       if (typeof process !== 'undefined' && process.execPath && process.execPath.indexOf('node') !== -1) {
-        return process.nextTick((function(_this) {
-          return function() {
+        return process.nextTick(function (_this) {
+          return function () {
             _this.ready = true;
             return _this.emit('ready');
           };
-        })(this));
+        }(this));
       } else {
-        return setTimeout((function(_this) {
-          return function() {
+        return setTimeout(function (_this) {
+          return function () {
             _this.ready = true;
             return _this.emit('ready');
           };
-        })(this), 0);
+        }(this), 0);
       }
     };
 
-    Graph.prototype.findEdgePorts = function(name, process) {
+    Graph.prototype.findEdgePorts = function (name, process) {
       var inPorts, outPorts, port, portName, targetPortName;
       inPorts = process.component.inPorts.ports || process.component.inPorts;
       outPorts = process.component.outPorts.ports || process.component.outPorts;
@@ -14190,17 +13616,17 @@ module.exports = {"caseSensitive":false,"properties":{"name":"main","environment
           continue;
         }
         this.inPorts.add(targetPortName, port);
-        this.inPorts[targetPortName].once('connect', (function(_this) {
-          return function() {
+        this.inPorts[targetPortName].once('connect', function (_this) {
+          return function () {
             if (_this.starting) {
               return;
             }
             if (_this.isStarted()) {
               return;
             }
-            return _this.start(function() {});
+            return _this.start(function () {});
           };
-        })(this));
+        }(this));
       }
       for (portName in outPorts) {
         port = outPorts[portName];
@@ -14213,28 +13639,28 @@ module.exports = {"caseSensitive":false,"properties":{"name":"main","environment
       return true;
     };
 
-    Graph.prototype.isReady = function() {
+    Graph.prototype.isReady = function () {
       return this.ready;
     };
 
-    Graph.prototype.isSubgraph = function() {
+    Graph.prototype.isSubgraph = function () {
       return true;
     };
 
-    Graph.prototype.setUp = function(callback) {
+    Graph.prototype.setUp = function (callback) {
       this.starting = true;
       if (!this.isReady()) {
-        this.once('ready', (function(_this) {
-          return function() {
+        this.once('ready', function (_this) {
+          return function () {
             return _this.setUp(callback);
           };
-        })(this));
+        }(this));
         return;
       }
       if (!this.network) {
         return callback(null);
       }
-      return this.network.start(function(err) {
+      return this.network.start(function (err) {
         if (err) {
           return callback(err);
         }
@@ -14243,12 +13669,12 @@ module.exports = {"caseSensitive":false,"properties":{"name":"main","environment
       });
     };
 
-    Graph.prototype.tearDown = function(callback) {
+    Graph.prototype.tearDown = function (callback) {
       this.starting = false;
       if (!this.network) {
         return callback(null);
       }
-      return this.network.stop(function(err) {
+      return this.network.stop(function (err) {
         if (err) {
           return callback(err);
         }
@@ -14257,19 +13683,16 @@ module.exports = {"caseSensitive":false,"properties":{"name":"main","environment
     };
 
     return Graph;
+  }(noflo.Component);
 
-  })(noflo.Component);
-
-  exports.getComponent = function(metadata) {
+  exports.getComponent = function (metadata) {
     return new Graph(metadata);
   };
-
-}).call(this);
-
-/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(1)))
+}).call(undefined);
+/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(2)))
 
 /***/ }),
-/* 39 */
+/* 38 */
 /***/ (function(module, exports, __webpack_require__) {
 
 var noflo;
@@ -14301,14 +13724,14 @@ exports.getComponent = function() {
     }
     ref = input.getData('callback', 'in'), callback = ref[0], data = ref[1];
     if (typeof callback !== 'function') {
-      output.sendDone(new Error('The provided callback must be a function'));
+      output.done(new Error('The provided callback must be a function'));
       return;
     }
     try {
       callback(data);
     } catch (error) {
       e = error;
-      return output.sendDone(e);
+      return output.done(e);
     }
     return output.done();
   });
@@ -14316,14 +13739,14 @@ exports.getComponent = function() {
 
 
 /***/ }),
-/* 40 */
+/* 39 */
 /***/ (function(module, exports, __webpack_require__) {
 
 var noflo, owl;
 
 noflo = __webpack_require__(0);
 
-owl = __webpack_require__(41);
+owl = __webpack_require__(40);
 
 exports.getComponent = function() {
   var c;
@@ -14353,7 +13776,7 @@ exports.getComponent = function() {
 
 
 /***/ }),
-/* 41 */
+/* 40 */
 /***/ (function(module, exports, __webpack_require__) {
 
 /* This file is part of OWL JavaScript Utilities.
@@ -14632,7 +14055,7 @@ deepCopy.register({
 // EventEmitter copier
 // EventEmitters have a property which is an object, but doesn't 
 // have an object prototype, so instanceof doesn't work on them
-var EventEmitter = __webpack_require__(2).EventEmitter;
+var EventEmitter = __webpack_require__(1).EventEmitter;
 deepCopy.register({
   canCopy: function(source) { return source instanceof EventEmitter; },
   
@@ -14712,7 +14135,7 @@ exports.deepCopy = deepCopy;
 
 
 /***/ }),
-/* 42 */
+/* 41 */
 /***/ (function(module, exports, __webpack_require__) {
 
 var noflo;
@@ -14722,7 +14145,7 @@ noflo = __webpack_require__(0);
 exports.getComponent = function() {
   var brackets, c;
   c = new noflo.Component;
-  c.description = 'Forwards any packets, but also sends a disconnect after each of them';
+  c.description = 'Makes each data packet a stream of its own';
   c.icon = 'pause';
   c.forwardBrackets = {};
   c.autoOrdering = false;
@@ -14733,42 +14156,49 @@ exports.getComponent = function() {
   c.outPorts.add('out', {
     datatype: 'all'
   });
-  brackets = [];
-  c.process(function(input, output) {
-    var bracket, data, i, j, len, len1;
+  brackets = {};
+  c.tearDown = function(callback) {
+    return brackets = {};
+  };
+  return c.process(function(input, output) {
+    var bracket, closes, data, i, j, len, len1, ref;
     c.autoOrdering = false;
     data = input.get('in');
+    if (!brackets[input.scope]) {
+      brackets[input.scope] = [];
+    }
     if (data.type === 'openBracket') {
-      brackets.push(data.data);
+      brackets[input.scope].push(data.data);
+      output.done();
       return;
     }
     if (data.type === 'closeBracket') {
-      brackets.pop();
+      brackets[input.scope].pop();
+      output.done();
       return;
     }
     if (data.type !== 'data') {
       return;
     }
-    for (i = 0, len = brackets.length; i < len; i++) {
-      bracket = brackets[i];
+    ref = brackets[input.scope];
+    for (i = 0, len = ref.length; i < len; i++) {
+      bracket = ref[i];
       output.sendIP('out', new noflo.IP('openBracket', bracket));
     }
     output.sendIP('out', data);
-    for (j = 0, len1 = brackets.length; j < len1; j++) {
-      bracket = brackets[j];
+    closes = brackets[input.scope].slice(0);
+    closes.reverse();
+    for (j = 0, len1 = closes.length; j < len1; j++) {
+      bracket = closes[j];
       output.sendIP('out', new noflo.IP('closeBracket', bracket));
     }
     return output.done();
   });
-  c.shutdown = function() {
-    return brackets = [];
-  };
-  return c;
 };
 
 
 /***/ }),
-/* 43 */
+/* 42 */
 /***/ (function(module, exports, __webpack_require__) {
 
 var noflo;
@@ -14794,7 +14224,7 @@ exports.getComponent = function() {
 
 
 /***/ }),
-/* 44 */
+/* 43 */
 /***/ (function(module, exports, __webpack_require__) {
 
 var noflo;
@@ -14824,6 +14254,9 @@ exports.getComponent = function() {
     if (!input.hasStream('in')) {
       return;
     }
+    if (input.attached('data').length && !input.hasData('data')) {
+      return;
+    }
     bang = input.getData('in');
     data = input.getData('data');
     output.send({
@@ -14835,7 +14268,7 @@ exports.getComponent = function() {
 
 
 /***/ }),
-/* 45 */
+/* 44 */
 /***/ (function(module, exports, __webpack_require__) {
 
 var noflo;
@@ -14843,7 +14276,7 @@ var noflo;
 noflo = __webpack_require__(0);
 
 exports.getComponent = function() {
-  var c;
+  var c, prepareFunction;
   c = new noflo.Component;
   c.description = 'Evaluates a function each time data hits the "in" port and sends the return value to "out". Within the function "x" will be the variable from the in port. For example, to make a ^2 function input "return x*x;" to the function port.';
   c.icon = 'code';
@@ -14865,48 +14298,65 @@ exports.getComponent = function() {
   c.outPorts.add('error', {
     datatype: 'object'
   });
-  return c.process(function(input, output) {
-    var data, e, func, result;
-    if (input.has('function')) {
-      func = input.getData('function');
-      if (typeof func !== 'function') {
-        try {
-          func = Function('x', func);
-        } catch (error) {
-          e = error;
-          output.sendDone(e);
-          return;
-        }
-      }
-      if (!input.has('in')) {
-        output.sendDone({
-          "function": func
-        });
-        return;
-      }
-    }
-    if (!func) {
-      output.sendDone(new Error('No function defined'));
+  prepareFunction = function(func, callback) {
+    var e, newFunc;
+    if (typeof func === 'function') {
+      callback(null, func);
       return;
     }
-    data = input.getData('in');
     try {
-      result = func(data);
+      newFunc = Function('x', func);
     } catch (error) {
       e = error;
-      output.sendDone(e);
+      callback(e);
       return;
     }
-    return output.sendDone({
-      "function": func,
-      out: result
+    return callback(null, newFunc);
+  };
+  return c.process(function(input, output) {
+    if (input.attached('in').length && !input.hasData('in')) {
+      return;
+    }
+    if (input.hasData('function', 'in')) {
+      prepareFunction(input.getData('function'), function(err, func) {
+        var data, e, result;
+        if (err) {
+          output.done(e);
+          return;
+        }
+        data = input.getData('in');
+        try {
+          result = func(data);
+        } catch (error) {
+          e = error;
+          output.done(e);
+          return;
+        }
+        output.sendDone({
+          "function": func,
+          out: result
+        });
+      });
+      return;
+    }
+    if (!input.hasData('function')) {
+      return;
+    }
+    prepareFunction(input.getData('function'), function(err, func) {
+      if (err) {
+        output.done(e);
+        return;
+      }
+      output.sendDone({
+        "function": func
+      });
     });
   });
 };
 
 
 /***/ }),
-/* 46 */
+/* 45 */
 /***/ (function(module, exports, __webpack_require__) {
 
 var noflo;
@@ -14936,7 +14386,7 @@ exports.getComponent = function() {
 
 
 /***/ }),
-/* 47 */
+/* 46 */
 /***/ (function(module, exports, __webpack_require__) {
 
 var log, noflo, util;
@@ -14944,7 +14394,7 @@ var log, noflo, util;
 noflo = __webpack_require__(0);
 
 if (!noflo.isBrowser()) {
-  util = __webpack_require__(16);
+  util = __webpack_require__(47);
 } else {
   util = {
     inspect: function(data) {
@@ -14983,6 +14433,9 @@ exports.getComponent = function() {
     if (!input.hasData('in')) {
       return;
     }
+    if (input.attached('options').length && !input.hasData('options')) {
+      return;
+    }
     options = null;
     if (input.has('options')) {
       options = input.getData('options');
@@ -14995,6 +14448,599 @@ exports.getComponent = function() {
   });
 };
 
+
+/***/ }),
+/* 47 */
+/***/ (function(module, exports, __webpack_require__) {
+
+/* WEBPACK VAR INJECTION */(function(global, process) {// Copyright Joyent, Inc. and other Node contributors.
+//
+// Permission is hereby granted, free of charge, to any person obtaining a
+// copy of this software and associated documentation files (the
+// "Software"), to deal in the Software without restriction, including
+// without limitation the rights to use, copy, modify, merge, publish,
+// distribute, sublicense, and/or sell copies of the Software, and to permit
+// persons to whom the Software is furnished to do so, subject to the
+// following conditions:
+//
+// The above copyright notice and this permission notice shall be included
+// in all copies or substantial portions of the Software.
+//
+// THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS
+// OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF
+// MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN
+// NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM,
+// DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR
+// OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE
+// USE OR OTHER DEALINGS IN THE SOFTWARE.
+
+var formatRegExp = /%[sdj%]/g;
+exports.format = function(f) {
+  if (!isString(f)) {
+    var objects = [];
+    for (var i = 0; i < arguments.length; i++) {
+      objects.push(inspect(arguments[i]));
+    }
+    return objects.join(' ');
+  }
+
+  var i = 1;
+  var args = arguments;
+  var len = args.length;
+  var str = String(f).replace(formatRegExp, function(x) {
+    if (x === '%%') return '%';
+    if (i >= len) return x;
+    switch (x) {
+      case '%s': return String(args[i++]);
+      case '%d': return Number(args[i++]);
+      case '%j':
+        try {
+          return JSON.stringify(args[i++]);
+        } catch (_) {
+          return '[Circular]';
+        }
+      default:
+        return x;
+    }
+  });
+  for (var x = args[i]; i < len; x = args[++i]) {
+    if (isNull(x) || !isObject(x)) {
+      str += ' ' + x;
+    } else {
+      str += ' ' + inspect(x);
+    }
+  }
+  return str;
+};
+
+
+// Mark that a method should not be used.
+// Returns a modified function which warns once by default.
+// If --no-deprecation is set, then it is a no-op.
+exports.deprecate = function(fn, msg) {
+  // Allow for deprecating things in the process of starting up.
+  if (isUndefined(global.process)) {
+    return function() {
+      return exports.deprecate(fn, msg).apply(this, arguments);
+    };
+  }
+
+  if (process.noDeprecation === true) {
+    return fn;
+  }
+
+  var warned = false;
+  function deprecated() {
+    if (!warned) {
+      if (process.throwDeprecation) {
+        throw new Error(msg);
+      } else if (process.traceDeprecation) {
+        console.trace(msg);
+      } else {
+        console.error(msg);
+      }
+      warned = true;
+    }
+    return fn.apply(this, arguments);
+  }
+
+  return deprecated;
+};
+
+
+var debugs = {};
+var debugEnviron;
+exports.debuglog = function(set) {
+  if (isUndefined(debugEnviron))
+    debugEnviron = process.env.NODE_DEBUG || '';
+  set = set.toUpperCase();
+  if (!debugs[set]) {
+    if (new RegExp('\\b' + set + '\\b', 'i').test(debugEnviron)) {
+      var pid = process.pid;
+      debugs[set] = function() {
+        var msg = exports.format.apply(exports, arguments);
+        console.error('%s %d: %s', set, pid, msg);
+      };
+    } else {
+      debugs[set] = function() {};
+    }
+  }
+  return debugs[set];
+};
+
+
+/**
+ * Echos the value of a value. Trys to print the value out
+ * in the best way possible given the different types.
+ *
+ * @param {Object} obj The object to print out.
+ * @param {Object} opts Optional options object that alters the output.
+ */
+/* legacy: obj, showHidden, depth, colors*/
+function inspect(obj, opts) {
+  // default options
+  var ctx = {
+    seen: [],
+    stylize: stylizeNoColor
+  };
+  // legacy...
+  if (arguments.length >= 3) ctx.depth = arguments[2];
+  if (arguments.length >= 4) ctx.colors = arguments[3];
+  if (isBoolean(opts)) {
+    // legacy...
+    ctx.showHidden = opts;
+  } else if (opts) {
+    // got an "options" object
+    exports._extend(ctx, opts);
+  }
+  // set default options
+  if (isUndefined(ctx.showHidden)) ctx.showHidden = false;
+  if (isUndefined(ctx.depth)) ctx.depth = 2;
+  if (isUndefined(ctx.colors)) ctx.colors = false;
+  if (isUndefined(ctx.customInspect)) ctx.customInspect = true;
+  if (ctx.colors) ctx.stylize = stylizeWithColor;
+  return formatValue(ctx, obj, ctx.depth);
+}
+exports.inspect = inspect;
+
+
+// http://en.wikipedia.org/wiki/ANSI_escape_code#graphics
+inspect.colors = {
+  'bold' : [1, 22],
+  'italic' : [3, 23],
+  'underline' : [4, 24],
+  'inverse' : [7, 27],
+  'white' : [37, 39],
+  'grey' : [90, 39],
+  'black' : [30, 39],
+  'blue' : [34, 39],
+  'cyan' : [36, 39],
+  'green' : [32, 39],
+  'magenta' : [35, 39],
+  'red' : [31, 39],
+  'yellow' : [33, 39]
+};
+
+// Don't use 'blue' not visible on cmd.exe
+inspect.styles = {
+  'special': 'cyan',
+  'number': 'yellow',
+  'boolean': 'yellow',
+  'undefined': 'grey',
+  'null': 'bold',
+  'string': 'green',
+  'date': 'magenta',
+  // "name": intentionally not styling
+  'regexp': 'red'
+};
+
+
+function stylizeWithColor(str, styleType) {
+  var style = inspect.styles[styleType];
+
+  if (style) {
+    return '\u001b[' + inspect.colors[style][0] + 'm' + str +
+           '\u001b[' + inspect.colors[style][1] + 'm';
+  } else {
+    return str;
+  }
+}
+
+
+function stylizeNoColor(str, styleType) {
+  return str;
+}
+
+
+function arrayToHash(array) {
+  var hash = {};
+
+  array.forEach(function(val, idx) {
+    hash[val] = true;
+  });
+
+  return hash;
+}
+
+
+function formatValue(ctx, value, recurseTimes) {
+  // Provide a hook for user-specified inspect functions.
+  // Check that value is an object with an inspect function on it
+  if (ctx.customInspect &&
+      value &&
+      isFunction(value.inspect) &&
+      // Filter out the util module, it's inspect function is special
+      value.inspect !== exports.inspect &&
+      // Also filter out any prototype objects using the circular check.
+      !(value.constructor && value.constructor.prototype === value)) {
+    var ret = value.inspect(recurseTimes, ctx);
+    if (!isString(ret)) {
+      ret = formatValue(ctx, ret, recurseTimes);
+    }
+    return ret;
+  }
+
+  // Primitive types cannot have properties
+  var primitive = formatPrimitive(ctx, value);
+  if (primitive) {
+    return primitive;
+  }
+
+  // Look up the keys of the object.
+  var keys = Object.keys(value);
+  var visibleKeys = arrayToHash(keys);
+
+  if (ctx.showHidden) {
+    keys = Object.getOwnPropertyNames(value);
+  }
+
+  // IE doesn't make error fields non-enumerable
+  // http://msdn.microsoft.com/en-us/library/ie/dww52sbt(v=vs.94).aspx
+  if (isError(value)
+      && (keys.indexOf('message') >= 0 || keys.indexOf('description') >= 0)) {
+    return formatError(value);
+  }
+
+  // Some type of object without properties can be shortcutted.
+  if (keys.length === 0) {
+    if (isFunction(value)) {
+      var name = value.name ? ': ' + value.name : '';
+      return ctx.stylize('[Function' + name + ']', 'special');
+    }
+    if (isRegExp(value)) {
+      return ctx.stylize(RegExp.prototype.toString.call(value), 'regexp');
+    }
+    if (isDate(value)) {
+      return ctx.stylize(Date.prototype.toString.call(value), 'date');
+    }
+    if (isError(value)) {
+      return formatError(value);
+    }
+  }
+
+  var base = '', array = false, braces = ['{', '}'];
+
+  // Make Array say that they are Array
+  if (isArray(value)) {
+    array = true;
+    braces = ['[', ']'];
+  }
+
+  // Make functions say that they are functions
+  if (isFunction(value)) {
+    var n = value.name ? ': ' + value.name : '';
+    base = ' [Function' + n + ']';
+  }
+
+  // Make RegExps say that they are RegExps
+  if (isRegExp(value)) {
+    base = ' ' + RegExp.prototype.toString.call(value);
+  }
+
+  // Make dates with properties first say the date
+  if (isDate(value)) {
+    base = ' ' + Date.prototype.toUTCString.call(value);
+  }
+
+  // Make error with message first say the error
+  if (isError(value)) {
+    base = ' ' + formatError(value);
+  }
+
+  if (keys.length === 0 && (!array || value.length == 0)) {
+    return braces[0] + base + braces[1];
+  }
+
+  if (recurseTimes < 0) {
+    if (isRegExp(value)) {
+      return ctx.stylize(RegExp.prototype.toString.call(value), 'regexp');
+    } else {
+      return ctx.stylize('[Object]', 'special');
+    }
+  }
+
+  ctx.seen.push(value);
+
+  var output;
+  if (array) {
+    output = formatArray(ctx, value, recurseTimes, visibleKeys, keys);
+  } else {
+    output = keys.map(function(key) {
+      return formatProperty(ctx, value, recurseTimes, visibleKeys, key, array);
+    });
+  }
+
+  ctx.seen.pop();
+
+  return reduceToSingleString(output, base, braces);
+}
+
+
+function formatPrimitive(ctx, value) {
+  if (isUndefined(value))
+    return ctx.stylize('undefined', 'undefined');
+  if (isString(value)) {
+    var simple = '\'' + JSON.stringify(value).replace(/^"|"$/g, '')
+                                             .replace(/'/g, "\\'")
+                                             .replace(/\\"/g, '"') + '\'';
+    return ctx.stylize(simple, 'string');
+  }
+  if (isNumber(value))
+    return ctx.stylize('' + value, 'number');
+  if (isBoolean(value))
+    return ctx.stylize('' + value, 'boolean');
+  // For some reason typeof null is "object", so special case here.
+  if (isNull(value))
+    return ctx.stylize('null', 'null');
+}
+
+
+function formatError(value) {
+  return '[' + Error.prototype.toString.call(value) + ']';
+}
+
+
+function formatArray(ctx, value, recurseTimes, visibleKeys, keys) {
+  var output = [];
+  for (var i = 0, l = value.length; i < l; ++i) {
+    if (hasOwnProperty(value, String(i))) {
+      output.push(formatProperty(ctx, value, recurseTimes, visibleKeys,
+          String(i), true));
+    } else {
+      output.push('');
+    }
+  }
+  keys.forEach(function(key) {
+    if (!key.match(/^\d+$/)) {
+      output.push(formatProperty(ctx, value, recurseTimes, visibleKeys,
+          key, true));
+    }
+  });
+  return output;
+}
+
+
+function formatProperty(ctx, value, recurseTimes, visibleKeys, key, array) {
+  var name, str, desc;
+  desc = Object.getOwnPropertyDescriptor(value, key) || { value: value[key] };
+  if (desc.get) {
+    if (desc.set) {
+      str = ctx.stylize('[Getter/Setter]', 'special');
+    } else {
+      str = ctx.stylize('[Getter]', 'special');
+    }
+  } else {
+    if (desc.set) {
+      str = ctx.stylize('[Setter]', 'special');
+    }
+  }
+  if (!hasOwnProperty(visibleKeys, key)) {
+    name = '[' + key + ']';
+  }
+  if (!str) {
+    if (ctx.seen.indexOf(desc.value) < 0) {
+      if (isNull(recurseTimes)) {
+        str = formatValue(ctx, desc.value, null);
+      } else {
+        str = formatValue(ctx, desc.value, recurseTimes - 1);
+      }
+      if (str.indexOf('\n') > -1) {
+        if (array) {
+          str = str.split('\n').map(function(line) {
+            return '  ' + line;
+          }).join('\n').substr(2);
+        } else {
+          str = '\n' + str.split('\n').map(function(line) {
+            return '   ' + line;
+          }).join('\n');
+        }
+      }
+    } else {
+      str = ctx.stylize('[Circular]', 'special');
+    }
+  }
+  if (isUndefined(name)) {
+    if (array && key.match(/^\d+$/)) {
+      return str;
+    }
+    name = JSON.stringify('' + key);
+    if (name.match(/^"([a-zA-Z_][a-zA-Z_0-9]*)"$/)) {
+      name = name.substr(1, name.length - 2);
+      name = ctx.stylize(name, 'name');
+    } else {
+      name = name.replace(/'/g, "\\'")
+                 .replace(/\\"/g, '"')
+                 .replace(/(^"|"$)/g, "'");
+      name = ctx.stylize(name, 'string');
+    }
+  }
+
+  return name + ': ' + str;
+}
+
+
+function reduceToSingleString(output, base, braces) {
+  var numLinesEst = 0;
+  var length = output.reduce(function(prev, cur) {
+    numLinesEst++;
+    if (cur.indexOf('\n') >= 0) numLinesEst++;
+    return prev + cur.replace(/\u001b\[\d\d?m/g, '').length + 1;
+  }, 0);
+
+  if (length > 60) {
+    return braces[0] +
+           (base === '' ? '' : base + '\n ') +
+           ' ' +
+           output.join(',\n  ') +
+           ' ' +
+           braces[1];
+  }
+
+  return braces[0] + base + ' ' + output.join(', ') + ' ' + braces[1];
+}
+
+
+// NOTE: These type checking functions intentionally don't use `instanceof`
+// because it is fragile and can be easily faked with `Object.create()`.
+function isArray(ar) {
+  return Array.isArray(ar);
+}
+exports.isArray = isArray;
+
+function isBoolean(arg) {
+  return typeof arg === 'boolean';
+}
+exports.isBoolean = isBoolean;
+
+function isNull(arg) {
+  return arg === null;
+}
+exports.isNull = isNull;
+
+function isNullOrUndefined(arg) {
+  return arg == null;
+}
+exports.isNullOrUndefined = isNullOrUndefined;
+
+function isNumber(arg) {
+  return typeof arg === 'number';
+}
+exports.isNumber = isNumber;
+
+function isString(arg) {
+  return typeof arg === 'string';
+}
+exports.isString = isString;
+
+function isSymbol(arg) {
+  return typeof arg === 'symbol';
+}
+exports.isSymbol = isSymbol;
+
+function isUndefined(arg) {
+  return arg === void 0;
+}
+exports.isUndefined = isUndefined;
+
+function isRegExp(re) {
+  return isObject(re) && objectToString(re) === '[object RegExp]';
+}
+exports.isRegExp = isRegExp;
+
+function isObject(arg) {
+  return typeof arg === 'object' && arg !== null;
+}
+exports.isObject = isObject;
+
+function isDate(d) {
+  return isObject(d) && objectToString(d) === '[object Date]';
+}
+exports.isDate = isDate;
+
+function isError(e) {
+  return isObject(e) &&
+      (objectToString(e) === '[object Error]' || e instanceof Error);
+}
+exports.isError = isError;
+
+function isFunction(arg) {
+  return typeof arg === 'function';
+}
+exports.isFunction = isFunction;
+
+function isPrimitive(arg) {
+  return arg === null ||
+         typeof arg === 'boolean' ||
+         typeof arg === 'number' ||
+         typeof arg === 'string' ||
+         typeof arg === 'symbol' ||  // ES6 symbol
+         typeof arg === 'undefined';
+}
+exports.isPrimitive = isPrimitive;
+
+exports.isBuffer = __webpack_require__(48);
+
+function objectToString(o) {
+  return Object.prototype.toString.call(o);
+}
+
+
+function pad(n) {
+  return n < 10 ? '0' + n.toString(10) : n.toString(10);
+}
+
+
+var months = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep',
+              'Oct', 'Nov', 'Dec'];
+
+// 26 Feb 16:19:34
+function timestamp() {
+  var d = new Date();
+  var time = [pad(d.getHours()),
+              pad(d.getMinutes()),
+              pad(d.getSeconds())].join(':');
+  return [d.getDate(), months[d.getMonth()], time].join(' ');
+}
+
+
+// log is just a thin wrapper to console.log that prepends a timestamp
+exports.log = function() {
+  console.log('%s - %s', timestamp(), exports.format.apply(exports, arguments));
+};
+
+
+/**
+ * Inherit the prototype methods from one constructor into another.
+ *
+ * The Function.prototype.inherits from lang.js rewritten as a standalone
+ * function (not on Function.prototype). NOTE: If this file is to be loaded
+ * during bootstrapping this function needs to be rewritten using some native
+ * functions as prototype setup using normal JavaScript does not work as
+ * expected during bootstrapping (see mirror.js in r114903).
+ *
+ * @param {function} ctor Constructor function which needs to inherit the
+ *     prototype.
+ * @param {function} superCtor Constructor function to inherit prototype from.
+ */
+exports.inherits = __webpack_require__(49);
+
+exports._extend = function(origin, add) {
+  // Don't do anything if add isn't an object
+  if (!add || !isObject(add)) return origin;
+
+  var keys = Object.keys(add);
+  var i = keys.length;
+  while (i--) {
+    origin[keys[i]] = add[keys[i]];
+  }
+  return origin;
+};
+
+function hasOwnProperty(obj, prop) {
+  return Object.prototype.hasOwnProperty.call(obj, prop);
+}
+
+/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(8), __webpack_require__(2)))
 
 /***/ }),
 /* 48 */
@@ -15079,7 +15125,7 @@ exports.getComponent = function() {
   });
 };
 
-/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(9)))
+/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(8)))
 
 /***/ }),
 /* 51 */
@@ -15103,7 +15149,7 @@ exports.getComponent = function() {
   });
   return c.process(function(input, output) {
     var data;
-    data = input.getData('in');
+    data = input.get('in');
     return output.sendDone({
       out: data
     });
@@ -15133,7 +15179,7 @@ exports.getComponent = function() {
   });
   return c.process(function(input, output) {
     var data;
-    data = input.getData('in');
+    data = input.get('in');
     return setTimeout(function() {
       return output.sendDone({
         out: data
@@ -15185,8 +15231,14 @@ exports.getComponent = function() {
     if (!input.hasData('in')) {
       return;
     }
-    delay = input.getData('delay');
-    payload = input.getData('in');
+    if (input.attached('delay').length && !input.hasData('delay')) {
+      return;
+    }
+    delay = 500;
+    if (input.hasData('delay')) {
+      delay = input.getData('delay');
+    }
+    payload = input.get('in');
     timer = setTimeout(function() {
       c.timers.splice(c.timers.indexOf(timer), 1);
       return output.sendDone({
@@ -15247,6 +15299,7 @@ exports.getComponent = function() {
     c.timers = {};
     return callback();
   };
+  c.forwardBrackets = {};
   return c.process(function(input, output, context) {
     var interval, start, stop;
     if (input.hasData('start')) {
@@ -15292,7 +15345,7 @@ exports.getComponent = function() {
   c = new noflo.Component;
   c.description = 'Send a packet after the given time in ms';
   c.icon = 'clock-o';
-  c.timer = null;
+  c.timer = {};
   c.inPorts.add('time', {
     datatype: 'number',
     description: 'Time after which a packet will be sent',
@@ -15309,16 +15362,21 @@ exports.getComponent = function() {
   c.forwardBrackets = {
     start: ['out']
   };
-  c.stopTimer = function() {
-    if (!c.timer) {
+  c.stopTimer = function(scope) {
+    if (!c.timer[scope]) {
       return;
     }
-    clearTimeout(c.timer.timeout);
-    c.timer.deactivate();
-    return c.timer = null;
+    clearTimeout(c.timer[scope].timeout);
+    c.timer[scope].deactivate();
+    return delete c.timer[scope];
   };
   c.tearDown = function(callback) {
-    c.stopTimer();
+    var ref, scope, timer;
+    ref = c.timer;
+    for (scope in ref) {
+      timer = ref[scope];
+      c.stopTimer(scope);
+    }
     return callback();
   };
   return c.process(function(input, output, context) {
@@ -15328,14 +15386,14 @@ exports.getComponent = function() {
     }
     time = input.getData('time');
     bang = input.getData('start');
-    c.stopTimer();
+    c.stopTimer(input.scope);
     context.timeout = setTimeout(function() {
       c.timer = null;
       return output.sendDone({
         out: true
       });
     }, time);
-    c.timer = context;
+    c.timer[input.scope] = context;
   });
 };
 
@@ -15372,10 +15430,7 @@ exports.getComponent = function() {
     if (!input.hasData('in')) {
       return;
     }
-    bang = input.get('in');
-    if (bang.type !== 'data') {
-      return;
-    }
+    bang = input.getData('in');
     if (!input.hasData('data')) {
       output.sendDone({
         empty: true
@@ -15425,7 +15480,7 @@ exports.getComponent = function() {
   });
   return c.process(function(input, output) {
     var data;
-    data = input.getData('in');
+    data = input.get('in');
     return output.sendDone({
       out: data
     });
@@ -17717,208 +17772,256 @@ exports.getComponent = function() {
 /* 87 */
 /***/ (function(module, exports, __webpack_require__) {
 
+"use strict";
+
 
 /**
  * This is the common logic for both the Node.js and web browser
  * implementations of `debug()`.
- *
- * Expose `debug()` as the module.
  */
+function setup(env) {
+  createDebug.debug = createDebug;
+  createDebug.default = createDebug;
+  createDebug.coerce = coerce;
+  createDebug.disable = disable;
+  createDebug.enable = enable;
+  createDebug.enabled = enabled;
+  createDebug.humanize = __webpack_require__(88);
+  Object.keys(env).forEach(function (key) {
+    createDebug[key] = env[key];
+  });
+  /**
+  * Active `debug` instances.
+  */
 
-exports = module.exports = createDebug.debug = createDebug['default'] = createDebug;
-exports.coerce = coerce;
-exports.disable = disable;
-exports.enable = enable;
-exports.enabled = enabled;
-exports.humanize = __webpack_require__(88);
+  createDebug.instances = [];
+  /**
+  * The currently active debug mode names, and names to skip.
+  */
 
-/**
- * The currently active debug mode names, and names to skip.
- */
+  createDebug.names = [];
+  createDebug.skips = [];
+  /**
+  * Map of special "%n" handling functions, for the debug "format" argument.
+  *
+  * Valid key names are a single, lower or upper-case letter, i.e. "n" and "N".
+  */
 
-exports.names = [];
-exports.skips = [];
+  createDebug.formatters = {};
+  /**
+  * Selects a color for a debug namespace
+  * @param {String} namespace The namespace string for the for the debug instance to be colored
+  * @return {Number|String} An ANSI color code for the given namespace
+  * @api private
+  */
 
-/**
- * Map of special "%n" handling functions, for the debug "format" argument.
- *
- * Valid key names are a single, lower or upper-case letter, i.e. "n" and "N".
- */
+  function selectColor(namespace) {
+    var hash = 0;
 
-exports.formatters = {};
+    for (var i = 0; i < namespace.length; i++) {
+      hash = (hash << 5) - hash + namespace.charCodeAt(i);
+      hash |= 0; // Convert to 32bit integer
+    }
 
-/**
- * Previous log timestamp.
- */
-
-var prevTime;
-
-/**
- * Select a color.
- * @param {String} namespace
- * @return {Number}
- * @api private
- */
-
-function selectColor(namespace) {
-  var hash = 0, i;
-
-  for (i in namespace) {
-    hash  = ((hash << 5) - hash) + namespace.charCodeAt(i);
-    hash |= 0; // Convert to 32bit integer
+    return createDebug.colors[Math.abs(hash) % createDebug.colors.length];
   }
 
-  return exports.colors[Math.abs(hash) % exports.colors.length];
-}
+  createDebug.selectColor = selectColor;
+  /**
+  * Create a debugger with the given `namespace`.
+  *
+  * @param {String} namespace
+  * @return {Function}
+  * @api public
+  */
 
-/**
- * Create a debugger with the given `namespace`.
- *
- * @param {String} namespace
- * @return {Function}
- * @api public
- */
+  function createDebug(namespace) {
+    var prevTime;
 
-function createDebug(namespace) {
-
-  function debug() {
-    // disabled?
-    if (!debug.enabled) return;
-
-    var self = debug;
-
-    // set `diff` timestamp
-    var curr = +new Date();
-    var ms = curr - (prevTime || curr);
-    self.diff = ms;
-    self.prev = prevTime;
-    self.curr = curr;
-    prevTime = curr;
-
-    // turn the `arguments` into a proper Array
-    var args = new Array(arguments.length);
-    for (var i = 0; i < args.length; i++) {
-      args[i] = arguments[i];
-    }
-
-    args[0] = exports.coerce(args[0]);
-
-    if ('string' !== typeof args[0]) {
-      // anything else let's inspect with %O
-      args.unshift('%O');
-    }
-
-    // apply any `formatters` transformations
-    var index = 0;
-    args[0] = args[0].replace(/%([a-zA-Z%])/g, function(match, format) {
-      // if we encounter an escaped % then don't increase the array index
-      if (match === '%%') return match;
-      index++;
-      var formatter = exports.formatters[format];
-      if ('function' === typeof formatter) {
-        var val = args[index];
-        match = formatter.call(self, val);
-
-        // now we need to remove `args[index]` since it's inlined in the `format`
-        args.splice(index, 1);
-        index--;
+    function debug() {
+      // Disabled?
+      if (!debug.enabled) {
+        return;
       }
-      return match;
-    });
 
-    // apply env-specific formatting (colors, etc.)
-    exports.formatArgs.call(self, args);
+      for (var _len = arguments.length, args = new Array(_len), _key = 0; _key < _len; _key++) {
+        args[_key] = arguments[_key];
+      }
 
-    var logFn = debug.log || exports.log || console.log.bind(console);
-    logFn.apply(self, args);
-  }
+      var self = debug; // Set `diff` timestamp
 
-  debug.namespace = namespace;
-  debug.enabled = exports.enabled(namespace);
-  debug.useColors = exports.useColors();
-  debug.color = selectColor(namespace);
+      var curr = Number(new Date());
+      var ms = curr - (prevTime || curr);
+      self.diff = ms;
+      self.prev = prevTime;
+      self.curr = curr;
+      prevTime = curr;
+      args[0] = createDebug.coerce(args[0]);
 
-  // env-specific initialization logic for debug instances
-  if ('function' === typeof exports.init) {
-    exports.init(debug);
-  }
+      if (typeof args[0] !== 'string') {
+        // Anything else let's inspect with %O
+        args.unshift('%O');
+      } // Apply any `formatters` transformations
 
-  return debug;
-}
 
-/**
- * Enables a debug mode by namespaces. This can include modes
- * separated by a colon and wildcards.
- *
- * @param {String} namespaces
- * @api public
- */
+      var index = 0;
+      args[0] = args[0].replace(/%([a-zA-Z%])/g, function (match, format) {
+        // If we encounter an escaped % then don't increase the array index
+        if (match === '%%') {
+          return match;
+        }
 
-function enable(namespaces) {
-  exports.save(namespaces);
+        index++;
+        var formatter = createDebug.formatters[format];
 
-  exports.names = [];
-  exports.skips = [];
+        if (typeof formatter === 'function') {
+          var val = args[index];
+          match = formatter.call(self, val); // Now we need to remove `args[index]` since it's inlined in the `format`
 
-  var split = (typeof namespaces === 'string' ? namespaces : '').split(/[\s,]+/);
-  var len = split.length;
+          args.splice(index, 1);
+          index--;
+        }
 
-  for (var i = 0; i < len; i++) {
-    if (!split[i]) continue; // ignore empty strings
-    namespaces = split[i].replace(/\*/g, '.*?');
-    if (namespaces[0] === '-') {
-      exports.skips.push(new RegExp('^' + namespaces.substr(1) + '$'));
-    } else {
-      exports.names.push(new RegExp('^' + namespaces + '$'));
+        return match;
+      }); // Apply env-specific formatting (colors, etc.)
+
+      createDebug.formatArgs.call(self, args);
+      var logFn = self.log || createDebug.log;
+      logFn.apply(self, args);
     }
-  }
-}
 
-/**
- * Disable debug output.
- *
- * @api public
- */
+    debug.namespace = namespace;
+    debug.enabled = createDebug.enabled(namespace);
+    debug.useColors = createDebug.useColors();
+    debug.color = selectColor(namespace);
+    debug.destroy = destroy;
+    debug.extend = extend; // Debug.formatArgs = formatArgs;
+    // debug.rawLog = rawLog;
+    // env-specific initialization logic for debug instances
 
-function disable() {
-  exports.enable('');
-}
-
-/**
- * Returns true if the given mode name is enabled, false otherwise.
- *
- * @param {String} name
- * @return {Boolean}
- * @api public
- */
-
-function enabled(name) {
-  var i, len;
-  for (i = 0, len = exports.skips.length; i < len; i++) {
-    if (exports.skips[i].test(name)) {
-      return false;
+    if (typeof createDebug.init === 'function') {
+      createDebug.init(debug);
     }
+
+    createDebug.instances.push(debug);
+    return debug;
   }
-  for (i = 0, len = exports.names.length; i < len; i++) {
-    if (exports.names[i].test(name)) {
+
+  function destroy() {
+    var index = createDebug.instances.indexOf(this);
+
+    if (index !== -1) {
+      createDebug.instances.splice(index, 1);
       return true;
     }
+
+    return false;
   }
-  return false;
+
+  function extend(namespace, delimiter) {
+    return createDebug(this.namespace + (typeof delimiter === 'undefined' ? ':' : delimiter) + namespace);
+  }
+  /**
+  * Enables a debug mode by namespaces. This can include modes
+  * separated by a colon and wildcards.
+  *
+  * @param {String} namespaces
+  * @api public
+  */
+
+
+  function enable(namespaces) {
+    createDebug.save(namespaces);
+    createDebug.names = [];
+    createDebug.skips = [];
+    var i;
+    var split = (typeof namespaces === 'string' ? namespaces : '').split(/[\s,]+/);
+    var len = split.length;
+
+    for (i = 0; i < len; i++) {
+      if (!split[i]) {
+        // ignore empty strings
+        continue;
+      }
+
+      namespaces = split[i].replace(/\*/g, '.*?');
+
+      if (namespaces[0] === '-') {
+        createDebug.skips.push(new RegExp('^' + namespaces.substr(1) + '$'));
+      } else {
+        createDebug.names.push(new RegExp('^' + namespaces + '$'));
+      }
+    }
+
+    for (i = 0; i < createDebug.instances.length; i++) {
+      var instance = createDebug.instances[i];
+      instance.enabled = createDebug.enabled(instance.namespace);
+    }
+  }
+  /**
+  * Disable debug output.
+  *
+  * @api public
+  */
+
+
+  function disable() {
+    createDebug.enable('');
+  }
+  /**
+  * Returns true if the given mode name is enabled, false otherwise.
+  *
+  * @param {String} name
+  * @return {Boolean}
+  * @api public
+  */
+
+
+  function enabled(name) {
+    if (name[name.length - 1] === '*') {
+      return true;
+    }
+
+    var i;
+    var len;
+
+    for (i = 0, len = createDebug.skips.length; i < len; i++) {
+      if (createDebug.skips[i].test(name)) {
+        return false;
+      }
+    }
+
+    for (i = 0, len = createDebug.names.length; i < len; i++) {
+      if (createDebug.names[i].test(name)) {
+        return true;
+      }
+    }
+
+    return false;
+  }
+  /**
+  * Coerce `val`.
+  *
+  * @param {Mixed} val
+  * @return {Mixed}
+  * @api private
+  */
+
+
+  function coerce(val) {
+    if (val instanceof Error) {
+      return val.stack || val.message;
+    }
+
+    return val;
+  }
+
+  createDebug.enable(createDebug.load());
+  return createDebug;
 }
 
-/**
- * Coerce `val`.
- *
- * @param {Mixed} val
- * @return {Mixed}
- * @api private
- */
+module.exports = setup;
 
-function coerce(val) {
-  if (val instanceof Error) return val.stack || val.message;
-  return val;
-}
 
 
 /***/ }),
@@ -17933,6 +18036,7 @@ var s = 1000;
 var m = s * 60;
 var h = m * 60;
 var d = h * 24;
+var w = d * 7;
 var y = d * 365.25;
 
 /**
@@ -17976,7 +18080,7 @@ function parse(str) {
   if (str.length > 100) {
     return;
   }
-  var match = /^((?:\d+)?\.?\d+) *(milliseconds?|msecs?|ms|seconds?|secs?|s|minutes?|mins?|m|hours?|hrs?|h|days?|d|years?|yrs?|y)?$/i.exec(
+  var match = /^((?:\d+)?\-?\d?\.?\d+) *(milliseconds?|msecs?|ms|seconds?|secs?|s|minutes?|mins?|m|hours?|hrs?|h|days?|d|weeks?|w|years?|yrs?|y)?$/i.exec(
     str
   );
   if (!match) {
@@ -17991,6 +18095,10 @@ function parse(str) {
     case 'yr':
     case 'y':
       return n * y;
+    case 'weeks':
+    case 'week':
+    case 'w':
+      return n * w;
     case 'days':
     case 'day':
     case 'd':
@@ -18033,16 +18141,17 @@ function parse(str) {
  */
 
 function fmtShort(ms) {
-  if (ms >= d) {
+  var msAbs = Math.abs(ms);
+  if (msAbs >= d) {
     return Math.round(ms / d) + 'd';
   }
-  if (ms >= h) {
+  if (msAbs >= h) {
     return Math.round(ms / h) + 'h';
   }
-  if (ms >= m) {
+  if (msAbs >= m) {
     return Math.round(ms / m) + 'm';
   }
-  if (ms >= s) {
+  if (msAbs >= s) {
     return Math.round(ms / s) + 's';
   }
   return ms + 'ms';
@@ -18057,25 +18166,29 @@ function fmtShort(ms) {
  */
 
 function fmtLong(ms) {
-  return plural(ms, d, 'day') ||
-    plural(ms, h, 'hour') ||
-    plural(ms, m, 'minute') ||
-    plural(ms, s, 'second') ||
-    ms + ' ms';
+  var msAbs = Math.abs(ms);
+  if (msAbs >= d) {
+    return plural(ms, msAbs, d, 'day');
+  }
+  if (msAbs >= h) {
+    return plural(ms, msAbs, h, 'hour');
+  }
+  if (msAbs >= m) {
+    return plural(ms, msAbs, m, 'minute');
+  }
+  if (msAbs >= s) {
+    return plural(ms, msAbs, s, 'second');
+  }
+  return ms + ' ms';
 }
 
 /**
  * Pluralization helper.
  */
 
-function plural(ms, n, name) {
-  if (ms < n) {
-    return;
-  }
-  if (ms < n * 1.5) {
-    return Math.floor(ms / n) + ' ' + name;
-  }
-  return Math.ceil(ms / n) + ' ' + name + 's';
+function plural(ms, msAbs, n, name) {
+  var isPlural = msAbs >= n * 1.5;
+  return Math.round(ms / n) + ' ' + name + (isPlural ? 's' : '');
 }
 
 
@@ -18083,19 +18196,35 @@ function plural(ms, n, name) {
 /* 89 */
 /***/ (function(module, exports, __webpack_require__) {
 
-/* WEBPACK VAR INJECTION */(function(process) {(function() {
-  var AsyncComponent, component, platform, port,
-    bind = function(fn, me){ return function(){ return fn.apply(me, arguments); }; },
-    extend = function(child, parent) { for (var key in parent) { if (hasProp.call(parent, key)) child[key] = parent[key]; } function ctor() { this.constructor = child; } ctor.prototype = parent.prototype; child.prototype = new ctor(); child.__super__ = parent.prototype; return child; },
-    hasProp = {}.hasOwnProperty;
+"use strict";
+/* WEBPACK VAR INJECTION */(function(process) {
+
+(function () {
+  var AsyncComponent,
+      component,
+      platform,
+      port,
+      bind = function bind(fn, me) {
+    return function () {
+      return fn.apply(me, arguments);
+    };
+  },
+      extend = function extend(child, parent) {
+    for (var key in parent) {
+      if (hasProp.call(parent, key)) child[key] = parent[key];
+    }function ctor() {
+      this.constructor = child;
+    }ctor.prototype = parent.prototype;child.prototype = new ctor();child.__super__ = parent.prototype;return child;
+  },
+      hasProp = {}.hasOwnProperty;
 
   port = __webpack_require__(11);
 
-  component = __webpack_require__(18);
+  component = __webpack_require__(17);
 
   platform = __webpack_require__(5);
 
-  AsyncComponent = (function(superClass) {
+  AsyncComponent = function (superClass) {
     extend(AsyncComponent, superClass);
 
     function AsyncComponent(inPortName, outPortName, errPortName) {
@@ -18114,8 +18243,8 @@ function plural(ms, n, name) {
       this.q = [];
       this.errorGroups = [];
       this.outPorts.load = new port.Port();
-      this.inPorts[this.inPortName].on("begingroup", (function(_this) {
-        return function(group) {
+      this.inPorts[this.inPortName].on("begingroup", function (_this) {
+        return function (group) {
           if (_this.load > 0) {
             return _this.q.push({
               name: "begingroup",
@@ -18125,9 +18254,9 @@ function plural(ms, n, name) {
           _this.errorGroups.push(group);
           return _this.outPorts[_this.outPortName].beginGroup(group);
         };
-      })(this));
-      this.inPorts[this.inPortName].on("endgroup", (function(_this) {
-        return function() {
+      }(this));
+      this.inPorts[this.inPortName].on("endgroup", function (_this) {
+        return function () {
           if (_this.load > 0) {
             return _this.q.push({
               name: "endgroup"
@@ -18136,9 +18265,9 @@ function plural(ms, n, name) {
           _this.errorGroups.pop();
           return _this.outPorts[_this.outPortName].endGroup();
         };
-      })(this));
-      this.inPorts[this.inPortName].on("disconnect", (function(_this) {
-        return function() {
+      }(this));
+      this.inPorts[this.inPortName].on("disconnect", function (_this) {
+        return function () {
           if (_this.load > 0) {
             return _this.q.push({
               name: "disconnect"
@@ -18150,9 +18279,9 @@ function plural(ms, n, name) {
             return _this.outPorts.load.disconnect();
           }
         };
-      })(this));
-      this.inPorts[this.inPortName].on("data", (function(_this) {
-        return function(data) {
+      }(this));
+      this.inPorts[this.inPortName].on("data", function (_this) {
+        return function (data) {
           if (_this.q.length > 0) {
             return _this.q.push({
               name: "data",
@@ -18161,22 +18290,22 @@ function plural(ms, n, name) {
           }
           return _this.processData(data);
         };
-      })(this));
+      }(this));
     }
 
-    AsyncComponent.prototype.processData = function(data) {
+    AsyncComponent.prototype.processData = function (data) {
       this.incrementLoad();
-      return this.doAsync(data, (function(_this) {
-        return function(err) {
+      return this.doAsync(data, function (_this) {
+        return function (err) {
           if (err) {
             _this.error(err, _this.errorGroups, _this.errPortName);
           }
           return _this.decrementLoad();
         };
-      })(this));
+      }(this));
     };
 
-    AsyncComponent.prototype.incrementLoad = function() {
+    AsyncComponent.prototype.incrementLoad = function () {
       this.load++;
       if (this.outPorts.load.isAttached()) {
         this.outPorts.load.send(this.load);
@@ -18186,11 +18315,11 @@ function plural(ms, n, name) {
       }
     };
 
-    AsyncComponent.prototype.doAsync = function(data, callback) {
+    AsyncComponent.prototype.doAsync = function (data, callback) {
       return callback(new Error("AsyncComponents must implement doAsync"));
     };
 
-    AsyncComponent.prototype.decrementLoad = function() {
+    AsyncComponent.prototype.decrementLoad = function () {
       if (this.load === 0) {
         throw new Error("load cannot be negative");
       }
@@ -18202,21 +18331,21 @@ function plural(ms, n, name) {
         this.outPorts.load.disconnect();
       }
       if (typeof process !== 'undefined' && process.execPath && process.execPath.indexOf('node') !== -1) {
-        return process.nextTick((function(_this) {
-          return function() {
+        return process.nextTick(function (_this) {
+          return function () {
             return _this.processQueue();
           };
-        })(this));
+        }(this));
       } else {
-        return setTimeout((function(_this) {
-          return function() {
+        return setTimeout(function (_this) {
+          return function () {
             return _this.processQueue();
           };
-        })(this), 0);
+        }(this), 0);
       }
     };
 
-    AsyncComponent.prototype.processQueue = function() {
+    AsyncComponent.prototype.processQueue = function () {
       var event, processedData;
       if (this.load > 0) {
         return;
@@ -18260,13 +18389,13 @@ function plural(ms, n, name) {
       }
     };
 
-    AsyncComponent.prototype.tearDown = function(callback) {
+    AsyncComponent.prototype.tearDown = function (callback) {
       this.q = [];
       this.errorGroups = [];
       return callback();
     };
 
-    AsyncComponent.prototype.error = function(e, groups, errorPort) {
+    AsyncComponent.prototype.error = function (e, groups, errorPort) {
       var group, i, j, len, len1;
       if (groups == null) {
         groups = [];
@@ -18291,46 +18420,72 @@ function plural(ms, n, name) {
     };
 
     return AsyncComponent;
-
-  })(component.Component);
+  }(component.Component);
 
   exports.AsyncComponent = AsyncComponent;
-
-}).call(this);
-
-/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(1)))
+}).call(undefined);
+/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(2)))
 
 /***/ }),
 /* 90 */
 /***/ (function(module, exports, __webpack_require__) {
 
-/* WEBPACK VAR INJECTION */(function(process) {(function() {
-  var IP, InternalSocket, OutPortWrapper, StreamReceiver, StreamSender, checkDeprecation, checkWirePatternPreconditions, checkWirePatternPreconditionsInput, checkWirePatternPreconditionsParams, debug, getGroupContext, getInputData, getOutputProxy, handleInputCollation, isArray, legacyWirePattern, platform, populateParams, processApiWirePattern, reorderBuffer, setupBracketForwarding, setupControlPorts, setupErrorHandler, setupSendDefaults, utils,
-    slice = [].slice,
-    hasProp = {}.hasOwnProperty;
+"use strict";
+/* WEBPACK VAR INJECTION */(function(process) {
+
+var _typeof = typeof Symbol === "function" && typeof Symbol.iterator === "symbol" ? function (obj) { return typeof obj; } : function (obj) { return obj && typeof Symbol === "function" && obj.constructor === Symbol && obj !== Symbol.prototype ? "symbol" : typeof obj; };
+
+(function () {
+  var IP,
+      InternalSocket,
+      OutPortWrapper,
+      StreamReceiver,
+      StreamSender,
+      checkDeprecation,
+      checkWirePatternPreconditions,
+      checkWirePatternPreconditionsInput,
+      checkWirePatternPreconditionsParams,
+      debug,
+      getGroupContext,
+      getInputData,
+      getOutputProxy,
+      handleInputCollation,
+      isArray,
+      legacyWirePattern,
+      platform,
+      populateParams,
+      processApiWirePattern,
+      reorderBuffer,
+      setupBracketForwarding,
+      setupControlPorts,
+      setupErrorHandler,
+      setupSendDefaults,
+      utils,
+      slice = [].slice,
+      hasProp = {}.hasOwnProperty;
 
   StreamSender = __webpack_require__(12).StreamSender;
 
   StreamReceiver = __webpack_require__(12).StreamReceiver;
 
-  InternalSocket = __webpack_require__(7);
+  InternalSocket = __webpack_require__(6);
 
   IP = __webpack_require__(4);
 
   platform = __webpack_require__(5);
 
-  utils = __webpack_require__(17);
+  utils = __webpack_require__(16);
 
   debug = __webpack_require__(3)('noflo:helpers');
 
-  isArray = function(obj) {
+  isArray = function isArray(obj) {
     if (Array.isArray) {
       return Array.isArray(obj);
     }
     return Object.prototype.toString.call(arg) === '[object Array]';
   };
 
-  exports.MapComponent = function(component, func, config) {
+  exports.MapComponent = function (component, func, config) {
     platform.deprecated('noflo.helpers.MapComponent is deprecated. Please port to Process API');
     if (!config) {
       config = {};
@@ -18345,7 +18500,7 @@ function plural(ms, n, name) {
       component.forwardBrackets = {};
     }
     component.forwardBrackets[config.inPort] = [config.outPort];
-    return component.process(function(input, output) {
+    return component.process(function (input, output) {
       var data, groups, outProxy;
       if (!input.hasData(config.inPort)) {
         return;
@@ -18358,7 +18513,7 @@ function plural(ms, n, name) {
     });
   };
 
-  exports.WirePattern = function(component, config, proc) {
+  exports.WirePattern = function (component, config, proc) {
     var inPorts, outPorts, ref, setup;
     inPorts = 'in' in config ? config["in"] : 'in';
     if (!isArray(inPorts)) {
@@ -18439,12 +18594,12 @@ function plural(ms, n, name) {
     return setup(component, config, proc);
   };
 
-  processApiWirePattern = function(component, config, func) {
+  processApiWirePattern = function processApiWirePattern(component, config, func) {
     setupControlPorts(component, config);
     setupSendDefaults(component);
     setupBracketForwarding(component, config);
     component.ordered = config.ordered;
-    return component.process(function(input, output, context) {
+    return component.process(function (input, output, context) {
       var data, errorHandler, groups, outProxy, postpone, resume;
       if (!checkWirePatternPreconditions(config, input, output)) {
         return;
@@ -18454,10 +18609,10 @@ function plural(ms, n, name) {
       groups = getGroupContext(component, config.inPorts[0], input);
       outProxy = getOutputProxy(config.outPorts, output);
       debug("WirePattern Process API call with", data, groups, component.params, context.scope);
-      postpone = function() {
+      postpone = function postpone() {
         throw new Error('noflo.helpers.WirePattern postpone is deprecated');
       };
-      resume = function() {
+      resume = function resume() {
         throw new Error('noflo.helpers.WirePattern resume is deprecated');
       };
       if (!config.async) {
@@ -18471,14 +18626,14 @@ function plural(ms, n, name) {
         return;
       }
       errorHandler = setupErrorHandler(component, config, output);
-      return func.call(component, data, groups, outProxy, function(err) {
+      return func.call(component, data, groups, outProxy, function (err) {
         errorHandler();
         return output.done(err);
       }, postpone, resume, input.scope);
     });
   };
 
-  checkDeprecation = function(config, func) {
+  checkDeprecation = function checkDeprecation(config, func) {
     if (config.group) {
       platform.deprecated('noflo.helpers.WirePattern group option is deprecated. Please port to Process API');
     }
@@ -18496,7 +18651,7 @@ function plural(ms, n, name) {
     }
   };
 
-  setupControlPorts = function(component, config) {
+  setupControlPorts = function setupControlPorts(component, config) {
     var j, len, param, ref, results;
     ref = config.params;
     results = [];
@@ -18507,7 +18662,7 @@ function plural(ms, n, name) {
     return results;
   };
 
-  setupBracketForwarding = function(component, config) {
+  setupBracketForwarding = function setupBracketForwarding(component, config) {
     var inPort, inPorts, j, k, len, len1, outPort, ref;
     component.forwardBrackets = {};
     if (!config.forwardGroups) {
@@ -18531,10 +18686,10 @@ function plural(ms, n, name) {
     }
   };
 
-  setupErrorHandler = function(component, config, output) {
+  setupErrorHandler = function setupErrorHandler(component, config, output) {
     var errorHandler, errors, failHandler, sendErrors;
     errors = [];
-    errorHandler = function(e, groups) {
+    errorHandler = function errorHandler(e, groups) {
       if (groups == null) {
         groups = [];
       }
@@ -18545,7 +18700,7 @@ function plural(ms, n, name) {
       });
       return component.hasErrors = true;
     };
-    failHandler = function(e, groups) {
+    failHandler = function failHandler(e, groups) {
       if (e == null) {
         e = null;
       }
@@ -18559,14 +18714,14 @@ function plural(ms, n, name) {
       sendErrors();
       return output.done();
     };
-    sendErrors = function() {
+    sendErrors = function sendErrors() {
       if (!errors.length) {
         return;
       }
       if (config.name) {
         output.sendIP('error', new IP('openBracket', config.name));
       }
-      errors.forEach(function(e) {
+      errors.forEach(function (e) {
         var grp, j, k, len, len1, ref, ref1, results;
         ref = e.groups;
         for (j = 0, len = ref.length; j < len; j++) {
@@ -18594,9 +18749,9 @@ function plural(ms, n, name) {
     return sendErrors;
   };
 
-  setupSendDefaults = function(component) {
+  setupSendDefaults = function setupSendDefaults(component) {
     var portsWithDefaults;
-    portsWithDefaults = Object.keys(component.inPorts.ports).filter(function(p) {
+    portsWithDefaults = Object.keys(component.inPorts.ports).filter(function (p) {
       if (!component.inPorts[p].options.control) {
         return false;
       }
@@ -18605,9 +18760,9 @@ function plural(ms, n, name) {
       }
       return true;
     });
-    return component.sendDefaults = function() {
+    return component.sendDefaults = function () {
       platform.deprecated('noflo.helpers.WirePattern sendDefaults method is deprecated. Please start with a Network');
-      return portsWithDefaults.forEach(function(port) {
+      return portsWithDefaults.forEach(function (port) {
         var tempSocket;
         tempSocket = InternalSocket.createSocket();
         component.inPorts[port].attach(tempSocket);
@@ -18618,7 +18773,7 @@ function plural(ms, n, name) {
     };
   };
 
-  populateParams = function(config, input) {
+  populateParams = function populateParams(config, input) {
     var idx, j, k, len, len1, paramPort, params, ref, ref1;
     if (!config.params.length) {
       return {};
@@ -18644,7 +18799,7 @@ function plural(ms, n, name) {
     return params;
   };
 
-  reorderBuffer = function(buffer, matcher) {
+  reorderBuffer = function reorderBuffer(buffer, matcher) {
     var brackets, idx, ip, j, k, len, len1, results, substream, substreamBrackets, substreamIdx;
     substream = null;
     brackets = [];
@@ -18690,14 +18845,14 @@ function plural(ms, n, name) {
     return results;
   };
 
-  handleInputCollation = function(data, config, input, port, idx) {
+  handleInputCollation = function handleInputCollation(data, config, input, port, idx) {
     var buf;
     if (!config.group && !config.field) {
       return;
     }
     if (config.group) {
       buf = input.ports[port].getBuffer(input.scope, idx);
-      reorderBuffer(buf, function(ip, brackets) {
+      reorderBuffer(buf, function (ip, brackets) {
         var grp, j, len, ref;
         ref = input.collatedBy.brackets;
         for (idx = j = 0, len = ref.length; j < len; idx = ++j) {
@@ -18712,13 +18867,13 @@ function plural(ms, n, name) {
     if (config.field) {
       data[config.field] = input.collatedBy.field;
       buf = input.ports[port].getBuffer(input.scope, idx);
-      return reorderBuffer(buf, function(ip) {
+      return reorderBuffer(buf, function (ip) {
         return ip.data[config.field] === data[config.field];
       });
     }
   };
 
-  getInputData = function(config, input) {
+  getInputData = function getInputData(config, input) {
     var data, idx, j, k, len, len1, port, ref, ref1;
     data = {};
     ref = config.inPorts;
@@ -18749,7 +18904,7 @@ function plural(ms, n, name) {
     return data;
   };
 
-  getGroupContext = function(component, port, input) {
+  getGroupContext = function getGroupContext(component, port, input) {
     var ref, ref1;
     if (((ref = input.result.__bracketContext) != null ? ref[port] : void 0) == null) {
       return [];
@@ -18757,38 +18912,38 @@ function plural(ms, n, name) {
     if ((ref1 = input.collatedBy) != null ? ref1.brackets : void 0) {
       return input.collatedBy.brackets;
     }
-    return input.result.__bracketContext[port].filter(function(c) {
+    return input.result.__bracketContext[port].filter(function (c) {
       return c.source === port;
-    }).map(function(c) {
+    }).map(function (c) {
       return c.ip.data;
     });
   };
 
-  getOutputProxy = function(ports, output) {
+  getOutputProxy = function getOutputProxy(ports, output) {
     var outProxy;
     outProxy = {};
-    ports.forEach(function(port) {
+    ports.forEach(function (port) {
       return outProxy[port] = {
-        connect: function() {},
-        beginGroup: function(group, idx) {
+        connect: function connect() {},
+        beginGroup: function beginGroup(group, idx) {
           var ip;
           ip = new IP('openBracket', group);
           ip.index = idx;
           return output.sendIP(port, ip);
         },
-        send: function(data, idx) {
+        send: function send(data, idx) {
           var ip;
           ip = new IP('data', data);
           ip.index = idx;
           return output.sendIP(port, ip);
         },
-        endGroup: function(group, idx) {
+        endGroup: function endGroup(group, idx) {
           var ip;
           ip = new IP('closeBracket', group);
           ip.index = idx;
           return output.sendIP(port, ip);
         },
-        disconnect: function() {}
+        disconnect: function disconnect() {}
       };
     });
     if (ports.length === 1) {
@@ -18797,7 +18952,7 @@ function plural(ms, n, name) {
     return outProxy;
   };
 
-  checkWirePatternPreconditions = function(config, input, output) {
+  checkWirePatternPreconditions = function checkWirePatternPreconditions(config, input, output) {
     var attached, idx, inputsOk, j, k, len, len1, packetsDropped, paramsOk, port, ref;
     paramsOk = checkWirePatternPreconditionsParams(config, input);
     inputsOk = checkWirePatternPreconditionsInput(config, input);
@@ -18832,7 +18987,7 @@ function plural(ms, n, name) {
     return inputsOk && paramsOk;
   };
 
-  checkWirePatternPreconditionsParams = function(config, input) {
+  checkWirePatternPreconditionsParams = function checkWirePatternPreconditionsParams(config, input) {
     var attached, j, len, param, ref, withData;
     ref = config.params;
     for (j = 0, len = ref.length; j < len; j++) {
@@ -18845,7 +19000,7 @@ function plural(ms, n, name) {
         if (!attached.length) {
           return false;
         }
-        withData = attached.filter(function(idx) {
+        withData = attached.filter(function (idx) {
           return input.hasData([param, idx]);
         });
         if (config.arrayPolicy.params === 'all') {
@@ -18866,7 +19021,7 @@ function plural(ms, n, name) {
     return true;
   };
 
-  checkWirePatternPreconditionsInput = function(config, input) {
+  checkWirePatternPreconditionsInput = function checkWirePatternPreconditionsInput(config, input) {
     var attached, bracketsAtPorts, checkBrackets, checkPacket, checkPort, j, len, port, ref, withData;
     if (config.group) {
       bracketsAtPorts = {};
@@ -18874,7 +19029,7 @@ function plural(ms, n, name) {
         brackets: [],
         ready: false
       };
-      checkBrackets = function(left, right) {
+      checkBrackets = function checkBrackets(left, right) {
         var bracket, idx, j, len;
         for (idx = j = 0, len = left.length; j < len; idx = ++j) {
           bracket = left[idx];
@@ -18884,7 +19039,7 @@ function plural(ms, n, name) {
         }
         return true;
       };
-      checkPacket = function(ip, brackets) {
+      checkPacket = function checkPacket(ip, brackets) {
         var bracketId, bracketsToCheck;
         bracketsToCheck = brackets.slice(0);
         if (config.group instanceof RegExp) {
@@ -18926,7 +19081,7 @@ function plural(ms, n, name) {
         ready: false
       };
     }
-    checkPort = function(port) {
+    checkPort = function checkPort(port) {
       var buf, dataBrackets, hasData, hasMatching, ip, j, len, portBrackets;
       if (!config.group && !config.field) {
         return input.hasData(port);
@@ -18959,7 +19114,7 @@ function plural(ms, n, name) {
         return hasMatching;
       }
       if (config.field) {
-        return input.hasStream(port, function(ip) {
+        return input.hasStream(port, function (ip) {
           if (!input.collatedBy.ready) {
             input.collatedBy.field = ip.data[config.field];
             input.collatedBy.ready = true;
@@ -18977,7 +19132,7 @@ function plural(ms, n, name) {
         if (!attached.length) {
           return false;
         }
-        withData = attached.filter(function(idx) {
+        withData = attached.filter(function (idx) {
           return checkPort([port, idx]);
         });
         if (config.arrayPolicy['in'] === 'all') {
@@ -18998,13 +19153,13 @@ function plural(ms, n, name) {
     return true;
   };
 
-  OutPortWrapper = (function() {
+  OutPortWrapper = function () {
     function OutPortWrapper(port1, scope1) {
       this.port = port1;
       this.scope = scope1;
     }
 
-    OutPortWrapper.prototype.connect = function(socketId) {
+    OutPortWrapper.prototype.connect = function (socketId) {
       if (socketId == null) {
         socketId = null;
       }
@@ -19013,7 +19168,7 @@ function plural(ms, n, name) {
       }, socketId);
     };
 
-    OutPortWrapper.prototype.beginGroup = function(group, socketId) {
+    OutPortWrapper.prototype.beginGroup = function (group, socketId) {
       if (socketId == null) {
         socketId = null;
       }
@@ -19022,7 +19177,7 @@ function plural(ms, n, name) {
       }, socketId);
     };
 
-    OutPortWrapper.prototype.send = function(data, socketId) {
+    OutPortWrapper.prototype.send = function (data, socketId) {
       if (socketId == null) {
         socketId = null;
       }
@@ -19031,7 +19186,7 @@ function plural(ms, n, name) {
       }, socketId, false);
     };
 
-    OutPortWrapper.prototype.endGroup = function(group, socketId) {
+    OutPortWrapper.prototype.endGroup = function (group, socketId) {
       if (socketId == null) {
         socketId = null;
       }
@@ -19040,26 +19195,25 @@ function plural(ms, n, name) {
       }, socketId);
     };
 
-    OutPortWrapper.prototype.disconnect = function(socketId) {
+    OutPortWrapper.prototype.disconnect = function (socketId) {
       if (socketId == null) {
         socketId = null;
       }
       return this.endGroup(socketId);
     };
 
-    OutPortWrapper.prototype.isConnected = function() {
+    OutPortWrapper.prototype.isConnected = function () {
       return this.port.isConnected();
     };
 
-    OutPortWrapper.prototype.isAttached = function() {
+    OutPortWrapper.prototype.isAttached = function () {
       return this.port.isAttached();
     };
 
     return OutPortWrapper;
+  }();
 
-  })();
-
-  legacyWirePattern = function(component, config, proc) {
+  legacyWirePattern = function legacyWirePattern(component, config, proc) {
     var _wp, baseTearDown, closeGroupOnOuts, collectGroups, disconnectOuts, fn, fn1, gc, j, k, l, len, len1, len2, len3, len4, m, n, name, port, processQueue, ref, ref1, ref2, ref3, ref4, resumeTaskQ, sendGroupToOuts, setParamsScope;
     if (!('gcFrequency' in config)) {
       config.gcFrequency = 100;
@@ -19085,7 +19239,7 @@ function plural(ms, n, name) {
         throw new Error("no outPort named '" + name + "'");
       }
     }
-    disconnectOuts = function() {
+    disconnectOuts = function disconnectOuts() {
       var l, len2, p, ref2, results;
       ref2 = config.outPorts;
       results = [];
@@ -19099,7 +19253,7 @@ function plural(ms, n, name) {
       }
       return results;
     };
-    sendGroupToOuts = function(grp) {
+    sendGroupToOuts = function sendGroupToOuts(grp) {
       var l, len2, p, ref2, results;
       ref2 = config.outPorts;
       results = [];
@@ -19109,7 +19263,7 @@ function plural(ms, n, name) {
       }
       return results;
     };
-    closeGroupOnOuts = function(grp) {
+    closeGroupOnOuts = function closeGroupOnOuts(grp) {
       var l, len2, p, ref2, results;
       ref2 = config.outPorts;
       results = [];
@@ -19123,7 +19277,7 @@ function plural(ms, n, name) {
     component.defaultedParams = [];
     component.gcCounter = 0;
     component._wpData = {};
-    _wp = function(scope) {
+    _wp = function _wp(scope) {
       if (!(scope in component._wpData)) {
         component._wpData[scope] = {};
         component._wpData[scope].groupedData = {};
@@ -19144,10 +19298,10 @@ function plural(ms, n, name) {
       return component._wpData[scope];
     };
     component.params = {};
-    setParamsScope = function(scope) {
+    setParamsScope = function setParamsScope(scope) {
       return component.params = _wp(scope).params;
     };
-    processQueue = function(scope) {
+    processQueue = function processQueue(scope) {
       var flushed, key, stream, streams, tmp;
       while (_wp(scope).outputQ.length > 0) {
         streams = _wp(scope).outputQ[0];
@@ -19181,7 +19335,7 @@ function plural(ms, n, name) {
       if ('load' in component.outPorts) {
         component.load = 0;
       }
-      component.beforeProcess = function(scope, outs) {
+      component.beforeProcess = function (scope, outs) {
         if (config.ordered) {
           _wp(scope).outputQ.push(outs);
         }
@@ -19192,7 +19346,7 @@ function plural(ms, n, name) {
           return component.outPorts.load.disconnect();
         }
       };
-      component.afterProcess = function(scope, err, outs) {
+      component.afterProcess = function (scope, err, outs) {
         processQueue(scope);
         component.load--;
         if ('load' in component.outPorts && component.outPorts.load.isAttached()) {
@@ -19202,7 +19356,7 @@ function plural(ms, n, name) {
         return component.emit('deactivate', component.load);
       };
     }
-    component.sendDefaults = function(scope) {
+    component.sendDefaults = function (scope) {
       var l, len2, param, ref2, tempSocket;
       if (component.defaultedParams.length > 0) {
         ref2 = component.defaultedParams;
@@ -19219,7 +19373,7 @@ function plural(ms, n, name) {
       }
       return _wp(scope).defaultsSent = true;
     };
-    resumeTaskQ = function(scope) {
+    resumeTaskQ = function resumeTaskQ(scope) {
       var results, task, temp;
       if (_wp(scope).completeParams.length === component.requiredParams.length && _wp(scope).taskQ.length > 0) {
         temp = _wp(scope).taskQ.slice(0);
@@ -19246,10 +19400,10 @@ function plural(ms, n, name) {
       }
     }
     ref3 = config.params;
-    fn = function(port) {
+    fn = function fn(port) {
       var inPort;
       inPort = component.inPorts[port];
-      return inPort.handle = function(ip) {
+      return inPort.handle = function (ip) {
         var event, index, payload, scope;
         event = ip.type;
         payload = ip.data;
@@ -19280,7 +19434,7 @@ function plural(ms, n, name) {
       port = ref3[m];
       fn(port);
     }
-    component.dropRequest = function(scope, key) {
+    component.dropRequest = function (scope, key) {
       if (key in _wp(scope).disconnectData) {
         delete _wp(scope).disconnectData[key];
       }
@@ -19291,7 +19445,7 @@ function plural(ms, n, name) {
         return delete _wp(scope).groupedGroups[key];
       }
     };
-    gc = function() {
+    gc = function gc() {
       var current, key, len4, n, ref4, results, scope, val;
       component.gcCounter++;
       if (component.gcCounter % config.gcFrequency === 0) {
@@ -19300,13 +19454,13 @@ function plural(ms, n, name) {
         for (n = 0, len4 = ref4.length; n < len4; n++) {
           scope = ref4[n];
           current = new Date().getTime();
-          results.push((function() {
+          results.push(function () {
             var ref5, results1;
             ref5 = _wp(scope).gcTimestamps;
             results1 = [];
             for (key in ref5) {
               val = ref5[key];
-              if ((current - val) > (config.gcTimeout * 1000)) {
+              if (current - val > config.gcTimeout * 1000) {
                 component.dropRequest(scope, key);
                 results1.push(delete _wp(scope).gcTimestamps[key]);
               } else {
@@ -19314,17 +19468,17 @@ function plural(ms, n, name) {
               }
             }
             return results1;
-          })());
+          }());
         }
         return results;
       }
     };
     ref4 = config.inPorts;
-    fn1 = function(port) {
+    fn1 = function fn1(port) {
       var inPort, needPortGroups;
       inPort = component.inPorts[port];
       needPortGroups = collectGroups instanceof Array && collectGroups.indexOf(port) !== -1;
-      return inPort.handle = function(ip) {
+      return inPort.handle = function (ip) {
         var data, foundGroup, g, groupLength, groups, grp, i, index, key, len5, len6, len7, len8, o, obj, out, outs, payload, postpone, postponedToQ, q, r, ref5, ref6, ref7, ref8, reqId, requiredLength, resume, s, scope, t, task, tmp, u, whenDone, whenDoneGroups, wrp;
         index = ip.index;
         payload = ip.data;
@@ -19419,7 +19573,7 @@ function plural(ms, n, name) {
                   }
                   key = reqId ? reqId : '';
                 }
-              } else if (config.field && typeof payload === 'object' && config.field in payload) {
+              } else if (config.field && (typeof payload === 'undefined' ? 'undefined' : _typeof(payload)) === 'object' && config.field in payload) {
                 key = payload[config.field];
               }
               _wp(scope).keyBuffers[port] = key;
@@ -19435,7 +19589,7 @@ function plural(ms, n, name) {
                 ++requiredLength;
               }
               for (i = r = 0, ref7 = _wp(scope).groupedData[key].length; 0 <= ref7 ? r < ref7 : r > ref7; i = 0 <= ref7 ? ++r : --r) {
-                if (!(port in _wp(scope).groupedData[key][i]) || (component.inPorts[port].isAddressable() && config.arrayPolicy["in"] === 'all' && !(index in _wp(scope).groupedData[key][i][port]))) {
+                if (!(port in _wp(scope).groupedData[key][i]) || component.inPorts[port].isAddressable() && config.arrayPolicy["in"] === 'all' && !(index in _wp(scope).groupedData[key][i][port])) {
                   foundGroup = true;
                   if (component.inPorts[port].isAddressable()) {
                     if (!(port in _wp(scope).groupedData[key][i])) {
@@ -19455,11 +19609,11 @@ function plural(ms, n, name) {
                   }
                   groupLength = Object.keys(_wp(scope).groupedData[key][i]).length;
                   if (groupLength === requiredLength) {
-                    data = (_wp(scope).groupedData[key].splice(i, 1))[0];
+                    data = _wp(scope).groupedData[key].splice(i, 1)[0];
                     if (config.inPorts.length === 1 && inPort.isAddressable()) {
                       data = data[port];
                     }
-                    groups = (_wp(scope).groupedGroups[key].splice(i, 1))[0];
+                    groups = _wp(scope).groupedGroups[key].splice(i, 1)[0];
                     if (collectGroups === true) {
                       groups = utils.intersection.apply(null, utils.getValues(groups));
                     }
@@ -19531,7 +19685,7 @@ function plural(ms, n, name) {
             if (!groups) {
               groups = [];
             }
-            groups = (function() {
+            groups = function () {
               var len7, results, t;
               results = [];
               for (t = 0, len7 = groups.length; t < len7; t++) {
@@ -19541,9 +19695,9 @@ function plural(ms, n, name) {
                 }
               }
               return results;
-            })();
+            }();
             whenDoneGroups = groups.slice(0);
-            whenDone = function(err) {
+            whenDone = function whenDone(err) {
               var disconnect, len7, out, outputs, t;
               if (err) {
                 component.error(err, whenDoneGroups, 'error', scope);
@@ -19602,14 +19756,14 @@ function plural(ms, n, name) {
             exports.MultiError(component, config.name, config.error, groups, scope);
             debug("WirePattern Legacy API call with", data, groups, component.params, scope);
             if (config.async) {
-              postpone = function() {};
-              resume = function() {};
+              postpone = function postpone() {};
+              resume = function resume() {};
               postponedToQ = false;
-              task = function() {
+              task = function task() {
                 setParamsScope(scope);
                 return proc.call(component, data, groups, outs, whenDone, postpone, resume, scope);
               };
-              postpone = function(backToQueue) {
+              postpone = function postpone(backToQueue) {
                 if (backToQueue == null) {
                   backToQueue = true;
                 }
@@ -19618,7 +19772,7 @@ function plural(ms, n, name) {
                   return _wp(scope).taskQ.push(task);
                 }
               };
-              resume = function() {
+              resume = function resume() {
                 if (postponedToQ) {
                   return resumeTaskQ();
                 } else {
@@ -19626,7 +19780,7 @@ function plural(ms, n, name) {
                 }
               };
             } else {
-              task = function() {
+              task = function task() {
                 setParamsScope(scope);
                 proc.call(component, data, groups, outs, null, null, null, scope);
                 return whenDone();
@@ -19643,7 +19797,7 @@ function plural(ms, n, name) {
       fn1(port);
     }
     baseTearDown = component.tearDown;
-    component.tearDown = function(callback) {
+    component.tearDown = function (callback) {
       component.requiredParams = [];
       component.defaultedParams = [];
       component.gcCounter = 0;
@@ -19656,13 +19810,13 @@ function plural(ms, n, name) {
 
   exports.GroupedInput = exports.WirePattern;
 
-  exports.CustomError = function(message, options) {
+  exports.CustomError = function (message, options) {
     var err;
     err = new Error(message);
     return exports.CustomizeError(err, options);
   };
 
-  exports.CustomizeError = function(err, options) {
+  exports.CustomizeError = function (err, options) {
     var key, val;
     for (key in options) {
       if (!hasProp.call(options, key)) continue;
@@ -19672,7 +19826,7 @@ function plural(ms, n, name) {
     return err;
   };
 
-  exports.MultiError = function(component, group, errorPort, forwardedGroups, scope) {
+  exports.MultiError = function (component, group, errorPort, forwardedGroups, scope) {
     var baseTearDown;
     if (group == null) {
       group = '';
@@ -19695,7 +19849,7 @@ function plural(ms, n, name) {
     if (!group) {
       group = 'Component';
     }
-    component.error = function(e, groups) {
+    component.error = function (e, groups) {
       if (groups == null) {
         groups = [];
       }
@@ -19705,7 +19859,7 @@ function plural(ms, n, name) {
       });
       return component.hasErrors = true;
     };
-    component.fail = function(e, groups) {
+    component.fail = function (e, groups) {
       var error, grp, j, k, l, len, len1, len2, ref, ref1, ref2;
       if (e == null) {
         e = null;
@@ -19760,32 +19914,41 @@ function plural(ms, n, name) {
       return component.errors = [];
     };
     baseTearDown = component.tearDown;
-    component.tearDown = function(callback) {
+    component.tearDown = function (callback) {
       component.hasErrors = false;
       component.errors = [];
       return baseTearDown.call(component, callback);
     };
     return component;
   };
-
-}).call(this);
-
-/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(1)))
+}).call(undefined);
+/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(2)))
 
 /***/ }),
 /* 91 */
 /***/ (function(module, exports, __webpack_require__) {
 
-(function() {
-  var ArrayPort, platform, port,
-    extend = function(child, parent) { for (var key in parent) { if (hasProp.call(parent, key)) child[key] = parent[key]; } function ctor() { this.constructor = child; } ctor.prototype = parent.prototype; child.prototype = new ctor(); child.__super__ = parent.prototype; return child; },
-    hasProp = {}.hasOwnProperty;
+"use strict";
+
+
+(function () {
+  var ArrayPort,
+      platform,
+      port,
+      extend = function extend(child, parent) {
+    for (var key in parent) {
+      if (hasProp.call(parent, key)) child[key] = parent[key];
+    }function ctor() {
+      this.constructor = child;
+    }ctor.prototype = parent.prototype;child.prototype = new ctor();child.__super__ = parent.prototype;return child;
+  },
+      hasProp = {}.hasOwnProperty;
 
   port = __webpack_require__(11);
 
   platform = __webpack_require__(5);
 
-  ArrayPort = (function(superClass) {
+  ArrayPort = function (superClass) {
     extend(ArrayPort, superClass);
 
     function ArrayPort(type) {
@@ -19794,7 +19957,7 @@ function plural(ms, n, name) {
       ArrayPort.__super__.constructor.call(this, this.type);
     }
 
-    ArrayPort.prototype.attach = function(socket, socketId) {
+    ArrayPort.prototype.attach = function (socket, socketId) {
       if (socketId == null) {
         socketId = null;
       }
@@ -19805,15 +19968,15 @@ function plural(ms, n, name) {
       return this.attachSocket(socket, socketId);
     };
 
-    ArrayPort.prototype.connect = function(socketId) {
+    ArrayPort.prototype.connect = function (socketId) {
       if (socketId == null) {
         socketId = null;
       }
       if (socketId === null) {
         if (!this.sockets.length) {
-          throw new Error((this.getId()) + ": No connections available");
+          throw new Error(this.getId() + ": No connections available");
         }
-        this.sockets.forEach(function(socket) {
+        this.sockets.forEach(function (socket) {
           if (!socket) {
             return;
           }
@@ -19822,107 +19985,107 @@ function plural(ms, n, name) {
         return;
       }
       if (!this.sockets[socketId]) {
-        throw new Error((this.getId()) + ": No connection '" + socketId + "' available");
+        throw new Error(this.getId() + ": No connection '" + socketId + "' available");
       }
       return this.sockets[socketId].connect();
     };
 
-    ArrayPort.prototype.beginGroup = function(group, socketId) {
+    ArrayPort.prototype.beginGroup = function (group, socketId) {
       if (socketId == null) {
         socketId = null;
       }
       if (socketId === null) {
         if (!this.sockets.length) {
-          throw new Error((this.getId()) + ": No connections available");
+          throw new Error(this.getId() + ": No connections available");
         }
-        this.sockets.forEach((function(_this) {
-          return function(socket, index) {
+        this.sockets.forEach(function (_this) {
+          return function (socket, index) {
             if (!socket) {
               return;
             }
             return _this.beginGroup(group, index);
           };
-        })(this));
+        }(this));
         return;
       }
       if (!this.sockets[socketId]) {
-        throw new Error((this.getId()) + ": No connection '" + socketId + "' available");
+        throw new Error(this.getId() + ": No connection '" + socketId + "' available");
       }
       if (this.isConnected(socketId)) {
         return this.sockets[socketId].beginGroup(group);
       }
-      this.sockets[socketId].once("connect", (function(_this) {
-        return function() {
+      this.sockets[socketId].once("connect", function (_this) {
+        return function () {
           return _this.sockets[socketId].beginGroup(group);
         };
-      })(this));
+      }(this));
       return this.sockets[socketId].connect();
     };
 
-    ArrayPort.prototype.send = function(data, socketId) {
+    ArrayPort.prototype.send = function (data, socketId) {
       if (socketId == null) {
         socketId = null;
       }
       if (socketId === null) {
         if (!this.sockets.length) {
-          throw new Error((this.getId()) + ": No connections available");
+          throw new Error(this.getId() + ": No connections available");
         }
-        this.sockets.forEach((function(_this) {
-          return function(socket, index) {
+        this.sockets.forEach(function (_this) {
+          return function (socket, index) {
             if (!socket) {
               return;
             }
             return _this.send(data, index);
           };
-        })(this));
+        }(this));
         return;
       }
       if (!this.sockets[socketId]) {
-        throw new Error((this.getId()) + ": No connection '" + socketId + "' available");
+        throw new Error(this.getId() + ": No connection '" + socketId + "' available");
       }
       if (this.isConnected(socketId)) {
         return this.sockets[socketId].send(data);
       }
-      this.sockets[socketId].once("connect", (function(_this) {
-        return function() {
+      this.sockets[socketId].once("connect", function (_this) {
+        return function () {
           return _this.sockets[socketId].send(data);
         };
-      })(this));
+      }(this));
       return this.sockets[socketId].connect();
     };
 
-    ArrayPort.prototype.endGroup = function(socketId) {
+    ArrayPort.prototype.endGroup = function (socketId) {
       if (socketId == null) {
         socketId = null;
       }
       if (socketId === null) {
         if (!this.sockets.length) {
-          throw new Error((this.getId()) + ": No connections available");
+          throw new Error(this.getId() + ": No connections available");
         }
-        this.sockets.forEach((function(_this) {
-          return function(socket, index) {
+        this.sockets.forEach(function (_this) {
+          return function (socket, index) {
             if (!socket) {
               return;
             }
             return _this.endGroup(index);
           };
-        })(this));
+        }(this));
         return;
       }
       if (!this.sockets[socketId]) {
-        throw new Error((this.getId()) + ": No connection '" + socketId + "' available");
+        throw new Error(this.getId() + ": No connection '" + socketId + "' available");
       }
       return this.sockets[socketId].endGroup();
     };
 
-    ArrayPort.prototype.disconnect = function(socketId) {
+    ArrayPort.prototype.disconnect = function (socketId) {
       var i, len, ref, socket;
       if (socketId == null) {
         socketId = null;
       }
       if (socketId === null) {
         if (!this.sockets.length) {
-          throw new Error((this.getId()) + ": No connections available");
+          throw new Error(this.getId() + ": No connections available");
         }
         ref = this.sockets;
         for (i = 0, len = ref.length; i < len; i++) {
@@ -19940,14 +20103,14 @@ function plural(ms, n, name) {
       return this.sockets[socketId].disconnect();
     };
 
-    ArrayPort.prototype.isConnected = function(socketId) {
+    ArrayPort.prototype.isConnected = function (socketId) {
       var connected;
       if (socketId == null) {
         socketId = null;
       }
       if (socketId === null) {
         connected = false;
-        this.sockets.forEach(function(socket) {
+        this.sockets.forEach(function (socket) {
           if (!socket) {
             return;
           }
@@ -19963,11 +20126,11 @@ function plural(ms, n, name) {
       return this.sockets[socketId].isConnected();
     };
 
-    ArrayPort.prototype.isAddressable = function() {
+    ArrayPort.prototype.isAddressable = function () {
       return true;
     };
 
-    ArrayPort.prototype.isAttached = function(socketId) {
+    ArrayPort.prototype.isAttached = function (socketId) {
       var i, len, ref, socket;
       if (socketId === void 0) {
         ref = this.sockets;
@@ -19986,20 +20149,22 @@ function plural(ms, n, name) {
     };
 
     return ArrayPort;
-
-  })(port.Port);
+  }(port.Port);
 
   exports.ArrayPort = ArrayPort;
-
-}).call(this);
-
+}).call(undefined);
 
 /***/ }),
 /* 92 */
 /***/ (function(module, exports, __webpack_require__) {
 
-/* WEBPACK VAR INJECTION */(function(process) {(function() {
-  var ComponentLoader, Graph, IP, Network, getType, internalSocket, normalizeOptions, normalizeOutput, prepareInputMap, prepareNetwork, runNetwork, sendOutputMap;
+"use strict";
+/* WEBPACK VAR INJECTION */(function(process) {
+
+var _typeof = typeof Symbol === "function" && typeof Symbol.iterator === "symbol" ? function (obj) { return typeof obj; } : function (obj) { return obj && typeof Symbol === "function" && obj.constructor === Symbol && obj !== Symbol.prototype ? "symbol" : typeof obj; };
+
+(function () {
+  var ComponentLoader, Graph, IP, Network, _getType, internalSocket, normalizeOptions, normalizeOutput, prepareInputMap, prepareNetwork, runNetwork, sendOutputMap;
 
   ComponentLoader = __webpack_require__(10).ComponentLoader;
 
@@ -20007,11 +20172,11 @@ function plural(ms, n, name) {
 
   IP = __webpack_require__(4);
 
-  internalSocket = __webpack_require__(7);
+  internalSocket = __webpack_require__(6);
 
-  Graph = __webpack_require__(8).Graph;
+  Graph = __webpack_require__(7).Graph;
 
-  normalizeOptions = function(options, component) {
+  normalizeOptions = function normalizeOptions(options, component) {
     if (!options) {
       options = {};
     }
@@ -20033,8 +20198,8 @@ function plural(ms, n, name) {
     return options;
   };
 
-  prepareNetwork = function(component, options, callback) {
-    return options.loader.load(component, function(err, instance) {
+  prepareNetwork = function prepareNetwork(component, options, callback) {
+    return options.loader.load(component, function (err, instance) {
       var def, graph, inPorts, network, nodeName, outPorts, port;
       if (err) {
         return callback(err);
@@ -20054,7 +20219,7 @@ function plural(ms, n, name) {
       }
       graph.componentLoader = options.loader;
       network = new Network(graph, options);
-      return network.connect(function(err) {
+      return network.connect(function (err) {
         if (err) {
           return callback(err);
         }
@@ -20063,29 +20228,29 @@ function plural(ms, n, name) {
     });
   };
 
-  runNetwork = function(network, inputs, options, callback) {
+  runNetwork = function runNetwork(network, inputs, options, callback) {
     var inPorts, inSockets, outPorts, outSockets, process, received;
     process = network.getNode(options.name);
     inPorts = Object.keys(network.graph.inports);
     inSockets = {};
-    inPorts.forEach(function(inport) {
+    inPorts.forEach(function (inport) {
       inSockets[inport] = internalSocket.createSocket();
       return process.component.inPorts[inport].attach(inSockets[inport]);
     });
     received = [];
     outPorts = Object.keys(network.graph.outports);
     outSockets = {};
-    outPorts.forEach(function(outport) {
+    outPorts.forEach(function (outport) {
       outSockets[outport] = internalSocket.createSocket();
       process.component.outPorts[outport].attach(outSockets[outport]);
-      return outSockets[outport].on('ip', function(ip) {
+      return outSockets[outport].on('ip', function (ip) {
         var res;
         res = {};
         res[outport] = ip;
         return received.push(res);
       });
     });
-    network.once('end', function() {
+    network.once('end', function () {
       var port, socket;
       for (port in outSockets) {
         socket = outSockets[port];
@@ -20095,7 +20260,7 @@ function plural(ms, n, name) {
       inSockets = {};
       return callback(null, received);
     });
-    return network.start(function(err) {
+    return network.start(function (err) {
       var i, inputMap, len, port, results, value;
       if (err) {
         return callback(err);
@@ -20103,7 +20268,7 @@ function plural(ms, n, name) {
       results = [];
       for (i = 0, len = inputs.length; i < len; i++) {
         inputMap = inputs[i];
-        results.push((function() {
+        results.push(function () {
           var results1;
           results1 = [];
           for (port in inputMap) {
@@ -20115,20 +20280,20 @@ function plural(ms, n, name) {
             results1.push(inSockets[port].post(new IP('data', value)));
           }
           return results1;
-        })());
+        }());
       }
       return results;
     });
   };
 
-  getType = function(inputs, network) {
+  _getType = function getType(inputs, network) {
     var key, maps, value;
-    if (typeof inputs !== 'object') {
+    if ((typeof inputs === 'undefined' ? 'undefined' : _typeof(inputs)) !== 'object') {
       return 'simple';
     }
     if (Array.isArray(inputs)) {
-      maps = inputs.filter(function(entry) {
-        return getType(entry, network) === 'map';
+      maps = inputs.filter(function (entry) {
+        return _getType(entry, network) === 'map';
       });
       if (maps.length === inputs.length) {
         return 'sequence';
@@ -20147,7 +20312,7 @@ function plural(ms, n, name) {
     return 'map';
   };
 
-  prepareInputMap = function(inputs, inputType, network) {
+  prepareInputMap = function prepareInputMap(inputs, inputType, network) {
     var inPort, map;
     if (inputType === 'sequence') {
       return inputs;
@@ -20164,7 +20329,7 @@ function plural(ms, n, name) {
     return [map];
   };
 
-  normalizeOutput = function(values, options) {
+  normalizeOutput = function normalizeOutput(values, options) {
     var current, i, len, packet, previous, result;
     if (options.raw) {
       return values;
@@ -20192,18 +20357,18 @@ function plural(ms, n, name) {
     return result;
   };
 
-  sendOutputMap = function(outputs, resultType, options, callback) {
+  sendOutputMap = function sendOutputMap(outputs, resultType, options, callback) {
     var errors, i, key, len, map, mappedOutputs, outputKeys, packets, port, result, val, withValue;
-    errors = outputs.filter(function(map) {
+    errors = outputs.filter(function (map) {
       return map.error != null;
-    }).map(function(map) {
+    }).map(function (map) {
       return map.error;
     });
     if (errors.length) {
       return callback(normalizeOutput(errors, options));
     }
     if (resultType === 'sequence') {
-      return callback(null, outputs.map(function(map) {
+      return callback(null, outputs.map(function (map) {
         var key, res, val;
         res = {};
         for (key in map) {
@@ -20229,7 +20394,7 @@ function plural(ms, n, name) {
       }
     }
     outputKeys = Object.keys(mappedOutputs);
-    withValue = outputKeys.filter(function(outport) {
+    withValue = outputKeys.filter(function (outport) {
       return mappedOutputs[outport].length > 0;
     });
     if (withValue.length === 0) {
@@ -20246,17 +20411,17 @@ function plural(ms, n, name) {
     return callback(null, result);
   };
 
-  exports.asCallback = function(component, options) {
+  exports.asCallback = function (component, options) {
     options = normalizeOptions(options, component);
-    return function(inputs, callback) {
-      return prepareNetwork(component, options, function(err, network) {
+    return function (inputs, callback) {
+      return prepareNetwork(component, options, function (err, network) {
         var inputMap, resultType;
         if (err) {
           return callback(err);
         }
-        resultType = getType(inputs, network);
+        resultType = _getType(inputs, network);
         inputMap = prepareInputMap(inputs, resultType, network);
-        return runNetwork(network, inputMap, options, function(err, outputMap) {
+        return runNetwork(network, inputMap, options, function (err, outputMap) {
           if (err) {
             return callback(err);
           }
@@ -20265,33 +20430,36 @@ function plural(ms, n, name) {
       });
     };
   };
-
-}).call(this);
-
-/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(1)))
+}).call(undefined);
+/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(2)))
 
 /***/ }),
 /* 93 */
 /***/ (function(module, exports, __webpack_require__) {
 
+"use strict";
+
+
 module.exports = {
   iframe: __webpack_require__(94),
-  opener: __webpack_require__(108)
+  opener: __webpack_require__(105)
 };
-
 
 /***/ }),
 /* 94 */
 /***/ (function(module, exports, __webpack_require__) {
 
-(function (context) {
-  var PostMessage = __webpack_require__(23);
+"use strict";
 
-  var IframeRuntime = function (options) {
+
+(function (context) {
+  var PostMessage = __webpack_require__(22);
+
+  var IframeRuntime = function IframeRuntime(options) {
     PostMessage.call(this, options);
     this.setClient(context.parent);
   };
-  IframeRuntime.prototype = new PostMessage;
+  IframeRuntime.prototype = new PostMessage();
 
   module.exports = function (options) {
     options = PostMessage.normalizeOptions(options);
@@ -20309,20 +20477,37 @@ module.exports = {
   };
 })(window);
 
-
 /***/ }),
 /* 95 */
 /***/ (function(module, exports, __webpack_require__) {
 
-(function() {
-  var RuntimeProtocol, noflo, portsPayload, sendToInport;
+"use strict";
+
+
+(function () {
+  var EventEmitter,
+      RuntimeProtocol,
+      findPort,
+      noflo,
+      portToPayload,
+      portsPayload,
+      sendToInport,
+      extend = function extend(child, parent) {
+    for (var key in parent) {
+      if (hasProp.call(parent, key)) child[key] = parent[key];
+    }function ctor() {
+      this.constructor = child;
+    }ctor.prototype = parent.prototype;child.prototype = new ctor();child.__super__ = parent.prototype;return child;
+  },
+      hasProp = {}.hasOwnProperty;
 
   noflo = __webpack_require__(0);
 
-  sendToInport = function(component, portName, event, payload) {
-    var port, socket;
+  EventEmitter = __webpack_require__(1).EventEmitter;
+
+  sendToInport = function sendToInport(port, event, payload) {
+    var socket;
     socket = noflo.internalSocket.createSocket();
-    port = component.inPorts[portName];
     port.attach(socket);
     switch (event) {
       case 'connect':
@@ -20343,82 +20528,118 @@ module.exports = {
     return port.detach(socket);
   };
 
-  portsPayload = function(name, graph) {
-    var inports, internal, outports, payload, pub, ref, ref1, ref2, ref3;
-    inports = [];
-    outports = [];
-    if (graph) {
-      ref = graph.inports;
-      for (pub in ref) {
-        internal = ref[pub];
-        inports.push({
-          id: pub,
-          type: 'any',
-          description: (ref1 = internal.metadata) != null ? ref1.description : void 0,
-          addressable: false,
-          required: false
-        });
-      }
-      ref2 = graph.outports;
-      for (pub in ref2) {
-        internal = ref2[pub];
-        outports.push({
-          id: pub,
-          type: 'any',
-          description: (ref3 = internal.metadata) != null ? ref3.description : void 0,
-          addressable: false,
-          required: false
-        });
-      }
+  findPort = function findPort(network, name, inPort) {
+    var component, internal, ref;
+    if (!network.graph) {
+      return;
     }
-    return payload = {
-      graph: name,
-      inPorts: inports,
-      outPorts: outports
-    };
+    if (inPort) {
+      internal = network.graph.inports[name];
+    } else {
+      internal = network.graph.outports[name];
+    }
+    if (!(internal != null ? internal.process : void 0)) {
+      return;
+    }
+    component = (ref = network.getNode(internal.process)) != null ? ref.component : void 0;
+    if (!component) {
+      return;
+    }
+    if (inPort) {
+      return component.inPorts[internal.port];
+    }
+    return component.outPorts[internal.port];
   };
 
-  RuntimeProtocol = (function() {
+  portToPayload = function portToPayload(pub, internal, network, inPort) {
+    var def, port, ref, ref1;
+    def = {
+      id: pub,
+      type: 'all',
+      description: (ref = internal.metadata) != null ? ref.description : void 0,
+      addressable: false,
+      required: false
+    };
+    port = findPort(network, pub, inPort);
+    if (!port) {
+      return def;
+    }
+    def.type = port.getDataType();
+    if (port.getSchema) {
+      def.schema = port.getSchema();
+    }
+    def.description = ((ref1 = internal.metadata) != null ? ref1.description : void 0) || port.getDescription();
+    def.addressable = port.isAddressable();
+    def.required = port.isRequired();
+    return def;
+  };
+
+  portsPayload = function portsPayload(name, network) {
+    var internal, payload, pub, ref, ref1;
+    payload = {
+      graph: name,
+      inPorts: [],
+      outPorts: []
+    };
+    if (!(network != null ? network.graph : void 0)) {
+      return payload;
+    }
+    ref = network.graph.inports;
+    for (pub in ref) {
+      internal = ref[pub];
+      payload.inPorts.push(portToPayload(pub, internal, network, true));
+    }
+    ref1 = network.graph.outports;
+    for (pub in ref1) {
+      internal = ref1[pub];
+      payload.outPorts.push(portToPayload(pub, internal, network, false));
+    }
+    return payload;
+  };
+
+  RuntimeProtocol = function (superClass) {
+    extend(RuntimeProtocol, superClass);
+
     function RuntimeProtocol(transport) {
       this.transport = transport;
       this.outputSockets = {};
       this.mainGraph = null;
-      this.transport.network.on('addnetwork', (function(_this) {
-        return function(network, name) {
-          _this.subscribeExportedPorts(name, network.graph, true);
+      this.transport.network.on('addnetwork', function (_this) {
+        return function (network, name) {
+          _this.subscribeExportedPorts(name, network, true);
           _this.subscribeOutPorts(name, network);
-          _this.sendPorts(name, network.graph);
+          _this.sendPorts(name, network);
           if (network.isStarted()) {
             _this.subscribeOutdata(name, network, true);
           }
-          return network.on('start', function() {
+          return network.on('start', function () {
             return _this.subscribeOutdata(name, network, true);
           });
         };
-      })(this));
-      this.transport.network.on('removenetwork', (function(_this) {
-        return function(network, name) {
+      }(this));
+      this.transport.network.on('removenetwork', function (_this) {
+        return function (network, name) {
           _this.subscribeOutdata(name, network, false);
           _this.subscribeOutPorts(name, network);
           _this.subscribeExportedPorts(name, network.graph, false);
           return _this.sendPorts(name, null);
         };
-      })(this));
+      }(this));
     }
 
-    RuntimeProtocol.prototype.send = function(topic, payload, context) {
+    RuntimeProtocol.prototype.send = function (topic, payload, context) {
       return this.transport.send('runtime', topic, payload, context);
     };
 
-    RuntimeProtocol.prototype.sendAll = function(topic, payload) {
+    RuntimeProtocol.prototype.sendAll = function (topic, payload) {
       return this.transport.sendAll('runtime', topic, payload);
     };
 
-    RuntimeProtocol.prototype.sendError = function(message, context) {
+    RuntimeProtocol.prototype.sendError = function (message, context) {
       return this.send('error', new Error(message), context);
     };
 
-    RuntimeProtocol.prototype.receive = function(topic, payload, context) {
+    RuntimeProtocol.prototype.receive = function (topic, payload, context) {
       if (topic === 'packet' && !this.transport.canDo('protocol:runtime', payload.secret)) {
         this.send('error', new Error(topic + " not permitted"), context);
         return;
@@ -20427,11 +20648,17 @@ module.exports = {
         case 'getruntime':
           return this.getRuntime(payload, context);
         case 'packet':
-          return this.receivePacket(payload, context);
+          return this.sendPacket(payload, function (_this) {
+            return function (err) {
+              if (err) {
+                _this.sendError(err.message, context);
+              }
+            };
+          }(this));
       }
     };
 
-    RuntimeProtocol.prototype.getRuntime = function(payload, context) {
+    RuntimeProtocol.prototype.getRuntime = function (payload, context) {
       var capabilities, name, network, permittedCapabilities, ref, results, type;
       type = this.transport.options.type;
       if (!type) {
@@ -20445,11 +20672,11 @@ module.exports = {
       if (!capabilities) {
         capabilities = ['protocol:graph', 'protocol:component', 'protocol:network', 'protocol:runtime', 'component:setsource', 'component:getsource'];
       }
-      permittedCapabilities = capabilities.filter((function(_this) {
-        return function(capability) {
+      permittedCapabilities = capabilities.filter(function (_this) {
+        return function (capability) {
           return _this.transport.canDo(capability, payload.secret);
         };
-      })(this));
+      }(this));
       payload = {
         type: type,
         version: this.transport.version,
@@ -20479,14 +20706,15 @@ module.exports = {
       results = [];
       for (name in ref) {
         network = ref[name];
-        results.push(this.sendPorts(name, network.graph, context));
+        results.push(this.sendPorts(name, network, context));
       }
       return results;
     };
 
-    RuntimeProtocol.prototype.sendPorts = function(name, graph, context) {
+    RuntimeProtocol.prototype.sendPorts = function (name, network, context) {
       var payload;
-      payload = portsPayload(name, graph);
+      payload = portsPayload(name, network);
+      this.emit('ports', payload);
       if (!context) {
         return this.sendAll('ports', payload);
       } else {
@@ -20494,44 +20722,44 @@ module.exports = {
       }
     };
 
-    RuntimeProtocol.prototype.setMainGraph = function(id) {
+    RuntimeProtocol.prototype.setMainGraph = function (id) {
       return this.mainGraph = id;
     };
 
-    RuntimeProtocol.prototype.subscribeExportedPorts = function(name, graph, add) {
+    RuntimeProtocol.prototype.subscribeExportedPorts = function (name, network, add) {
       var d, dependencies, i, j, len, len1, results, sendExportedPorts;
-      sendExportedPorts = (function(_this) {
-        return function() {
-          return _this.sendPorts(name, graph);
+      sendExportedPorts = function (_this) {
+        return function () {
+          return _this.sendPorts(name, network);
         };
-      })(this);
+      }(this);
       dependencies = ['addInport', 'addOutport', 'removeInport', 'removeOutport'];
       for (i = 0, len = dependencies.length; i < len; i++) {
         d = dependencies[i];
-        graph.removeListener(d, sendExportedPorts);
+        network.graph.removeListener(d, sendExportedPorts);
       }
       if (add) {
         results = [];
         for (j = 0, len1 = dependencies.length; j < len1; j++) {
           d = dependencies[j];
-          results.push(graph.on(d, sendExportedPorts));
+          results.push(network.graph.on(d, sendExportedPorts));
         }
         return results;
       }
     };
 
-    RuntimeProtocol.prototype.subscribeOutPorts = function(name, network, add) {
+    RuntimeProtocol.prototype.subscribeOutPorts = function (name, network, add) {
       var graph, portAdded, portRemoved;
-      portRemoved = (function(_this) {
-        return function() {
+      portRemoved = function (_this) {
+        return function () {
           return _this.subscribeOutdata(name, network, false);
         };
-      })(this);
-      portAdded = (function(_this) {
-        return function() {
+      }(this);
+      portAdded = function (_this) {
+        return function () {
           return _this.subscribeOutdata(name, network, true);
         };
-      })(this);
+      }(this);
       graph = network.graph;
       graph.removeListener('addOutport', portAdded);
       graph.removeListener('removeOutport', portRemoved);
@@ -20541,7 +20769,7 @@ module.exports = {
       }
     };
 
-    RuntimeProtocol.prototype.subscribeOutdata = function(graphName, network, add) {
+    RuntimeProtocol.prototype.subscribeOutdata = function (graphName, network, add) {
       var event, events, graphSockets, i, len, pub, socket;
       events = ['data', 'begingroup', 'endgroup', 'connect', 'disconnect'];
       if (!this.outputSockets[graphName]) {
@@ -20559,16 +20787,22 @@ module.exports = {
       if (!add) {
         return;
       }
-      return Object.keys(network.graph.outports).forEach((function(_this) {
-        return function(pub) {
+      return Object.keys(network.graph.outports).forEach(function (_this) {
+        return function (pub) {
           var component, internal, j, len1, results, sendFunc;
           internal = network.graph.outports[pub];
           socket = noflo.internalSocket.createSocket();
           graphSockets[pub] = socket;
           component = network.processes[internal.process].component;
           component.outPorts[internal.port].attach(socket);
-          sendFunc = function(event) {
-            return function(payload) {
+          sendFunc = function sendFunc(event) {
+            return function (payload) {
+              _this.emit('packet', {
+                port: pub,
+                event: event,
+                graph: graphName,
+                payload: payload
+              });
               return _this.sendAll('packet', {
                 port: pub,
                 event: event,
@@ -20584,57 +20818,55 @@ module.exports = {
           }
           return results;
         };
-      })(this));
+      }(this));
     };
 
-    RuntimeProtocol.prototype.receivePacket = function(payload, context) {
-      var component, graph, internal, network, ref;
-      graph = this.transport.graph.graphs[payload.graph];
+    RuntimeProtocol.prototype.sendPacket = function (payload, callback) {
+      var network, port;
       network = this.transport.network.networks[payload.graph];
       if (!network) {
-        return this.sendError("Cannot find network for graph " + payload.graph, context);
+        return callback(new Error("Cannot find network for graph " + payload.graph));
       }
-      internal = graph.inports[payload.port];
-      component = (ref = network.network.getNode(internal != null ? internal.process : void 0)) != null ? ref.component : void 0;
-      if (!(internal && component)) {
-        return this.sendError("Cannot find internal port for " + payload.port, context);
+      port = findPort(network.network, payload.port, true);
+      if (!port) {
+        return callback(new Error("Cannot find internal port for " + payload.port));
       }
-      return sendToInport(component, internal.port, payload.event, payload.payload);
+      return sendToInport(port, payload.event, payload.payload);
     };
 
     return RuntimeProtocol;
-
-  })();
+  }(EventEmitter);
 
   module.exports = RuntimeProtocol;
-
-}).call(this);
-
+}).call(undefined);
 
 /***/ }),
 /* 96 */
 /***/ (function(module, exports, __webpack_require__) {
 
-(function() {
+"use strict";
+
+
+(function () {
   var GraphProtocol, noflo;
 
   noflo = __webpack_require__(0);
 
-  GraphProtocol = (function() {
+  GraphProtocol = function () {
     function GraphProtocol(transport) {
       this.transport = transport;
       this.graphs = {};
     }
 
-    GraphProtocol.prototype.send = function(topic, payload, context) {
+    GraphProtocol.prototype.send = function (topic, payload, context) {
       return this.transport.send('graph', topic, payload, context);
     };
 
-    GraphProtocol.prototype.sendAll = function(topic, payload) {
+    GraphProtocol.prototype.sendAll = function (topic, payload) {
       return this.transport.sendAll('graph', topic, payload);
     };
 
-    GraphProtocol.prototype.receive = function(topic, payload, context) {
+    GraphProtocol.prototype.receive = function (topic, payload, context) {
       var graph;
       if (!this.transport.canDo('protocol:graph', payload.secret)) {
         this.send('error', new Error(topic + " not permitted"), context);
@@ -20691,7 +20923,7 @@ module.exports = {
       }
     };
 
-    GraphProtocol.prototype.resolveGraph = function(payload, context) {
+    GraphProtocol.prototype.resolveGraph = function (payload, context) {
       if (!payload.graph) {
         this.send('error', new Error('No graph specified'), context);
         return;
@@ -20703,11 +20935,11 @@ module.exports = {
       return this.graphs[payload.graph];
     };
 
-    GraphProtocol.prototype.getLoader = function(baseDir) {
+    GraphProtocol.prototype.getLoader = function (baseDir) {
       return this.transport.component.getLoader(baseDir, this.transport.options);
     };
 
-    GraphProtocol.prototype.sendGraph = function(id, graph, context) {
+    GraphProtocol.prototype.sendGraph = function (id, graph, context) {
       var payload;
       payload = {
         graph: id,
@@ -20716,7 +20948,7 @@ module.exports = {
       return this.send('graph', payload, context);
     };
 
-    GraphProtocol.prototype.initGraph = function(payload, context) {
+    GraphProtocol.prototype.initGraph = function (payload, context) {
       var fullName, graph;
       if (!payload.id) {
         this.send('error', new Error('No graph ID provided'), context);
@@ -20756,7 +20988,7 @@ module.exports = {
       }, context);
     };
 
-    GraphProtocol.prototype.registerGraph = function(id, graph) {
+    GraphProtocol.prototype.registerGraph = function (id, graph) {
       if (id === 'default/main') {
         this.transport.runtime.setMainGraph(id, graph);
       }
@@ -20764,15 +20996,15 @@ module.exports = {
       return this.graphs[id] = graph;
     };
 
-    GraphProtocol.prototype.subscribeGraph = function(id, graph, context) {
-      graph.on('addNode', (function(_this) {
-        return function(node) {
+    GraphProtocol.prototype.subscribeGraph = function (id, graph, context) {
+      graph.on('addNode', function (_this) {
+        return function (node) {
           node.graph = id;
           return _this.sendAll('addnode', node, context);
         };
-      })(this));
-      graph.on('removeNode', (function(_this) {
-        return function(node) {
+      }(this));
+      graph.on('removeNode', function (_this) {
+        return function (node) {
           var nodeData;
           nodeData = {
             id: node.id,
@@ -20780,27 +21012,27 @@ module.exports = {
           };
           return _this.sendAll('removenode', nodeData, context);
         };
-      })(this));
-      graph.on('renameNode', (function(_this) {
-        return function(oldId, newId) {
+      }(this));
+      graph.on('renameNode', function (_this) {
+        return function (oldId, newId) {
           return _this.sendAll('renamenode', {
             from: oldId,
             to: newId,
             graph: id
           }, context);
         };
-      })(this));
-      graph.on('changeNode', (function(_this) {
-        return function(node, before) {
+      }(this));
+      graph.on('changeNode', function (_this) {
+        return function (node, before) {
           return _this.sendAll('changenode', {
             id: node.id,
             metadata: node.metadata,
             graph: id
           }, context);
         };
-      })(this));
-      graph.on('addEdge', (function(_this) {
-        return function(edge) {
+      }(this));
+      graph.on('addEdge', function (_this) {
+        return function (edge) {
           var edgeData;
           if (typeof edge.from.index !== 'number') {
             delete edge.from.index;
@@ -20816,9 +21048,9 @@ module.exports = {
           };
           return _this.sendAll('addedge', edgeData, context);
         };
-      })(this));
-      graph.on('removeEdge', (function(_this) {
-        return function(edge) {
+      }(this));
+      graph.on('removeEdge', function (_this) {
+        return function (edge) {
           var edgeData;
           edgeData = {
             src: edge.from,
@@ -20827,9 +21059,9 @@ module.exports = {
           };
           return _this.sendAll('removeedge', edgeData, context);
         };
-      })(this));
-      graph.on('changeEdge', (function(_this) {
-        return function(edge) {
+      }(this));
+      graph.on('changeEdge', function (_this) {
+        return function (edge) {
           var edgeData;
           edgeData = {
             src: edge.from,
@@ -20839,9 +21071,9 @@ module.exports = {
           };
           return _this.sendAll('changeedge', edgeData, context);
         };
-      })(this));
-      graph.on('addInitial', (function(_this) {
-        return function(iip) {
+      }(this));
+      graph.on('addInitial', function (_this) {
+        return function (iip) {
           var iipData;
           iipData = {
             src: iip.from,
@@ -20851,9 +21083,9 @@ module.exports = {
           };
           return _this.sendAll('addinitial', iipData, context);
         };
-      })(this));
-      graph.on('removeInitial', (function(_this) {
-        return function(iip) {
+      }(this));
+      graph.on('removeInitial', function (_this) {
+        return function (iip) {
           var iipData;
           iipData = {
             src: iip.from,
@@ -20862,9 +21094,9 @@ module.exports = {
           };
           return _this.sendAll('removeinitial', iipData, context);
         };
-      })(this));
-      graph.on('addGroup', (function(_this) {
-        return function(group) {
+      }(this));
+      graph.on('addGroup', function (_this) {
+        return function (group) {
           var groupData;
           groupData = {
             name: group.name,
@@ -20874,9 +21106,9 @@ module.exports = {
           };
           return _this.sendAll('addgroup', groupData, context);
         };
-      })(this));
-      graph.on('removeGroup', (function(_this) {
-        return function(group) {
+      }(this));
+      graph.on('removeGroup', function (_this) {
+        return function (group) {
           var groupData;
           groupData = {
             name: group.name,
@@ -20884,9 +21116,9 @@ module.exports = {
           };
           return _this.sendAll('removegroup', groupData, context);
         };
-      })(this));
-      graph.on('renameGroup', (function(_this) {
-        return function(oldName, newName) {
+      }(this));
+      graph.on('renameGroup', function (_this) {
+        return function (oldName, newName) {
           var groupData;
           groupData = {
             from: oldName,
@@ -20895,9 +21127,9 @@ module.exports = {
           };
           return _this.sendAll('renamegroup', groupData, context);
         };
-      })(this));
-      graph.on('changeGroup', (function(_this) {
-        return function(group) {
+      }(this));
+      graph.on('changeGroup', function (_this) {
+        return function (group) {
           var groupData;
           groupData = {
             name: group.name,
@@ -20906,9 +21138,9 @@ module.exports = {
           };
           return _this.sendAll('changegroup', groupData, context);
         };
-      })(this));
-      graph.on('addInport', (function(_this) {
-        return function(publicName, port) {
+      }(this));
+      graph.on('addInport', function (_this) {
+        return function (publicName, port) {
           var data;
           data = {
             "public": publicName,
@@ -20919,9 +21151,9 @@ module.exports = {
           };
           return _this.sendAll('addinport', data, context);
         };
-      })(this));
-      graph.on('addOutport', (function(_this) {
-        return function(publicName, port) {
+      }(this));
+      graph.on('addOutport', function (_this) {
+        return function (publicName, port) {
           var data;
           data = {
             "public": publicName,
@@ -20932,9 +21164,9 @@ module.exports = {
           };
           return _this.sendAll('addoutport', data, context);
         };
-      })(this));
-      graph.on('removeInport', (function(_this) {
-        return function(publicName, port) {
+      }(this));
+      graph.on('removeInport', function (_this) {
+        return function (publicName, port) {
           var data;
           data = {
             "public": publicName,
@@ -20942,9 +21174,9 @@ module.exports = {
           };
           return _this.sendAll('removeinport', data, context);
         };
-      })(this));
-      return graph.on('removeOutport', (function(_this) {
-        return function(publicName, port) {
+      }(this));
+      return graph.on('removeOutport', function (_this) {
+        return function (publicName, port) {
           var data;
           data = {
             "public": publicName,
@@ -20952,10 +21184,10 @@ module.exports = {
           };
           return _this.sendAll('removeoutport', data, context);
         };
-      })(this));
+      }(this));
     };
 
-    GraphProtocol.prototype.addNode = function(graph, node, context) {
+    GraphProtocol.prototype.addNode = function (graph, node, context) {
       if (!(node.id || node.component)) {
         this.send('error', new Error('No ID or component supplied'), context);
         return;
@@ -20963,7 +21195,7 @@ module.exports = {
       return graph.addNode(node.id, node.component, node.metadata);
     };
 
-    GraphProtocol.prototype.removeNode = function(graph, payload, context) {
+    GraphProtocol.prototype.removeNode = function (graph, payload, context) {
       if (!payload.id) {
         this.send('error', new Error('No ID supplied'), context);
         return;
@@ -20971,7 +21203,7 @@ module.exports = {
       return graph.removeNode(payload.id);
     };
 
-    GraphProtocol.prototype.renameNode = function(graph, payload, context) {
+    GraphProtocol.prototype.renameNode = function (graph, payload, context) {
       if (!(payload.from || payload.to)) {
         this.send('error', new Error('No from or to supplied'), context);
         return;
@@ -20979,7 +21211,7 @@ module.exports = {
       return graph.renameNode(payload.from, payload.to);
     };
 
-    GraphProtocol.prototype.changeNode = function(graph, payload, context) {
+    GraphProtocol.prototype.changeNode = function (graph, payload, context) {
       if (!(payload.id || payload.metadata)) {
         this.send('error', new Error('No id or metadata supplied'), context);
         return;
@@ -20987,7 +21219,7 @@ module.exports = {
       return graph.setNodeMetadata(payload.id, payload.metadata);
     };
 
-    GraphProtocol.prototype.addEdge = function(graph, edge, context) {
+    GraphProtocol.prototype.addEdge = function (graph, edge, context) {
       if (!(edge.src || edge.tgt)) {
         this.send('error', new Error('No src or tgt supplied'), context);
         return;
@@ -21001,7 +21233,7 @@ module.exports = {
       return graph.addEdge(edge.src.node, edge.src.port, edge.tgt.node, edge.tgt.port, edge.metadata);
     };
 
-    GraphProtocol.prototype.removeEdge = function(graph, edge, context) {
+    GraphProtocol.prototype.removeEdge = function (graph, edge, context) {
       if (!(edge.src || edge.tgt)) {
         this.send('error', new Error('No src or tgt supplied'), context);
         return;
@@ -21009,7 +21241,7 @@ module.exports = {
       return graph.removeEdge(edge.src.node, edge.src.port, edge.tgt.node, edge.tgt.port);
     };
 
-    GraphProtocol.prototype.changeEdge = function(graph, edge, context) {
+    GraphProtocol.prototype.changeEdge = function (graph, edge, context) {
       if (!(edge.src || edge.tgt)) {
         this.send('error', new Error('No src or tgt supplied'), context);
         return;
@@ -21017,7 +21249,7 @@ module.exports = {
       return graph.setEdgeMetadata(edge.src.node, edge.src.port, edge.tgt.node, edge.tgt.port, edge.metadata);
     };
 
-    GraphProtocol.prototype.addInitial = function(graph, payload, context) {
+    GraphProtocol.prototype.addInitial = function (graph, payload, context) {
       if (!(payload.src || payload.tgt)) {
         this.send('error', new Error('No src or tgt supplied'), context);
         return;
@@ -21029,7 +21261,7 @@ module.exports = {
       return graph.addInitial(payload.src.data, payload.tgt.node, payload.tgt.port, payload.metadata);
     };
 
-    GraphProtocol.prototype.removeInitial = function(graph, payload, context) {
+    GraphProtocol.prototype.removeInitial = function (graph, payload, context) {
       if (!payload.tgt) {
         this.send('error', new Error('No tgt supplied'), context);
         return;
@@ -21037,7 +21269,7 @@ module.exports = {
       return graph.removeInitial(payload.tgt.node, payload.tgt.port);
     };
 
-    GraphProtocol.prototype.addInport = function(graph, payload, context) {
+    GraphProtocol.prototype.addInport = function (graph, payload, context) {
       if (!(payload["public"] || payload.node || payload.port)) {
         this.send('error', new Error('Missing exported inport information'), context);
         return;
@@ -21045,7 +21277,7 @@ module.exports = {
       return graph.addInport(payload["public"], payload.node, payload.port, payload.metadata);
     };
 
-    GraphProtocol.prototype.removeInport = function(graph, payload, context) {
+    GraphProtocol.prototype.removeInport = function (graph, payload, context) {
       if (!payload["public"]) {
         this.send('error', new Error('Missing exported inport name'), context);
         return;
@@ -21053,7 +21285,7 @@ module.exports = {
       return graph.removeInport(payload["public"]);
     };
 
-    GraphProtocol.prototype.renameInport = function(graph, payload, context) {
+    GraphProtocol.prototype.renameInport = function (graph, payload, context) {
       if (!(payload.from || payload.to)) {
         this.send('error', new Error('No from or to supplied'), context);
         return;
@@ -21061,7 +21293,7 @@ module.exports = {
       return graph.renameInport(payload.from, payload.to);
     };
 
-    GraphProtocol.prototype.addOutport = function(graph, payload, context) {
+    GraphProtocol.prototype.addOutport = function (graph, payload, context) {
       if (!(payload["public"] || payload.node || payload.port)) {
         this.send('error', new Error('Missing exported outport information'), context);
         return;
@@ -21069,7 +21301,7 @@ module.exports = {
       return graph.addOutport(payload["public"], payload.node, payload.port, payload.metadata);
     };
 
-    GraphProtocol.prototype.removeOutport = function(graph, payload, context) {
+    GraphProtocol.prototype.removeOutport = function (graph, payload, context) {
       if (!payload["public"]) {
         this.send('error', new Error('Missing exported outport name'), context);
         return;
@@ -21077,7 +21309,7 @@ module.exports = {
       return graph.removeOutport(payload["public"]);
     };
 
-    GraphProtocol.prototype.renameOutport = function(graph, payload, context) {
+    GraphProtocol.prototype.renameOutport = function (graph, payload, context) {
       if (!(payload.from || payload.to)) {
         this.send('error', new Error('No from or to supplied'), context);
         return;
@@ -21085,7 +21317,7 @@ module.exports = {
       return graph.renameOutport(payload.from, payload.to);
     };
 
-    GraphProtocol.prototype.addGroup = function(graph, payload, context) {
+    GraphProtocol.prototype.addGroup = function (graph, payload, context) {
       if (!(payload.name || payload.nodes || payload.metadata)) {
         this.send('error', new Error('No name or nodes or metadata supplied'), context);
         return;
@@ -21093,7 +21325,7 @@ module.exports = {
       return graph.addGroup(payload.name, payload.nodes, payload.metadata);
     };
 
-    GraphProtocol.prototype.removeGroup = function(graph, payload, context) {
+    GraphProtocol.prototype.removeGroup = function (graph, payload, context) {
       if (!payload.name) {
         this.send('error', new Error('No name supplied'), context);
         return;
@@ -21101,7 +21333,7 @@ module.exports = {
       return graph.removeGroup(payload.name);
     };
 
-    GraphProtocol.prototype.renameGroup = function(graph, payload, context) {
+    GraphProtocol.prototype.renameGroup = function (graph, payload, context) {
       if (!(payload.from || payload.to)) {
         this.send('error', new Error('No from or to supplied'), context);
         return;
@@ -21109,7 +21341,7 @@ module.exports = {
       return graph.renameGroup(payload.from, payload.to);
     };
 
-    GraphProtocol.prototype.changeGroup = function(graph, payload, context) {
+    GraphProtocol.prototype.changeGroup = function (graph, payload, context) {
       if (!(payload.name || payload.metadata)) {
         this.send('error', new Error('No name or metadata supplied'), context);
         return;
@@ -21118,29 +21350,42 @@ module.exports = {
     };
 
     return GraphProtocol;
-
-  })();
+  }();
 
   module.exports = GraphProtocol;
-
-}).call(this);
-
+}).call(undefined);
 
 /***/ }),
 /* 97 */
 /***/ (function(module, exports, __webpack_require__) {
 
-/* WEBPACK VAR INJECTION */(function(Buffer) {(function() {
-  var EventEmitter, NetworkProtocol, getConnectionSignature, getEdgeSignature, getPortSignature, getSocketSignature, noflo, prepareSocketEvent,
-    extend = function(child, parent) { for (var key in parent) { if (hasProp.call(parent, key)) child[key] = parent[key]; } function ctor() { this.constructor = child; } ctor.prototype = parent.prototype; child.prototype = new ctor(); child.__super__ = parent.prototype; return child; },
-    hasProp = {}.hasOwnProperty;
+"use strict";
+/* WEBPACK VAR INJECTION */(function(Buffer) {
+
+(function () {
+  var EventEmitter,
+      NetworkProtocol,
+      getConnectionSignature,
+      getEdgeSignature,
+      getPortSignature,
+      getSocketSignature,
+      noflo,
+      prepareSocketEvent,
+      extend = function extend(child, parent) {
+    for (var key in parent) {
+      if (hasProp.call(parent, key)) child[key] = parent[key];
+    }function ctor() {
+      this.constructor = child;
+    }ctor.prototype = parent.prototype;child.prototype = new ctor();child.__super__ = parent.prototype;return child;
+  },
+      hasProp = {}.hasOwnProperty;
 
   noflo = __webpack_require__(0);
 
-  EventEmitter = __webpack_require__(2).EventEmitter;
+  EventEmitter = __webpack_require__(1).EventEmitter;
 
-  prepareSocketEvent = function(event, req) {
-    var payload, ref;
+  prepareSocketEvent = function prepareSocketEvent(event, req) {
+    var payload, ref, ref1, ref2;
     payload = {
       id: event.id,
       graph: req.graph
@@ -21163,16 +21408,22 @@ module.exports = {
     if (event.group) {
       payload.group = event.group;
     }
+    if (event.datatype) {
+      payload.type = event.datatype;
+    }
+    if (event.schema) {
+      payload.schema = event.schema;
+    }
     if (typeof event.data !== 'undefined') {
       if (!noflo.isBrowser()) {
         if (Buffer.isBuffer(event.data)) {
           event.data = event.data.slice(0, 20);
         }
       }
-      if (event.data.toJSON) {
+      if ((ref = event.data) != null ? ref.toJSON : void 0) {
         payload.data = event.data.toJSON();
       }
-      if (event.data.toString) {
+      if ((ref1 = event.data) != null ? ref1.toString : void 0) {
         payload.data = event.data.toString();
         if (payload.data === '[object Object]') {
           try {
@@ -21182,36 +21433,36 @@ module.exports = {
       } else {
         payload.data = event.data;
       }
-      if ((ref = event.metadata) != null ? ref.secure : void 0) {
+      if ((ref2 = event.metadata) != null ? ref2.secure : void 0) {
         payload.data = 'DATA';
       }
     }
     return payload;
   };
 
-  getPortSignature = function(item) {
+  getPortSignature = function getPortSignature(item) {
     if (!item) {
       return '';
     }
     return item.process + '(' + item.port + ')';
   };
 
-  getEdgeSignature = function(edge) {
+  getEdgeSignature = function getEdgeSignature(edge) {
     return getPortSignature(edge.src) + ' -> ' + getPortSignature(edge.tgt);
   };
 
-  getConnectionSignature = function(connection) {
+  getConnectionSignature = function getConnectionSignature(connection) {
     if (!connection) {
       return '';
     }
     return connection.process.id + '(' + connection.port + ')';
   };
 
-  getSocketSignature = function(socket) {
+  getSocketSignature = function getSocketSignature(socket) {
     return getConnectionSignature(socket.from) + ' -> ' + getConnectionSignature(socket.to);
   };
 
-  NetworkProtocol = (function(superClass) {
+  NetworkProtocol = function (superClass) {
     extend(NetworkProtocol, superClass);
 
     function NetworkProtocol(transport) {
@@ -21219,15 +21470,15 @@ module.exports = {
       this.networks = {};
     }
 
-    NetworkProtocol.prototype.send = function(topic, payload, context) {
+    NetworkProtocol.prototype.send = function (topic, payload, context) {
       return this.transport.send('network', topic, payload, context);
     };
 
-    NetworkProtocol.prototype.sendAll = function(topic, payload) {
+    NetworkProtocol.prototype.sendAll = function (topic, payload) {
       return this.transport.sendAll('network', topic, payload);
     };
 
-    NetworkProtocol.prototype.receive = function(topic, payload, context) {
+    NetworkProtocol.prototype.receive = function (topic, payload, context) {
       var graph;
       if (!this.transport.canDo('protocol:network', payload.secret)) {
         this.send('error', new Error(topic + " not permitted"), context);
@@ -21253,7 +21504,7 @@ module.exports = {
       }
     };
 
-    NetworkProtocol.prototype.resolveGraph = function(payload, context) {
+    NetworkProtocol.prototype.resolveGraph = function (payload, context) {
       if (!payload.graph) {
         this.send('error', new Error('No graph specified'), context);
         return;
@@ -21265,7 +21516,7 @@ module.exports = {
       return this.transport.graph.graphs[payload.graph];
     };
 
-    NetworkProtocol.prototype.updateEdgesFilter = function(graph, payload, context) {
+    NetworkProtocol.prototype.updateEdgesFilter = function (graph, payload, context) {
       var edge, j, len, network, ref, signature;
       network = this.networks[payload.graph];
       if (network) {
@@ -21289,7 +21540,7 @@ module.exports = {
       }, context);
     };
 
-    NetworkProtocol.prototype.eventFiltered = function(graph, event) {
+    NetworkProtocol.prototype.eventFiltered = function (graph, event) {
       var sign;
       if (!this.transport.options.filterData) {
         return true;
@@ -21298,12 +21549,12 @@ module.exports = {
       return this.networks[graph].filters[sign];
     };
 
-    NetworkProtocol.prototype.initNetwork = function(graph, payload, context, callback) {
+    NetworkProtocol.prototype.initNetwork = function (graph, payload, context, callback) {
       var network, opts;
       if (this.networks[payload.graph] && this.networks[payload.graph].network) {
         network = this.networks[payload.graph].network;
-        network.stop((function(_this) {
-          return function(err) {
+        network.stop(function (_this) {
+          return function (err) {
             if (err) {
               return callback(err);
             }
@@ -21311,14 +21562,14 @@ module.exports = {
             _this.emit('removenetwork', network, payload.graph, _this.networks);
             return _this.initNetwork(graph, payload, context, callback);
           };
-        })(this));
+        }(this));
         return;
       }
       graph.componentLoader = this.transport.component.getLoader(graph.baseDir, this.transport.options);
       opts = JSON.parse(JSON.stringify(this.transport.options));
       opts.delay = true;
-      return noflo.createNetwork(graph, (function(_this) {
-        return function(err, network) {
+      return noflo.createNetwork(graph, function (_this) {
+        return function (err, network) {
           if (err) {
             return callback(err);
           }
@@ -21334,12 +21585,12 @@ module.exports = {
           _this.subscribeNetwork(network, payload, context);
           return network.connect(callback);
         };
-      })(this), opts);
+      }(this), opts);
     };
 
-    NetworkProtocol.prototype.subscribeNetwork = function(network, payload, context) {
-      network.on('start', (function(_this) {
-        return function(event) {
+    NetworkProtocol.prototype.subscribeNetwork = function (network, payload, context) {
+      network.on('start', function (_this) {
+        return function (event) {
           return _this.sendAll('started', {
             time: event.start,
             graph: payload.graph,
@@ -21347,34 +21598,34 @@ module.exports = {
             started: network.isStarted()
           }, context);
         };
-      })(this));
-      network.on('end', (function(_this) {
-        return function(event) {
+      }(this));
+      network.on('end', function (_this) {
+        return function (event) {
           return _this.sendAll('stopped', {
-            time: new Date,
+            time: new Date(),
             uptime: event.uptime,
             graph: payload.graph,
             running: network.isRunning(),
             started: network.isStarted()
           }, context);
         };
-      })(this));
-      network.on('icon', (function(_this) {
-        return function(event) {
+      }(this));
+      network.on('icon', function (_this) {
+        return function (event) {
           event.graph = payload.graph;
           return _this.sendAll('icon', event, context);
         };
-      })(this));
-      network.on('connect', (function(_this) {
-        return function(event) {
+      }(this));
+      network.on('connect', function (_this) {
+        return function (event) {
           if (!_this.eventFiltered(payload.graph, event)) {
             return;
           }
           return _this.sendAll('connect', prepareSocketEvent(event, payload), context);
         };
-      })(this));
-      network.on('ip', (function(_this) {
-        return function(event) {
+      }(this));
+      network.on('ip', function (_this) {
+        return function (event) {
           var protocolEvent;
           if (!_this.eventFiltered(payload.graph, event)) {
             return;
@@ -21393,6 +21644,8 @@ module.exports = {
             case 'data':
               protocolEvent.type = 'data';
               protocolEvent.data = event.data;
+              protocolEvent.datatype = event.datatype;
+              protocolEvent.schema = event.schema;
               break;
             case 'closeBracket':
               protocolEvent.type = 'endgroup';
@@ -21400,17 +21653,17 @@ module.exports = {
           }
           return _this.sendAll(protocolEvent.type, prepareSocketEvent(protocolEvent, payload), context);
         };
-      })(this));
-      network.on('disconnect', (function(_this) {
-        return function(event) {
+      }(this));
+      network.on('disconnect', function (_this) {
+        return function (event) {
           if (!_this.eventFiltered(payload.graph, event)) {
             return;
           }
           return _this.sendAll('disconnect', prepareSocketEvent(event, payload), context);
         };
-      })(this));
-      return network.on('process-error', (function(_this) {
-        return function(event) {
+      }(this));
+      return network.on('process-error', function (_this) {
+        return function (event) {
           var bt, error, i, j, ref;
           error = event.error.message;
           if (event.error.stack) {
@@ -21425,37 +21678,37 @@ module.exports = {
             graph: payload.graph
           }, context);
         };
-      })(this));
+      }(this));
     };
 
-    NetworkProtocol.prototype.startNetwork = function(graph, payload, context) {
+    NetworkProtocol.prototype.startNetwork = function (graph, payload, context) {
       var doStart, network;
-      doStart = (function(_this) {
-        return function(net) {
-          return net.start(function(err) {
+      doStart = function (_this) {
+        return function (net) {
+          return net.start(function (err) {
             if (err) {
               return _this.send('error', err, content);
             }
           });
         };
-      })(this);
+      }(this);
       network = this.networks[payload.graph];
       if (network && network.network) {
         doStart(network.network);
         return;
       }
-      return this.initNetwork(graph, payload, context, (function(_this) {
-        return function(err) {
+      return this.initNetwork(graph, payload, context, function (_this) {
+        return function (err) {
           if (err) {
             return _this.send('error', err, context);
           }
           network = _this.networks[payload.graph];
           return doStart(network.network);
         };
-      })(this));
+      }(this));
     };
 
-    NetworkProtocol.prototype.stopNetwork = function(graph, payload, context) {
+    NetworkProtocol.prototype.stopNetwork = function (graph, payload, context) {
       var net;
       if (!this.networks[payload.graph]) {
         return;
@@ -21465,24 +21718,24 @@ module.exports = {
         return;
       }
       if (net.isStarted()) {
-        this.networks[payload.graph].network.stop((function(_this) {
-          return function(err) {
+        this.networks[payload.graph].network.stop(function (_this) {
+          return function (err) {
             if (err) {
               return _this.send('error', err, context);
             }
           };
-        })(this));
+        }(this));
         return;
       }
       return this.send('stopped', {
-        time: new Date,
+        time: new Date(),
         graph: payload.graph,
         running: net.isRunning(),
         started: net.isStarted()
       }, context);
     };
 
-    NetworkProtocol.prototype.debugNetwork = function(graph, payload, context) {
+    NetworkProtocol.prototype.debugNetwork = function (graph, payload, context) {
       var net;
       if (!this.networks[payload.graph]) {
         return;
@@ -21498,7 +21751,7 @@ module.exports = {
       }
     };
 
-    NetworkProtocol.prototype.getStatus = function(graph, payload, context) {
+    NetworkProtocol.prototype.getStatus = function (graph, payload, context) {
       var net;
       if (!this.networks[payload.graph]) {
         return;
@@ -21515,38 +21768,38 @@ module.exports = {
     };
 
     return NetworkProtocol;
-
-  })(EventEmitter);
+  }(EventEmitter);
 
   module.exports = NetworkProtocol;
-
-}).call(this);
-
+}).call(undefined);
 /* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(14).Buffer))
 
 /***/ }),
 /* 98 */
 /***/ (function(module, exports, __webpack_require__) {
 
-(function() {
+"use strict";
+
+
+(function () {
   var ComponentProtocol, _, noflo;
 
   noflo = __webpack_require__(0);
 
   _ = __webpack_require__(99);
 
-  ComponentProtocol = (function() {
+  ComponentProtocol = function () {
     ComponentProtocol.prototype.loaders = {};
 
     function ComponentProtocol(transport) {
       this.transport = transport;
     }
 
-    ComponentProtocol.prototype.send = function(topic, payload, context) {
+    ComponentProtocol.prototype.send = function (topic, payload, context) {
       return this.transport.send('component', topic, payload, context);
     };
 
-    ComponentProtocol.prototype.receive = function(topic, payload, context) {
+    ComponentProtocol.prototype.receive = function (topic, payload, context) {
       if (!this.transport.canDo('protocol:component', payload.secret)) {
         this.send('error', new Error(topic + " not permitted"), context);
         return;
@@ -21569,7 +21822,7 @@ module.exports = {
       }
     };
 
-    ComponentProtocol.prototype.getLoader = function(baseDir, options) {
+    ComponentProtocol.prototype.getLoader = function (baseDir, options) {
       if (options == null) {
         options = {};
       }
@@ -21579,12 +21832,12 @@ module.exports = {
       return this.loaders[baseDir];
     };
 
-    ComponentProtocol.prototype.listComponents = function(payload, context) {
+    ComponentProtocol.prototype.listComponents = function (payload, context) {
       var baseDir, loader;
       baseDir = this.transport.options.baseDir;
       loader = this.getLoader(baseDir, this.transport.options);
-      return loader.listComponents((function(_this) {
-        return function(err, components) {
+      return loader.listComponents(function (_this) {
+        return function (err, components) {
           var componentNames, processed;
           if (err) {
             _this.send('error', err, context);
@@ -21592,8 +21845,8 @@ module.exports = {
           }
           componentNames = Object.keys(components);
           processed = 0;
-          return componentNames.forEach(function(component) {
-            return _this.processComponent(loader, component, context, function(err) {
+          return componentNames.forEach(function (component) {
+            return _this.processComponent(loader, component, context, function (err) {
               processed++;
               if (processed < componentNames.length) {
                 return;
@@ -21602,15 +21855,15 @@ module.exports = {
             });
           });
         };
-      })(this));
+      }(this));
     };
 
-    ComponentProtocol.prototype.getSource = function(payload, context) {
+    ComponentProtocol.prototype.getSource = function (payload, context) {
       var baseDir, loader;
       baseDir = this.transport.options.baseDir;
       loader = this.getLoader(baseDir, this.transport.options);
-      return loader.getSource(payload.name, (function(_this) {
-        return function(err, component) {
+      return loader.getSource(payload.name, function (_this) {
+        return function (err, component) {
           var graph, nameParts;
           if (err) {
             graph = _this.transport.graph.graphs[payload.name];
@@ -21629,30 +21882,30 @@ module.exports = {
             return _this.send('source', component, context);
           }
         };
-      })(this));
+      }(this));
     };
 
-    ComponentProtocol.prototype.setSource = function(payload, context) {
+    ComponentProtocol.prototype.setSource = function (payload, context) {
       var baseDir, loader;
       baseDir = this.transport.options.baseDir;
       loader = this.getLoader(baseDir, this.transport.options);
-      return loader.setSource(payload.library, payload.name, payload.code, payload.language, (function(_this) {
-        return function(err) {
+      return loader.setSource(payload.library, payload.name, payload.code, payload.language, function (_this) {
+        return function (err) {
           if (err) {
             _this.send('error', err, context);
             return;
           }
           return _this.processComponent(loader, loader.normalizeName(payload.library, payload.name), context);
         };
-      })(this));
+      }(this));
     };
 
-    ComponentProtocol.prototype.processComponent = function(loader, component, context, callback) {
+    ComponentProtocol.prototype.processComponent = function (loader, component, context, callback) {
       if (!callback) {
-        callback = function() {};
+        callback = function callback() {};
       }
-      return loader.load(component, (function(_this) {
-        return function(err, instance) {
+      return loader.load(component, function (_this) {
+        return function (err, instance) {
           if (!instance) {
             if (err instanceof Error) {
               _this.send('error', err, context);
@@ -21661,7 +21914,7 @@ module.exports = {
             instance = err;
           }
           if (!instance.isReady()) {
-            instance.once('ready', function() {
+            instance.once('ready', function () {
               _this.sendComponent(component, instance, context);
               return callback(null);
             });
@@ -21670,10 +21923,10 @@ module.exports = {
           _this.sendComponent(component, instance, context);
           return callback(null);
         };
-      })(this), true);
+      }(this), true);
     };
 
-    ComponentProtocol.prototype.sendComponent = function(component, instance, context) {
+    ComponentProtocol.prototype.sendComponent = function (component, instance, context) {
       var icon, inPorts, outPorts, port, portName, ref, ref1;
       inPorts = [];
       outPorts = [];
@@ -21686,6 +21939,7 @@ module.exports = {
         inPorts.push({
           id: portName,
           type: port.getDataType ? port.getDataType() : void 0,
+          schema: port.getSchema ? port.getSchema() : void 0,
           required: port.isRequired ? port.isRequired() : void 0,
           addressable: port.isAddressable ? port.isAddressable() : void 0,
           description: port.getDescription ? port.getDescription() : void 0,
@@ -21702,6 +21956,7 @@ module.exports = {
         outPorts.push({
           id: portName,
           type: port.getDataType ? port.getDataType() : void 0,
+          schema: port.getSchema ? port.getSchema() : void 0,
           required: port.isRequired ? port.isRequired() : void 0,
           addressable: port.isAddressable ? port.isAddressable() : void 0,
           description: port.getDescription ? port.getDescription() : void 0
@@ -21718,17 +21973,17 @@ module.exports = {
       }, context);
     };
 
-    ComponentProtocol.prototype.registerGraph = function(id, graph, context) {
+    ComponentProtocol.prototype.registerGraph = function (id, graph, context) {
       var loader, send, sender;
-      sender = (function(_this) {
-        return function() {
+      sender = function (_this) {
+        return function () {
           return _this.processComponent(loader, id, context);
         };
-      })(this);
+      }(this);
       send = _.debounce(sender, 10);
       loader = this.getLoader(graph.baseDir, this.transport.options);
-      loader.listComponents((function(_this) {
-        return function(err, components) {
+      loader.listComponents(function (_this) {
+        return function (err, components) {
           if (err) {
             _this.send('error', err, context);
             return;
@@ -21736,7 +21991,7 @@ module.exports = {
           loader.registerComponent('', id, graph);
           return send();
         };
-      })(this));
+      }(this));
       graph.on('addNode', send);
       graph.on('removeNode', send);
       graph.on('renameNode', send);
@@ -21753,21 +22008,18 @@ module.exports = {
     };
 
     return ComponentProtocol;
-
-  })();
+  }();
 
   module.exports = ComponentProtocol;
-
-}).call(this);
-
+}).call(undefined);
 
 /***/ }),
 /* 99 */
 /***/ (function(module, exports, __webpack_require__) {
 
-var __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_DEFINE_RESULT__;//     Underscore.js 1.8.3
+/* WEBPACK VAR INJECTION */(function(global, module) {var __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_DEFINE_RESULT__;//     Underscore.js 1.9.1
 //     http://underscorejs.org
-//     (c) 2009-2015 Jeremy Ashkenas, DocumentCloud and Investigative Reporters & Editors
+//     (c) 2009-2018 Jeremy Ashkenas, DocumentCloud and Investigative Reporters & Editors
 //     Underscore may be freely distributed under the MIT license.
 
 (function() {
@@ -21775,29 +22027,32 @@ var __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_DEFINE_RESULT__;//     Underscor
   // Baseline setup
   // --------------
 
-  // Establish the root object, `window` in the browser, or `exports` on the server.
-  var root = this;
+  // Establish the root object, `window` (`self`) in the browser, `global`
+  // on the server, or `this` in some virtual machines. We use `self`
+  // instead of `window` for `WebWorker` support.
+  var root = typeof self == 'object' && self.self === self && self ||
+            typeof global == 'object' && global.global === global && global ||
+            this ||
+            {};
 
   // Save the previous value of the `_` variable.
   var previousUnderscore = root._;
 
   // Save bytes in the minified (but not gzipped) version:
-  var ArrayProto = Array.prototype, ObjProto = Object.prototype, FuncProto = Function.prototype;
+  var ArrayProto = Array.prototype, ObjProto = Object.prototype;
+  var SymbolProto = typeof Symbol !== 'undefined' ? Symbol.prototype : null;
 
   // Create quick reference variables for speed access to core prototypes.
-  var
-    push             = ArrayProto.push,
-    slice            = ArrayProto.slice,
-    toString         = ObjProto.toString,
-    hasOwnProperty   = ObjProto.hasOwnProperty;
+  var push = ArrayProto.push,
+      slice = ArrayProto.slice,
+      toString = ObjProto.toString,
+      hasOwnProperty = ObjProto.hasOwnProperty;
 
   // All **ECMAScript 5** native function implementations that we hope to use
   // are declared here.
-  var
-    nativeIsArray      = Array.isArray,
-    nativeKeys         = Object.keys,
-    nativeBind         = FuncProto.bind,
-    nativeCreate       = Object.create;
+  var nativeIsArray = Array.isArray,
+      nativeKeys = Object.keys,
+      nativeCreate = Object.create;
 
   // Naked function reference for surrogate-prototype-swapping.
   var Ctor = function(){};
@@ -21810,10 +22065,12 @@ var __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_DEFINE_RESULT__;//     Underscor
   };
 
   // Export the Underscore object for **Node.js**, with
-  // backwards-compatibility for the old `require()` API. If we're in
+  // backwards-compatibility for their old module API. If we're in
   // the browser, add `_` as a global object.
-  if (true) {
-    if (typeof module !== 'undefined' && module.exports) {
+  // (`nodeType` is checked to ensure that `module`
+  // and `exports` are not HTML elements.)
+  if (typeof exports != 'undefined' && !exports.nodeType) {
+    if (typeof module != 'undefined' && !module.nodeType && module.exports) {
       exports = module.exports = _;
     }
     exports._ = _;
@@ -21822,7 +22079,7 @@ var __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_DEFINE_RESULT__;//     Underscor
   }
 
   // Current version.
-  _.VERSION = '1.8.3';
+  _.VERSION = '1.9.1';
 
   // Internal function that returns an efficient (for current engines) version
   // of the passed-in callback, to be repeatedly applied in other Underscore
@@ -21833,9 +22090,7 @@ var __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_DEFINE_RESULT__;//     Underscor
       case 1: return function(value) {
         return func.call(context, value);
       };
-      case 2: return function(value, other) {
-        return func.call(context, value, other);
-      };
+      // The 2-argument case is omitted because we’re not using it.
       case 3: return function(value, index, collection) {
         return func.call(context, value, index, collection);
       };
@@ -21848,34 +22103,51 @@ var __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_DEFINE_RESULT__;//     Underscor
     };
   };
 
-  // A mostly-internal function to generate callbacks that can be applied
-  // to each element in a collection, returning the desired result — either
-  // identity, an arbitrary callback, a property matcher, or a property accessor.
+  var builtinIteratee;
+
+  // An internal function to generate callbacks that can be applied to each
+  // element in a collection, returning the desired result — either `identity`,
+  // an arbitrary callback, a property matcher, or a property accessor.
   var cb = function(value, context, argCount) {
+    if (_.iteratee !== builtinIteratee) return _.iteratee(value, context);
     if (value == null) return _.identity;
     if (_.isFunction(value)) return optimizeCb(value, context, argCount);
-    if (_.isObject(value)) return _.matcher(value);
+    if (_.isObject(value) && !_.isArray(value)) return _.matcher(value);
     return _.property(value);
   };
-  _.iteratee = function(value, context) {
+
+  // External wrapper for our callback generator. Users may customize
+  // `_.iteratee` if they want additional predicate/iteratee shorthand styles.
+  // This abstraction hides the internal-only argCount argument.
+  _.iteratee = builtinIteratee = function(value, context) {
     return cb(value, context, Infinity);
   };
 
-  // An internal function for creating assigner functions.
-  var createAssigner = function(keysFunc, undefinedOnly) {
-    return function(obj) {
-      var length = arguments.length;
-      if (length < 2 || obj == null) return obj;
-      for (var index = 1; index < length; index++) {
-        var source = arguments[index],
-            keys = keysFunc(source),
-            l = keys.length;
-        for (var i = 0; i < l; i++) {
-          var key = keys[i];
-          if (!undefinedOnly || obj[key] === void 0) obj[key] = source[key];
-        }
+  // Some functions take a variable number of arguments, or a few expected
+  // arguments at the beginning and then a variable number of values to operate
+  // on. This helper accumulates all remaining arguments past the function’s
+  // argument length (or an explicit `startIndex`), into an array that becomes
+  // the last argument. Similar to ES6’s "rest parameter".
+  var restArguments = function(func, startIndex) {
+    startIndex = startIndex == null ? func.length - 1 : +startIndex;
+    return function() {
+      var length = Math.max(arguments.length - startIndex, 0),
+          rest = Array(length),
+          index = 0;
+      for (; index < length; index++) {
+        rest[index] = arguments[index + startIndex];
       }
-      return obj;
+      switch (startIndex) {
+        case 0: return func.call(this, rest);
+        case 1: return func.call(this, arguments[0], rest);
+        case 2: return func.call(this, arguments[0], arguments[1], rest);
+      }
+      var args = Array(startIndex + 1);
+      for (index = 0; index < startIndex; index++) {
+        args[index] = arguments[index];
+      }
+      args[startIndex] = rest;
+      return func.apply(this, args);
     };
   };
 
@@ -21889,18 +22161,31 @@ var __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_DEFINE_RESULT__;//     Underscor
     return result;
   };
 
-  var property = function(key) {
+  var shallowProperty = function(key) {
     return function(obj) {
       return obj == null ? void 0 : obj[key];
     };
   };
 
+  var has = function(obj, path) {
+    return obj != null && hasOwnProperty.call(obj, path);
+  }
+
+  var deepGet = function(obj, path) {
+    var length = path.length;
+    for (var i = 0; i < length; i++) {
+      if (obj == null) return void 0;
+      obj = obj[path[i]];
+    }
+    return length ? obj : void 0;
+  };
+
   // Helper for collection methods to determine whether a collection
-  // should be iterated as an array or as an object
+  // should be iterated as an array or as an object.
   // Related: http://people.mozilla.org/~jorendorff/es6-draft.html#sec-tolength
   // Avoids a very nasty iOS 8 JIT bug on ARM-64. #2094
   var MAX_ARRAY_INDEX = Math.pow(2, 53) - 1;
-  var getLength = property('length');
+  var getLength = shallowProperty('length');
   var isArrayLike = function(collection) {
     var length = getLength(collection);
     return typeof length == 'number' && length >= 0 && length <= MAX_ARRAY_INDEX;
@@ -21942,30 +22227,29 @@ var __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_DEFINE_RESULT__;//     Underscor
   };
 
   // Create a reducing function iterating left or right.
-  function createReduce(dir) {
-    // Optimized iterator function as using arguments.length
-    // in the main function will deoptimize the, see #1991.
-    function iterator(obj, iteratee, memo, keys, index, length) {
+  var createReduce = function(dir) {
+    // Wrap code that reassigns argument variables in a separate function than
+    // the one that accesses `arguments.length` to avoid a perf hit. (#1991)
+    var reducer = function(obj, iteratee, memo, initial) {
+      var keys = !isArrayLike(obj) && _.keys(obj),
+          length = (keys || obj).length,
+          index = dir > 0 ? 0 : length - 1;
+      if (!initial) {
+        memo = obj[keys ? keys[index] : index];
+        index += dir;
+      }
       for (; index >= 0 && index < length; index += dir) {
         var currentKey = keys ? keys[index] : index;
         memo = iteratee(memo, obj[currentKey], currentKey, obj);
       }
       return memo;
-    }
+    };
 
     return function(obj, iteratee, memo, context) {
-      iteratee = optimizeCb(iteratee, context, 4);
-      var keys = !isArrayLike(obj) && _.keys(obj),
-          length = (keys || obj).length,
-          index = dir > 0 ? 0 : length - 1;
-      // Determine the initial value if none is provided.
-      if (arguments.length < 3) {
-        memo = obj[keys ? keys[index] : index];
-        index += dir;
-      }
-      return iterator(obj, iteratee, memo, keys, index, length);
+      var initial = arguments.length >= 3;
+      return reducer(obj, optimizeCb(iteratee, context, 4), memo, initial);
     };
-  }
+  };
 
   // **Reduce** builds up a single result from a list of values, aka `inject`,
   // or `foldl`.
@@ -21976,12 +22260,8 @@ var __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_DEFINE_RESULT__;//     Underscor
 
   // Return the first value which passes a truth test. Aliased as `detect`.
   _.find = _.detect = function(obj, predicate, context) {
-    var key;
-    if (isArrayLike(obj)) {
-      key = _.findIndex(obj, predicate, context);
-    } else {
-      key = _.findKey(obj, predicate, context);
-    }
+    var keyFinder = isArrayLike(obj) ? _.findIndex : _.findKey;
+    var key = keyFinder(obj, predicate, context);
     if (key !== void 0 && key !== -1) return obj[key];
   };
 
@@ -22036,14 +22316,26 @@ var __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_DEFINE_RESULT__;//     Underscor
   };
 
   // Invoke a method (with arguments) on every item in a collection.
-  _.invoke = function(obj, method) {
-    var args = slice.call(arguments, 2);
-    var isFunc = _.isFunction(method);
-    return _.map(obj, function(value) {
-      var func = isFunc ? method : value[method];
-      return func == null ? func : func.apply(value, args);
+  _.invoke = restArguments(function(obj, path, args) {
+    var contextPath, func;
+    if (_.isFunction(path)) {
+      func = path;
+    } else if (_.isArray(path)) {
+      contextPath = path.slice(0, -1);
+      path = path[path.length - 1];
+    }
+    return _.map(obj, function(context) {
+      var method = func;
+      if (!method) {
+        if (contextPath && contextPath.length) {
+          context = deepGet(context, contextPath);
+        }
+        if (context == null) return void 0;
+        method = context[path];
+      }
+      return method == null ? method : method.apply(context, args);
     });
-  };
+  });
 
   // Convenience version of a common use case of `map`: fetching a property.
   _.pluck = function(obj, key) {
@@ -22066,20 +22358,20 @@ var __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_DEFINE_RESULT__;//     Underscor
   _.max = function(obj, iteratee, context) {
     var result = -Infinity, lastComputed = -Infinity,
         value, computed;
-    if (iteratee == null && obj != null) {
+    if (iteratee == null || typeof iteratee == 'number' && typeof obj[0] != 'object' && obj != null) {
       obj = isArrayLike(obj) ? obj : _.values(obj);
       for (var i = 0, length = obj.length; i < length; i++) {
         value = obj[i];
-        if (value > result) {
+        if (value != null && value > result) {
           result = value;
         }
       }
     } else {
       iteratee = cb(iteratee, context);
-      _.each(obj, function(value, index, list) {
-        computed = iteratee(value, index, list);
+      _.each(obj, function(v, index, list) {
+        computed = iteratee(v, index, list);
         if (computed > lastComputed || computed === -Infinity && result === -Infinity) {
-          result = value;
+          result = v;
           lastComputed = computed;
         }
       });
@@ -22091,20 +22383,20 @@ var __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_DEFINE_RESULT__;//     Underscor
   _.min = function(obj, iteratee, context) {
     var result = Infinity, lastComputed = Infinity,
         value, computed;
-    if (iteratee == null && obj != null) {
+    if (iteratee == null || typeof iteratee == 'number' && typeof obj[0] != 'object' && obj != null) {
       obj = isArrayLike(obj) ? obj : _.values(obj);
       for (var i = 0, length = obj.length; i < length; i++) {
         value = obj[i];
-        if (value < result) {
+        if (value != null && value < result) {
           result = value;
         }
       }
     } else {
       iteratee = cb(iteratee, context);
-      _.each(obj, function(value, index, list) {
-        computed = iteratee(value, index, list);
+      _.each(obj, function(v, index, list) {
+        computed = iteratee(v, index, list);
         if (computed < lastComputed || computed === Infinity && result === Infinity) {
-          result = value;
+          result = v;
           lastComputed = computed;
         }
       });
@@ -22112,21 +22404,13 @@ var __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_DEFINE_RESULT__;//     Underscor
     return result;
   };
 
-  // Shuffle a collection, using the modern version of the
-  // [Fisher-Yates shuffle](http://en.wikipedia.org/wiki/Fisher–Yates_shuffle).
+  // Shuffle a collection.
   _.shuffle = function(obj) {
-    var set = isArrayLike(obj) ? obj : _.values(obj);
-    var length = set.length;
-    var shuffled = Array(length);
-    for (var index = 0, rand; index < length; index++) {
-      rand = _.random(0, index);
-      if (rand !== index) shuffled[index] = shuffled[rand];
-      shuffled[rand] = set[index];
-    }
-    return shuffled;
+    return _.sample(obj, Infinity);
   };
 
-  // Sample **n** random values from a collection.
+  // Sample **n** random values from a collection using the modern version of the
+  // [Fisher-Yates shuffle](http://en.wikipedia.org/wiki/Fisher–Yates_shuffle).
   // If **n** is not specified, returns a single random element.
   // The internal `guard` argument allows it to work with `map`.
   _.sample = function(obj, n, guard) {
@@ -22134,17 +22418,28 @@ var __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_DEFINE_RESULT__;//     Underscor
       if (!isArrayLike(obj)) obj = _.values(obj);
       return obj[_.random(obj.length - 1)];
     }
-    return _.shuffle(obj).slice(0, Math.max(0, n));
+    var sample = isArrayLike(obj) ? _.clone(obj) : _.values(obj);
+    var length = getLength(sample);
+    n = Math.max(Math.min(n, length), 0);
+    var last = length - 1;
+    for (var index = 0; index < n; index++) {
+      var rand = _.random(index, last);
+      var temp = sample[index];
+      sample[index] = sample[rand];
+      sample[rand] = temp;
+    }
+    return sample.slice(0, n);
   };
 
   // Sort the object's values by a criterion produced by an iteratee.
   _.sortBy = function(obj, iteratee, context) {
+    var index = 0;
     iteratee = cb(iteratee, context);
-    return _.pluck(_.map(obj, function(value, index, list) {
+    return _.pluck(_.map(obj, function(value, key, list) {
       return {
         value: value,
-        index: index,
-        criteria: iteratee(value, index, list)
+        index: index++,
+        criteria: iteratee(value, key, list)
       };
     }).sort(function(left, right) {
       var a = left.criteria;
@@ -22158,9 +22453,9 @@ var __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_DEFINE_RESULT__;//     Underscor
   };
 
   // An internal function used for aggregate "group by" operations.
-  var group = function(behavior) {
+  var group = function(behavior, partition) {
     return function(obj, iteratee, context) {
-      var result = {};
+      var result = partition ? [[], []] : {};
       iteratee = cb(iteratee, context);
       _.each(obj, function(value, index) {
         var key = iteratee(value, index, obj);
@@ -22173,7 +22468,7 @@ var __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_DEFINE_RESULT__;//     Underscor
   // Groups the object's values by a criterion. Pass either a string attribute
   // to group by, or a function that returns the criterion.
   _.groupBy = group(function(result, value, key) {
-    if (_.has(result, key)) result[key].push(value); else result[key] = [value];
+    if (has(result, key)) result[key].push(value); else result[key] = [value];
   });
 
   // Indexes the object's values by a criterion, similar to `groupBy`, but for
@@ -22186,13 +22481,18 @@ var __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_DEFINE_RESULT__;//     Underscor
   // either a string attribute to count by, or a function that returns the
   // criterion.
   _.countBy = group(function(result, value, key) {
-    if (_.has(result, key)) result[key]++; else result[key] = 1;
+    if (has(result, key)) result[key]++; else result[key] = 1;
   });
 
+  var reStrSymbol = /[^\ud800-\udfff]|[\ud800-\udbff][\udc00-\udfff]|[\ud800-\udfff]/g;
   // Safely create a real, live array from anything iterable.
   _.toArray = function(obj) {
     if (!obj) return [];
     if (_.isArray(obj)) return slice.call(obj);
+    if (_.isString(obj)) {
+      // Keep surrogate pair characters together
+      return obj.match(reStrSymbol);
+    }
     if (isArrayLike(obj)) return _.map(obj, _.identity);
     return _.values(obj);
   };
@@ -22205,14 +22505,9 @@ var __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_DEFINE_RESULT__;//     Underscor
 
   // Split a collection into two arrays: one whose elements all satisfy the given
   // predicate, and one whose elements all do not satisfy the predicate.
-  _.partition = function(obj, predicate, context) {
-    predicate = cb(predicate, context);
-    var pass = [], fail = [];
-    _.each(obj, function(value, key, obj) {
-      (predicate(value, key, obj) ? pass : fail).push(value);
-    });
-    return [pass, fail];
-  };
+  _.partition = group(function(result, value, pass) {
+    result[pass ? 0 : 1].push(value);
+  }, true);
 
   // Array Functions
   // ---------------
@@ -22221,7 +22516,7 @@ var __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_DEFINE_RESULT__;//     Underscor
   // values in the array. Aliased as `head` and `take`. The **guard** check
   // allows it to work with `_.map`.
   _.first = _.head = _.take = function(array, n, guard) {
-    if (array == null) return void 0;
+    if (array == null || array.length < 1) return n == null ? void 0 : [];
     if (n == null || guard) return array[0];
     return _.initial(array, array.length - n);
   };
@@ -22236,7 +22531,7 @@ var __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_DEFINE_RESULT__;//     Underscor
   // Get the last element of an array. Passing **n** will return the last N
   // values in the array.
   _.last = function(array, n, guard) {
-    if (array == null) return void 0;
+    if (array == null || array.length < 1) return n == null ? void 0 : [];
     if (n == null || guard) return array[array.length - 1];
     return _.rest(array, Math.max(0, array.length - n));
   };
@@ -22250,21 +22545,23 @@ var __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_DEFINE_RESULT__;//     Underscor
 
   // Trim out all falsy values from an array.
   _.compact = function(array) {
-    return _.filter(array, _.identity);
+    return _.filter(array, Boolean);
   };
 
   // Internal implementation of a recursive `flatten` function.
-  var flatten = function(input, shallow, strict, startIndex) {
-    var output = [], idx = 0;
-    for (var i = startIndex || 0, length = getLength(input); i < length; i++) {
+  var flatten = function(input, shallow, strict, output) {
+    output = output || [];
+    var idx = output.length;
+    for (var i = 0, length = getLength(input); i < length; i++) {
       var value = input[i];
       if (isArrayLike(value) && (_.isArray(value) || _.isArguments(value))) {
-        //flatten current level of array or arguments object
-        if (!shallow) value = flatten(value, shallow, strict);
-        var j = 0, len = value.length;
-        output.length += len;
-        while (j < len) {
-          output[idx++] = value[j++];
+        // Flatten current level of array or arguments object.
+        if (shallow) {
+          var j = 0, len = value.length;
+          while (j < len) output[idx++] = value[j++];
+        } else {
+          flatten(value, shallow, strict, output);
+          idx = output.length;
         }
       } else if (!strict) {
         output[idx++] = value;
@@ -22279,12 +22576,15 @@ var __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_DEFINE_RESULT__;//     Underscor
   };
 
   // Return a version of the array that does not contain the specified value(s).
-  _.without = function(array) {
-    return _.difference(array, slice.call(arguments, 1));
-  };
+  _.without = restArguments(function(array, otherArrays) {
+    return _.difference(array, otherArrays);
+  });
 
   // Produce a duplicate-free version of the array. If the array has already
   // been sorted, you have the option of using a faster algorithm.
+  // The faster algorithm will not work with an iteratee if the iteratee
+  // is not a one-to-one function, so providing an iteratee will disable
+  // the faster algorithm.
   // Aliased as `unique`.
   _.uniq = _.unique = function(array, isSorted, iteratee, context) {
     if (!_.isBoolean(isSorted)) {
@@ -22298,7 +22598,7 @@ var __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_DEFINE_RESULT__;//     Underscor
     for (var i = 0, length = getLength(array); i < length; i++) {
       var value = array[i],
           computed = iteratee ? iteratee(value, i, array) : value;
-      if (isSorted) {
+      if (isSorted && !iteratee) {
         if (!i || seen !== computed) result.push(value);
         seen = computed;
       } else if (iteratee) {
@@ -22315,9 +22615,9 @@ var __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_DEFINE_RESULT__;//     Underscor
 
   // Produce an array that contains the union: each distinct element from all of
   // the passed-in arrays.
-  _.union = function() {
-    return _.uniq(flatten(arguments, true, true));
-  };
+  _.union = restArguments(function(arrays) {
+    return _.uniq(flatten(arrays, true, true));
+  });
 
   // Produce an array that contains every item shared between all the
   // passed-in arrays.
@@ -22327,7 +22627,8 @@ var __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_DEFINE_RESULT__;//     Underscor
     for (var i = 0, length = getLength(array); i < length; i++) {
       var item = array[i];
       if (_.contains(result, item)) continue;
-      for (var j = 1; j < argsLength; j++) {
+      var j;
+      for (j = 1; j < argsLength; j++) {
         if (!_.contains(arguments[j], item)) break;
       }
       if (j === argsLength) result.push(item);
@@ -22337,21 +22638,15 @@ var __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_DEFINE_RESULT__;//     Underscor
 
   // Take the difference between one array and a number of other arrays.
   // Only the elements present in just the first array will remain.
-  _.difference = function(array) {
-    var rest = flatten(arguments, true, true, 1);
+  _.difference = restArguments(function(array, rest) {
+    rest = flatten(rest, true, true);
     return _.filter(array, function(value){
       return !_.contains(rest, value);
     });
-  };
-
-  // Zip together multiple lists into a single array -- elements that share
-  // an index go together.
-  _.zip = function() {
-    return _.unzip(arguments);
-  };
+  });
 
   // Complement of _.zip. Unzip accepts an array of arrays and groups
-  // each array's elements on shared indices
+  // each array's elements on shared indices.
   _.unzip = function(array) {
     var length = array && _.max(array, getLength).length || 0;
     var result = Array(length);
@@ -22362,9 +22657,13 @@ var __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_DEFINE_RESULT__;//     Underscor
     return result;
   };
 
+  // Zip together multiple lists into a single array -- elements that share
+  // an index go together.
+  _.zip = restArguments(_.unzip);
+
   // Converts lists into objects. Pass either a single array of `[key, value]`
   // pairs, or two parallel arrays of the same length -- one of keys, and one of
-  // the corresponding values.
+  // the corresponding values. Passing by pairs is the reverse of _.pairs.
   _.object = function(list, values) {
     var result = {};
     for (var i = 0, length = getLength(list); i < length; i++) {
@@ -22377,8 +22676,8 @@ var __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_DEFINE_RESULT__;//     Underscor
     return result;
   };
 
-  // Generator function to create the findIndex and findLastIndex functions
-  function createPredicateIndexFinder(dir) {
+  // Generator function to create the findIndex and findLastIndex functions.
+  var createPredicateIndexFinder = function(dir) {
     return function(array, predicate, context) {
       predicate = cb(predicate, context);
       var length = getLength(array);
@@ -22388,9 +22687,9 @@ var __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_DEFINE_RESULT__;//     Underscor
       }
       return -1;
     };
-  }
+  };
 
-  // Returns the first index on an array-like that passes a predicate test
+  // Returns the first index on an array-like that passes a predicate test.
   _.findIndex = createPredicateIndexFinder(1);
   _.findLastIndex = createPredicateIndexFinder(-1);
 
@@ -22407,15 +22706,15 @@ var __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_DEFINE_RESULT__;//     Underscor
     return low;
   };
 
-  // Generator function to create the indexOf and lastIndexOf functions
-  function createIndexFinder(dir, predicateFind, sortedIndex) {
+  // Generator function to create the indexOf and lastIndexOf functions.
+  var createIndexFinder = function(dir, predicateFind, sortedIndex) {
     return function(array, item, idx) {
       var i = 0, length = getLength(array);
       if (typeof idx == 'number') {
         if (dir > 0) {
-            i = idx >= 0 ? idx : Math.max(idx + length, i);
+          i = idx >= 0 ? idx : Math.max(idx + length, i);
         } else {
-            length = idx >= 0 ? Math.min(idx + 1, length) : idx + length + 1;
+          length = idx >= 0 ? Math.min(idx + 1, length) : idx + length + 1;
         }
       } else if (sortedIndex && idx && length) {
         idx = sortedIndex(array, item);
@@ -22430,7 +22729,7 @@ var __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_DEFINE_RESULT__;//     Underscor
       }
       return -1;
     };
-  }
+  };
 
   // Return the position of the first occurrence of an item in an array,
   // or -1 if the item is not included in the array.
@@ -22447,7 +22746,9 @@ var __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_DEFINE_RESULT__;//     Underscor
       stop = start || 0;
       start = 0;
     }
-    step = step || 1;
+    if (!step) {
+      step = stop < start ? -1 : 1;
+    }
 
     var length = Math.max(Math.ceil((stop - start) / step), 0);
     var range = Array(length);
@@ -22459,11 +22760,23 @@ var __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_DEFINE_RESULT__;//     Underscor
     return range;
   };
 
+  // Chunk a single array into multiple arrays, each containing `count` or fewer
+  // items.
+  _.chunk = function(array, count) {
+    if (count == null || count < 1) return [];
+    var result = [];
+    var i = 0, length = array.length;
+    while (i < length) {
+      result.push(slice.call(array, i, i += count));
+    }
+    return result;
+  };
+
   // Function (ahem) Functions
   // ------------------
 
   // Determines whether to execute a function as a constructor
-  // or a normal function with the provided arguments
+  // or a normal function with the provided arguments.
   var executeBound = function(sourceFunc, boundFunc, context, callingContext, args) {
     if (!(callingContext instanceof boundFunc)) return sourceFunc.apply(context, args);
     var self = baseCreate(sourceFunc.prototype);
@@ -22475,52 +22788,53 @@ var __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_DEFINE_RESULT__;//     Underscor
   // Create a function bound to a given object (assigning `this`, and arguments,
   // optionally). Delegates to **ECMAScript 5**'s native `Function.bind` if
   // available.
-  _.bind = function(func, context) {
-    if (nativeBind && func.bind === nativeBind) return nativeBind.apply(func, slice.call(arguments, 1));
+  _.bind = restArguments(function(func, context, args) {
     if (!_.isFunction(func)) throw new TypeError('Bind must be called on a function');
-    var args = slice.call(arguments, 2);
-    var bound = function() {
-      return executeBound(func, bound, context, this, args.concat(slice.call(arguments)));
-    };
+    var bound = restArguments(function(callArgs) {
+      return executeBound(func, bound, context, this, args.concat(callArgs));
+    });
     return bound;
-  };
+  });
 
   // Partially apply a function by creating a version that has had some of its
   // arguments pre-filled, without changing its dynamic `this` context. _ acts
-  // as a placeholder, allowing any combination of arguments to be pre-filled.
-  _.partial = function(func) {
-    var boundArgs = slice.call(arguments, 1);
+  // as a placeholder by default, allowing any combination of arguments to be
+  // pre-filled. Set `_.partial.placeholder` for a custom placeholder argument.
+  _.partial = restArguments(function(func, boundArgs) {
+    var placeholder = _.partial.placeholder;
     var bound = function() {
       var position = 0, length = boundArgs.length;
       var args = Array(length);
       for (var i = 0; i < length; i++) {
-        args[i] = boundArgs[i] === _ ? arguments[position++] : boundArgs[i];
+        args[i] = boundArgs[i] === placeholder ? arguments[position++] : boundArgs[i];
       }
       while (position < arguments.length) args.push(arguments[position++]);
       return executeBound(func, bound, this, this, args);
     };
     return bound;
-  };
+  });
+
+  _.partial.placeholder = _;
 
   // Bind a number of an object's methods to that object. Remaining arguments
   // are the method names to be bound. Useful for ensuring that all callbacks
   // defined on an object belong to it.
-  _.bindAll = function(obj) {
-    var i, length = arguments.length, key;
-    if (length <= 1) throw new Error('bindAll must be passed function names');
-    for (i = 1; i < length; i++) {
-      key = arguments[i];
+  _.bindAll = restArguments(function(obj, keys) {
+    keys = flatten(keys, false, false);
+    var index = keys.length;
+    if (index < 1) throw new Error('bindAll must be passed function names');
+    while (index--) {
+      var key = keys[index];
       obj[key] = _.bind(obj[key], obj);
     }
-    return obj;
-  };
+  });
 
   // Memoize an expensive function by storing its results.
   _.memoize = function(func, hasher) {
     var memoize = function(key) {
       var cache = memoize.cache;
       var address = '' + (hasher ? hasher.apply(this, arguments) : key);
-      if (!_.has(cache, address)) cache[address] = func.apply(this, arguments);
+      if (!has(cache, address)) cache[address] = func.apply(this, arguments);
       return cache[address];
     };
     memoize.cache = {};
@@ -22529,12 +22843,11 @@ var __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_DEFINE_RESULT__;//     Underscor
 
   // Delays a function for the given number of milliseconds, and then calls
   // it with the arguments supplied.
-  _.delay = function(func, wait) {
-    var args = slice.call(arguments, 2);
-    return setTimeout(function(){
+  _.delay = restArguments(function(func, wait, args) {
+    return setTimeout(function() {
       return func.apply(null, args);
     }, wait);
-  };
+  });
 
   // Defers a function, scheduling it to run after the current call stack has
   // cleared.
@@ -22546,17 +22859,18 @@ var __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_DEFINE_RESULT__;//     Underscor
   // but if you'd like to disable the execution on the leading edge, pass
   // `{leading: false}`. To disable execution on the trailing edge, ditto.
   _.throttle = function(func, wait, options) {
-    var context, args, result;
-    var timeout = null;
+    var timeout, context, args, result;
     var previous = 0;
     if (!options) options = {};
+
     var later = function() {
       previous = options.leading === false ? 0 : _.now();
       timeout = null;
       result = func.apply(context, args);
       if (!timeout) context = args = null;
     };
-    return function() {
+
+    var throttled = function() {
       var now = _.now();
       if (!previous && options.leading === false) previous = now;
       var remaining = wait - (now - previous);
@@ -22575,6 +22889,14 @@ var __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_DEFINE_RESULT__;//     Underscor
       }
       return result;
     };
+
+    throttled.cancel = function() {
+      clearTimeout(timeout);
+      previous = 0;
+      timeout = context = args = null;
+    };
+
+    return throttled;
   };
 
   // Returns a function, that, as long as it continues to be invoked, will not
@@ -22582,35 +22904,32 @@ var __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_DEFINE_RESULT__;//     Underscor
   // N milliseconds. If `immediate` is passed, trigger the function on the
   // leading edge, instead of the trailing.
   _.debounce = function(func, wait, immediate) {
-    var timeout, args, context, timestamp, result;
+    var timeout, result;
 
-    var later = function() {
-      var last = _.now() - timestamp;
-
-      if (last < wait && last >= 0) {
-        timeout = setTimeout(later, wait - last);
-      } else {
-        timeout = null;
-        if (!immediate) {
-          result = func.apply(context, args);
-          if (!timeout) context = args = null;
-        }
-      }
+    var later = function(context, args) {
+      timeout = null;
+      if (args) result = func.apply(context, args);
     };
 
-    return function() {
-      context = this;
-      args = arguments;
-      timestamp = _.now();
-      var callNow = immediate && !timeout;
-      if (!timeout) timeout = setTimeout(later, wait);
-      if (callNow) {
-        result = func.apply(context, args);
-        context = args = null;
+    var debounced = restArguments(function(args) {
+      if (timeout) clearTimeout(timeout);
+      if (immediate) {
+        var callNow = !timeout;
+        timeout = setTimeout(later, wait);
+        if (callNow) result = func.apply(this, args);
+      } else {
+        timeout = _.delay(later, wait, this, args);
       }
 
       return result;
+    });
+
+    debounced.cancel = function() {
+      clearTimeout(timeout);
+      timeout = null;
     };
+
+    return debounced;
   };
 
   // Returns the first function passed as an argument to the second,
@@ -22665,22 +22984,24 @@ var __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_DEFINE_RESULT__;//     Underscor
   // often you call it. Useful for lazy initialization.
   _.once = _.partial(_.before, 2);
 
+  _.restArguments = restArguments;
+
   // Object Functions
   // ----------------
 
   // Keys in IE < 9 that won't be iterated by `for key in ...` and thus missed.
   var hasEnumBug = !{toString: null}.propertyIsEnumerable('toString');
   var nonEnumerableProps = ['valueOf', 'isPrototypeOf', 'toString',
-                      'propertyIsEnumerable', 'hasOwnProperty', 'toLocaleString'];
+    'propertyIsEnumerable', 'hasOwnProperty', 'toLocaleString'];
 
-  function collectNonEnumProps(obj, keys) {
+  var collectNonEnumProps = function(obj, keys) {
     var nonEnumIdx = nonEnumerableProps.length;
     var constructor = obj.constructor;
-    var proto = (_.isFunction(constructor) && constructor.prototype) || ObjProto;
+    var proto = _.isFunction(constructor) && constructor.prototype || ObjProto;
 
     // Constructor is a special case.
     var prop = 'constructor';
-    if (_.has(obj, prop) && !_.contains(keys, prop)) keys.push(prop);
+    if (has(obj, prop) && !_.contains(keys, prop)) keys.push(prop);
 
     while (nonEnumIdx--) {
       prop = nonEnumerableProps[nonEnumIdx];
@@ -22688,15 +23009,15 @@ var __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_DEFINE_RESULT__;//     Underscor
         keys.push(prop);
       }
     }
-  }
+  };
 
   // Retrieve the names of an object's own properties.
-  // Delegates to **ECMAScript 5**'s native `Object.keys`
+  // Delegates to **ECMAScript 5**'s native `Object.keys`.
   _.keys = function(obj) {
     if (!_.isObject(obj)) return [];
     if (nativeKeys) return nativeKeys(obj);
     var keys = [];
-    for (var key in obj) if (_.has(obj, key)) keys.push(key);
+    for (var key in obj) if (has(obj, key)) keys.push(key);
     // Ahem, IE < 9.
     if (hasEnumBug) collectNonEnumProps(obj, keys);
     return keys;
@@ -22723,22 +23044,22 @@ var __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_DEFINE_RESULT__;//     Underscor
     return values;
   };
 
-  // Returns the results of applying the iteratee to each element of the object
-  // In contrast to _.map it returns an object
+  // Returns the results of applying the iteratee to each element of the object.
+  // In contrast to _.map it returns an object.
   _.mapObject = function(obj, iteratee, context) {
     iteratee = cb(iteratee, context);
-    var keys =  _.keys(obj),
-          length = keys.length,
-          results = {},
-          currentKey;
-      for (var index = 0; index < length; index++) {
-        currentKey = keys[index];
-        results[currentKey] = iteratee(obj[currentKey], currentKey, obj);
-      }
-      return results;
+    var keys = _.keys(obj),
+        length = keys.length,
+        results = {};
+    for (var index = 0; index < length; index++) {
+      var currentKey = keys[index];
+      results[currentKey] = iteratee(obj[currentKey], currentKey, obj);
+    }
+    return results;
   };
 
   // Convert an object into a list of `[key, value]` pairs.
+  // The opposite of _.object.
   _.pairs = function(obj) {
     var keys = _.keys(obj);
     var length = keys.length;
@@ -22760,7 +23081,7 @@ var __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_DEFINE_RESULT__;//     Underscor
   };
 
   // Return a sorted list of the function names available on the object.
-  // Aliased as `methods`
+  // Aliased as `methods`.
   _.functions = _.methods = function(obj) {
     var names = [];
     for (var key in obj) {
@@ -22769,14 +23090,33 @@ var __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_DEFINE_RESULT__;//     Underscor
     return names.sort();
   };
 
+  // An internal function for creating assigner functions.
+  var createAssigner = function(keysFunc, defaults) {
+    return function(obj) {
+      var length = arguments.length;
+      if (defaults) obj = Object(obj);
+      if (length < 2 || obj == null) return obj;
+      for (var index = 1; index < length; index++) {
+        var source = arguments[index],
+            keys = keysFunc(source),
+            l = keys.length;
+        for (var i = 0; i < l; i++) {
+          var key = keys[i];
+          if (!defaults || obj[key] === void 0) obj[key] = source[key];
+        }
+      }
+      return obj;
+    };
+  };
+
   // Extend a given object with all the properties in passed-in object(s).
   _.extend = createAssigner(_.allKeys);
 
-  // Assigns a given object with all the own properties in the passed-in object(s)
+  // Assigns a given object with all the own properties in the passed-in object(s).
   // (https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Object/assign)
   _.extendOwn = _.assign = createAssigner(_.keys);
 
-  // Returns the first key on an object that passes a predicate test
+  // Returns the first key on an object that passes a predicate test.
   _.findKey = function(obj, predicate, context) {
     predicate = cb(predicate, context);
     var keys = _.keys(obj), key;
@@ -22786,16 +23126,21 @@ var __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_DEFINE_RESULT__;//     Underscor
     }
   };
 
+  // Internal pick helper function to determine if `obj` has key `key`.
+  var keyInObj = function(value, key, obj) {
+    return key in obj;
+  };
+
   // Return a copy of the object only containing the whitelisted properties.
-  _.pick = function(object, oiteratee, context) {
-    var result = {}, obj = object, iteratee, keys;
+  _.pick = restArguments(function(obj, keys) {
+    var result = {}, iteratee = keys[0];
     if (obj == null) return result;
-    if (_.isFunction(oiteratee)) {
+    if (_.isFunction(iteratee)) {
+      if (keys.length > 1) iteratee = optimizeCb(iteratee, keys[1]);
       keys = _.allKeys(obj);
-      iteratee = optimizeCb(oiteratee, context);
     } else {
-      keys = flatten(arguments, false, false, 1);
-      iteratee = function(value, key, obj) { return key in obj; };
+      iteratee = keyInObj;
+      keys = flatten(keys, false, false);
       obj = Object(obj);
     }
     for (var i = 0, length = keys.length; i < length; i++) {
@@ -22804,20 +23149,22 @@ var __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_DEFINE_RESULT__;//     Underscor
       if (iteratee(value, key, obj)) result[key] = value;
     }
     return result;
-  };
+  });
 
-   // Return a copy of the object without the blacklisted properties.
-  _.omit = function(obj, iteratee, context) {
+  // Return a copy of the object without the blacklisted properties.
+  _.omit = restArguments(function(obj, keys) {
+    var iteratee = keys[0], context;
     if (_.isFunction(iteratee)) {
       iteratee = _.negate(iteratee);
+      if (keys.length > 1) context = keys[1];
     } else {
-      var keys = _.map(flatten(arguments, false, false, 1), String);
+      keys = _.map(flatten(keys, false, false), String);
       iteratee = function(value, key) {
         return !_.contains(keys, key);
       };
     }
     return _.pick(obj, iteratee, context);
-  };
+  });
 
   // Fill in a given object with default properties.
   _.defaults = createAssigner(_.allKeys, true);
@@ -22859,12 +23206,23 @@ var __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_DEFINE_RESULT__;//     Underscor
 
 
   // Internal recursive comparison function for `isEqual`.
-  var eq = function(a, b, aStack, bStack) {
+  var eq, deepEq;
+  eq = function(a, b, aStack, bStack) {
     // Identical objects are equal. `0 === -0`, but they aren't identical.
     // See the [Harmony `egal` proposal](http://wiki.ecmascript.org/doku.php?id=harmony:egal).
     if (a === b) return a !== 0 || 1 / a === 1 / b;
-    // A strict comparison is necessary because `null == undefined`.
-    if (a == null || b == null) return a === b;
+    // `null` or `undefined` only equal to itself (strict comparison).
+    if (a == null || b == null) return false;
+    // `NaN`s are equivalent, but non-reflexive.
+    if (a !== a) return b !== b;
+    // Exhaust primitive checks
+    var type = typeof a;
+    if (type !== 'function' && type !== 'object' && typeof b != 'object') return false;
+    return deepEq(a, b, aStack, bStack);
+  };
+
+  // Internal recursive comparison function for `isEqual`.
+  deepEq = function(a, b, aStack, bStack) {
     // Unwrap any wrapped objects.
     if (a instanceof _) a = a._wrapped;
     if (b instanceof _) b = b._wrapped;
@@ -22881,7 +23239,7 @@ var __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_DEFINE_RESULT__;//     Underscor
         return '' + a === '' + b;
       case '[object Number]':
         // `NaN`s are equivalent, but non-reflexive.
-        // Object(NaN) is equivalent to NaN
+        // Object(NaN) is equivalent to NaN.
         if (+a !== +a) return +b !== +b;
         // An `egal` comparison is performed for other numeric values.
         return +a === 0 ? 1 / +a === 1 / b : +a === +b;
@@ -22891,6 +23249,8 @@ var __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_DEFINE_RESULT__;//     Underscor
         // millisecond representations. Note that invalid dates with millisecond representations
         // of `NaN` are not equivalent.
         return +a === +b;
+      case '[object Symbol]':
+        return SymbolProto.valueOf.call(a) === SymbolProto.valueOf.call(b);
     }
 
     var areArrays = className === '[object Array]';
@@ -22942,7 +23302,7 @@ var __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_DEFINE_RESULT__;//     Underscor
       while (length--) {
         // Deep compare each member
         key = keys[length];
-        if (!(_.has(b, key) && eq(a[key], b[key], aStack, bStack))) return false;
+        if (!(has(b, key) && eq(a[key], b[key], aStack, bStack))) return false;
       }
     }
     // Remove the first object from the stack of traversed objects.
@@ -22981,8 +23341,8 @@ var __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_DEFINE_RESULT__;//     Underscor
     return type === 'function' || type === 'object' && !!obj;
   };
 
-  // Add some isType methods: isArguments, isFunction, isString, isNumber, isDate, isRegExp, isError.
-  _.each(['Arguments', 'Function', 'String', 'Number', 'Date', 'RegExp', 'Error'], function(name) {
+  // Add some isType methods: isArguments, isFunction, isString, isNumber, isDate, isRegExp, isError, isMap, isWeakMap, isSet, isWeakSet.
+  _.each(['Arguments', 'Function', 'String', 'Number', 'Date', 'RegExp', 'Error', 'Symbol', 'Map', 'WeakMap', 'Set', 'WeakSet'], function(name) {
     _['is' + name] = function(obj) {
       return toString.call(obj) === '[object ' + name + ']';
     };
@@ -22992,13 +23352,14 @@ var __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_DEFINE_RESULT__;//     Underscor
   // there isn't any inspectable "Arguments" type.
   if (!_.isArguments(arguments)) {
     _.isArguments = function(obj) {
-      return _.has(obj, 'callee');
+      return has(obj, 'callee');
     };
   }
 
   // Optimize `isFunction` if appropriate. Work around some typeof bugs in old v8,
-  // IE 11 (#1621), and in Safari 8 (#1929).
-  if (typeof /./ != 'function' && typeof Int8Array != 'object') {
+  // IE 11 (#1621), Safari 8 (#1929), and PhantomJS (#2236).
+  var nodelist = root.document && root.document.childNodes;
+  if (typeof /./ != 'function' && typeof Int8Array != 'object' && typeof nodelist != 'function') {
     _.isFunction = function(obj) {
       return typeof obj == 'function' || false;
     };
@@ -23006,12 +23367,12 @@ var __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_DEFINE_RESULT__;//     Underscor
 
   // Is a given object a finite number?
   _.isFinite = function(obj) {
-    return isFinite(obj) && !isNaN(parseFloat(obj));
+    return !_.isSymbol(obj) && isFinite(obj) && !isNaN(parseFloat(obj));
   };
 
-  // Is the given value `NaN`? (NaN is the only number which does not equal itself).
+  // Is the given value `NaN`?
   _.isNaN = function(obj) {
-    return _.isNumber(obj) && obj !== +obj;
+    return _.isNumber(obj) && isNaN(obj);
   };
 
   // Is a given value a boolean?
@@ -23031,8 +23392,19 @@ var __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_DEFINE_RESULT__;//     Underscor
 
   // Shortcut function for checking if an object has a given property directly
   // on itself (in other words, not on a prototype).
-  _.has = function(obj, key) {
-    return obj != null && hasOwnProperty.call(obj, key);
+  _.has = function(obj, path) {
+    if (!_.isArray(path)) {
+      return has(obj, path);
+    }
+    var length = path.length;
+    for (var i = 0; i < length; i++) {
+      var key = path[i];
+      if (obj == null || !hasOwnProperty.call(obj, key)) {
+        return false;
+      }
+      obj = obj[key];
+    }
+    return !!length;
   };
 
   // Utility Functions
@@ -23059,12 +23431,24 @@ var __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_DEFINE_RESULT__;//     Underscor
 
   _.noop = function(){};
 
-  _.property = property;
+  // Creates a function that, when passed an object, will traverse that object’s
+  // properties down the given `path`, specified as an array of keys or indexes.
+  _.property = function(path) {
+    if (!_.isArray(path)) {
+      return shallowProperty(path);
+    }
+    return function(obj) {
+      return deepGet(obj, path);
+    };
+  };
 
   // Generates a function for a given object that returns a given property.
   _.propertyOf = function(obj) {
-    return obj == null ? function(){} : function(key) {
-      return obj[key];
+    if (obj == null) {
+      return function(){};
+    }
+    return function(path) {
+      return !_.isArray(path) ? obj[path] : deepGet(obj, path);
     };
   };
 
@@ -23099,7 +23483,7 @@ var __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_DEFINE_RESULT__;//     Underscor
     return new Date().getTime();
   };
 
-   // List of HTML entities for escaping.
+  // List of HTML entities for escaping.
   var escapeMap = {
     '&': '&amp;',
     '<': '&lt;',
@@ -23115,7 +23499,7 @@ var __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_DEFINE_RESULT__;//     Underscor
     var escaper = function(match) {
       return map[match];
     };
-    // Regexes for identifying a key that needs to be escaped
+    // Regexes for identifying a key that needs to be escaped.
     var source = '(?:' + _.keys(map).join('|') + ')';
     var testRegexp = RegExp(source);
     var replaceRegexp = RegExp(source, 'g');
@@ -23127,14 +23511,24 @@ var __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_DEFINE_RESULT__;//     Underscor
   _.escape = createEscaper(escapeMap);
   _.unescape = createEscaper(unescapeMap);
 
-  // If the value of the named `property` is a function then invoke it with the
-  // `object` as context; otherwise, return it.
-  _.result = function(object, property, fallback) {
-    var value = object == null ? void 0 : object[property];
-    if (value === void 0) {
-      value = fallback;
+  // Traverses the children of `obj` along `path`. If a child is a function, it
+  // is invoked with its parent as context. Returns the value of the final
+  // child, or `fallback` if any child is undefined.
+  _.result = function(obj, path, fallback) {
+    if (!_.isArray(path)) path = [path];
+    var length = path.length;
+    if (!length) {
+      return _.isFunction(fallback) ? fallback.call(obj) : fallback;
     }
-    return _.isFunction(value) ? value.call(object) : value;
+    for (var i = 0; i < length; i++) {
+      var prop = obj == null ? void 0 : obj[path[i]];
+      if (prop === void 0) {
+        prop = fallback;
+        i = length; // Ensure we don't continue iterating.
+      }
+      obj = _.isFunction(prop) ? prop.call(obj) : prop;
+    }
+    return obj;
   };
 
   // Generate a unique integer id (unique within the entire client session).
@@ -23148,9 +23542,9 @@ var __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_DEFINE_RESULT__;//     Underscor
   // By default, Underscore uses ERB-style template delimiters, change the
   // following template settings to use alternative delimiters.
   _.templateSettings = {
-    evaluate    : /<%([\s\S]+?)%>/g,
-    interpolate : /<%=([\s\S]+?)%>/g,
-    escape      : /<%-([\s\S]+?)%>/g
+    evaluate: /<%([\s\S]+?)%>/g,
+    interpolate: /<%=([\s\S]+?)%>/g,
+    escape: /<%-([\s\S]+?)%>/g
   };
 
   // When customizing `templateSettings`, if you don't want to define an
@@ -23161,15 +23555,15 @@ var __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_DEFINE_RESULT__;//     Underscor
   // Certain characters need to be escaped so that they can be put into a
   // string literal.
   var escapes = {
-    "'":      "'",
-    '\\':     '\\',
-    '\r':     'r',
-    '\n':     'n',
+    "'": "'",
+    '\\': '\\',
+    '\r': 'r',
+    '\n': 'n',
     '\u2028': 'u2028',
     '\u2029': 'u2029'
   };
 
-  var escaper = /\\|'|\r|\n|\u2028|\u2029/g;
+  var escapeRegExp = /\\|'|\r|\n|\u2028|\u2029/g;
 
   var escapeChar = function(match) {
     return '\\' + escapes[match];
@@ -23194,7 +23588,7 @@ var __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_DEFINE_RESULT__;//     Underscor
     var index = 0;
     var source = "__p+='";
     text.replace(matcher, function(match, escape, interpolate, evaluate, offset) {
-      source += text.slice(index, offset).replace(escaper, escapeChar);
+      source += text.slice(index, offset).replace(escapeRegExp, escapeChar);
       index = offset + match.length;
 
       if (escape) {
@@ -23205,7 +23599,7 @@ var __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_DEFINE_RESULT__;//     Underscor
         source += "';\n" + evaluate + "\n__p+='";
       }
 
-      // Adobe VMs need the match returned to produce the correct offest.
+      // Adobe VMs need the match returned to produce the correct offset.
       return match;
     });
     source += "';\n";
@@ -23217,8 +23611,9 @@ var __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_DEFINE_RESULT__;//     Underscor
       "print=function(){__p+=__j.call(arguments,'');};\n" +
       source + 'return __p;\n';
 
+    var render;
     try {
-      var render = new Function(settings.variable || 'obj', '_', source);
+      render = new Function(settings.variable || 'obj', '_', source);
     } catch (e) {
       e.source = source;
       throw e;
@@ -23249,7 +23644,7 @@ var __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_DEFINE_RESULT__;//     Underscor
   // underscore functions. Wrapped objects may be chained.
 
   // Helper function to continue chaining intermediate results.
-  var result = function(instance, obj) {
+  var chainResult = function(instance, obj) {
     return instance._chain ? _(obj).chain() : obj;
   };
 
@@ -23260,9 +23655,10 @@ var __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_DEFINE_RESULT__;//     Underscor
       _.prototype[name] = function() {
         var args = [this._wrapped];
         push.apply(args, arguments);
-        return result(this, func.apply(_, args));
+        return chainResult(this, func.apply(_, args));
       };
     });
+    return _;
   };
 
   // Add all of the Underscore functions to the wrapper object.
@@ -23275,7 +23671,7 @@ var __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_DEFINE_RESULT__;//     Underscor
       var obj = this._wrapped;
       method.apply(obj, arguments);
       if ((name === 'shift' || name === 'splice') && obj.length === 0) delete obj[0];
-      return result(this, obj);
+      return chainResult(this, obj);
     };
   });
 
@@ -23283,7 +23679,7 @@ var __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_DEFINE_RESULT__;//     Underscor
   _.each(['concat', 'join', 'slice'], function(name) {
     var method = ArrayProto[name];
     _.prototype[name] = function() {
-      return result(this, method.apply(this._wrapped, arguments));
+      return chainResult(this, method.apply(this._wrapped, arguments));
     };
   });
 
@@ -23297,7 +23693,7 @@ var __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_DEFINE_RESULT__;//     Underscor
   _.prototype.valueOf = _.prototype.toJSON = _.prototype.value;
 
   _.prototype.toString = function() {
-    return '' + this._wrapped;
+    return String(this._wrapped);
   };
 
   // AMD registration happens at the end for compatibility with AMD loaders
@@ -23308,19 +23704,51 @@ var __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_DEFINE_RESULT__;//     Underscor
   // an AMD load request. Those cases could generate an error when an
   // anonymous define() is called outside of a loader request.
   if (true) {
-    !(__WEBPACK_AMD_DEFINE_ARRAY__ = [], __WEBPACK_AMD_DEFINE_RESULT__ = function() {
+    !(__WEBPACK_AMD_DEFINE_ARRAY__ = [], __WEBPACK_AMD_DEFINE_RESULT__ = (function() {
       return _;
-    }.apply(exports, __WEBPACK_AMD_DEFINE_ARRAY__),
+    }).apply(exports, __WEBPACK_AMD_DEFINE_ARRAY__),
 				__WEBPACK_AMD_DEFINE_RESULT__ !== undefined && (module.exports = __WEBPACK_AMD_DEFINE_RESULT__));
   }
-}.call(this));
+}());
 
+/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(8), __webpack_require__(100)(module)))
 
 /***/ }),
 /* 100 */
+/***/ (function(module, exports) {
+
+module.exports = function(module) {
+	if(!module.webpackPolyfill) {
+		module.deprecate = function() {};
+		module.paths = [];
+		// module.parent = undefined by default
+		if(!module.children) module.children = [];
+		Object.defineProperty(module, "loaded", {
+			enumerable: true,
+			get: function() {
+				return module.l;
+			}
+		});
+		Object.defineProperty(module, "id", {
+			enumerable: true,
+			get: function() {
+				return module.i;
+			}
+		});
+		module.webpackPolyfill = 1;
+	}
+	return module;
+};
+
+
+/***/ }),
+/* 101 */
 /***/ (function(module, exports, __webpack_require__) {
 
-(function() {
+"use strict";
+
+
+(function () {
   var TraceBuffer, Tracer, clone, debug, e, error, jsonStringify, networkToTraceEvent, noflo, subscribeExportedOutports;
 
   noflo = __webpack_require__(0);
@@ -23330,28 +23758,28 @@ var __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_DEFINE_RESULT__;//     Underscor
   jsonStringify = JSON.stringify;
 
   try {
-    jsonStringify = __webpack_require__(101);
+    jsonStringify = __webpack_require__(102);
   } catch (error) {
     e = error;
     console.log("WARN: failed to load json-stringify-safe, circular objects may cause fail.\n" + e.message);
   }
 
-  clone = function(obj) {
+  clone = function clone(obj) {
     var s;
     s = jsonStringify(obj);
     return JSON.parse(s);
   };
 
-  TraceBuffer = (function() {
+  TraceBuffer = function () {
     function TraceBuffer() {
       this.events = [];
     }
 
-    TraceBuffer.prototype.add = function(event) {
+    TraceBuffer.prototype.add = function (event) {
       return this.events.push(event);
     };
 
-    TraceBuffer.prototype.getAll = function(consumeFunc, doneFunc) {
+    TraceBuffer.prototype.getAll = function (consumeFunc, doneFunc) {
       var i, len, ref;
       ref = this.events;
       for (i = 0, len = ref.length; i < len; i++) {
@@ -23362,10 +23790,9 @@ var __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_DEFINE_RESULT__;//     Underscor
     };
 
     return TraceBuffer;
+  }();
 
-  })();
-
-  subscribeExportedOutports = function(network, networkId, eventNames, subscribeFunc) {
+  subscribeExportedOutports = function subscribeExportedOutports(network, networkId, eventNames, subscribeFunc) {
     var component, event, graphSockets, i, internal, len, pub, ref, sendFunc, socket;
     graphSockets = {};
     ref = network.graph.outports;
@@ -23375,11 +23802,11 @@ var __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_DEFINE_RESULT__;//     Underscor
       graphSockets[pub] = socket;
       component = network.processes[internal.process].component;
       component.outPorts[internal.port].attach(socket);
-      sendFunc = function(event) {
-        return function(payload) {
+      sendFunc = function sendFunc(event) {
+        return function (payload) {
           var data;
           data = {
-            id: "EXPORT: " + networkId + " " + (pub.toUpperCase()) + " ->",
+            id: "EXPORT: " + networkId + " " + pub.toUpperCase() + " ->",
             payload: payload,
             socket: {
               to: {
@@ -23401,7 +23828,7 @@ var __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_DEFINE_RESULT__;//     Underscor
     return graphSockets;
   };
 
-  networkToTraceEvent = function(networkId, type, data) {
+  networkToTraceEvent = function networkToTraceEvent(networkId, type, data) {
     var error1, event, p, ref, ref1, ref2, ref3, serializeGroup, socket;
     debug('event', networkId, type, "'" + data.id + "'");
     socket = data.socket;
@@ -23424,7 +23851,7 @@ var __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_DEFINE_RESULT__;//     Underscor
         subgraph: void 0
       }
     };
-    serializeGroup = function(p) {
+    serializeGroup = function serializeGroup(p) {
       var error1;
       try {
         return p.group = data.group.toString();
@@ -23464,49 +23891,49 @@ var __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_DEFINE_RESULT__;//     Underscor
     return event;
   };
 
-  Tracer = (function() {
+  Tracer = function () {
     function Tracer(options) {
       this.options = options;
-      this.buffer = new TraceBuffer;
+      this.buffer = new TraceBuffer();
       this.header = {
         graphs: {}
       };
     }
 
-    Tracer.prototype.attach = function(network) {
+    Tracer.prototype.attach = function (network) {
       var eventNames, netId, sockets;
       netId = network.graph.name || network.graph.properties.name || 'default';
       debug('attach', netId);
       eventNames = ['connect', 'begingroup', 'data', 'endgroup', 'disconnect'];
-      eventNames.forEach((function(_this) {
-        return function(event) {
-          return network.on(event, function(data) {
+      eventNames.forEach(function (_this) {
+        return function (event) {
+          return network.on(event, function (data) {
             var payload;
             payload = networkToTraceEvent(netId, event, data);
             return _this.buffer.add(payload);
           });
         };
-      })(this));
-      sockets = subscribeExportedOutports(network, netId, eventNames, (function(_this) {
-        return function(event, data) {
+      }(this));
+      sockets = subscribeExportedOutports(network, netId, eventNames, function (_this) {
+        return function (event, data) {
           var payload;
           payload = networkToTraceEvent(netId, event, data);
           return _this.buffer.add(payload);
         };
-      })(this));
+      }(this));
       return this.header.graphs[netId] = network.graph.toJSON();
     };
 
-    Tracer.prototype.detach = function(network) {};
+    Tracer.prototype.detach = function (network) {};
 
-    Tracer.prototype.dumpString = function(callback) {
+    Tracer.prototype.dumpString = function (callback) {
       var consume, events;
       events = [];
-      consume = function(e) {
+      consume = function consume(e) {
         return events.push(e);
       };
-      return this.buffer.getAll(consume, (function(_this) {
-        return function(err) {
+      return this.buffer.getAll(consume, function (_this) {
+        return function (err) {
           var trace;
           trace = {
             header: _this.header,
@@ -23514,15 +23941,15 @@ var __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_DEFINE_RESULT__;//     Underscor
           };
           return callback(err, JSON.stringify(trace, null, 2));
         };
-      })(this));
+      }(this));
     };
 
-    Tracer.prototype.dumpFile = function(filepath, callback) {
+    Tracer.prototype.dumpFile = function (filepath, callback) {
       var fs, openFile, temp;
-      fs = __webpack_require__(6);
-      temp = __webpack_require__(102);
-      openFile = function(cb) {
-        return fs.open(filepath, 'w', function(err, fd) {
+      fs = __webpack_require__(9);
+      temp = __webpack_require__(103);
+      openFile = function openFile(cb) {
+        return fs.open(filepath, 'w', function (err, fd) {
           return cb(err, {
             path: filepath,
             fd: fd
@@ -23530,60 +23957,57 @@ var __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_DEFINE_RESULT__;//     Underscor
         });
       };
       if (!filepath) {
-        openFile = function(cb) {
+        openFile = function openFile(cb) {
           return temp.open({
             suffix: '.json'
           }, cb);
         };
       }
-      return openFile((function(_this) {
-        return function(err, info) {
+      return openFile(function (_this) {
+        return function (err, info) {
           var events, header, write, writeEvent;
           if (err) {
             return callback(err);
           }
           events = 0;
-          write = function(data, cb) {
+          write = function write(data, cb) {
             return fs.write(info.fd, data, {
               encoding: 'utf-8'
             }, cb);
           };
-          writeEvent = function(e) {
+          writeEvent = function writeEvent(e) {
             var s;
             s = events ? ',' : '';
             events += 1;
             s += JSON.stringify(e, null, 2);
-            return write(s, function(err) {});
+            return write(s, function (err) {});
           };
           debug('streaming to file', info.path);
           header = JSON.stringify(_this.header, null, 2);
-          return write("{\n \"header\": " + header + "\n, \"events\":\n[", function(err) {
-            return _this.buffer.getAll(writeEvent, function(err) {
+          return write("{\n \"header\": " + header + "\n, \"events\":\n[", function (err) {
+            return _this.buffer.getAll(writeEvent, function (err) {
               if (err) {
                 return callback(err);
               }
               debug("streamed " + events + " events");
-              return write(']\n }', function(err) {
+              return write(']\n }', function (err) {
                 debug("completed stream", info.path);
                 return callback(err, info.path);
               });
             });
           });
         };
-      })(this));
+      }(this));
     };
 
     return Tracer;
-
-  })();
+  }();
 
   module.exports.Tracer = Tracer;
-
-}).call(this);
-
+}).call(undefined);
 
 /***/ }),
-/* 101 */
+/* 102 */
 /***/ (function(module, exports) {
 
 exports = module.exports = stringify
@@ -23616,1105 +24040,42 @@ function serializer(replacer, cycleReplacer) {
 
 
 /***/ }),
-/* 102 */
-/***/ (function(module, exports, __webpack_require__) {
-
-/* WEBPACK VAR INJECTION */(function(process) {var fs   = __webpack_require__(6),
-    path = __webpack_require__(25),
-    cnst = __webpack_require__(103);
-
-var rimraf     = __webpack_require__(104),
-    osTmpdir   = __webpack_require__(106),
-    rimrafSync = rimraf.sync;
-
-/* HELPERS */
-
-var RDWR_EXCL = cnst.O_CREAT | cnst.O_TRUNC | cnst.O_RDWR | cnst.O_EXCL;
-
-var generateName = function(rawAffixes, defaultPrefix) {
-  var affixes = parseAffixes(rawAffixes, defaultPrefix);
-  var now = new Date();
-  var name = [affixes.prefix,
-              now.getYear(), now.getMonth(), now.getDate(),
-              '-',
-              process.pid,
-              '-',
-              (Math.random() * 0x100000000 + 1).toString(36),
-              affixes.suffix].join('');
-  return path.join(affixes.dir || exports.dir, name);
-};
-
-var parseAffixes = function(rawAffixes, defaultPrefix) {
-  var affixes = {prefix: null, suffix: null};
-  if(rawAffixes) {
-    switch (typeof(rawAffixes)) {
-    case 'string':
-      affixes.prefix = rawAffixes;
-      break;
-    case 'object':
-      affixes = rawAffixes;
-      break;
-    default:
-      throw new Error("Unknown affix declaration: " + affixes);
-    }
-  } else {
-    affixes.prefix = defaultPrefix;
-  }
-  return affixes;
-};
-
-/* -------------------------------------------------------------------------
- * Don't forget to call track() if you want file tracking and exit handlers!
- * -------------------------------------------------------------------------
- * When any temp file or directory is created, it is added to filesToDelete
- * or dirsToDelete. The first time any temp file is created, a listener is
- * added to remove all temp files and directories at exit.
- */
-var tracking = false;
-var track = function(value) {
-  tracking = (value !== false);
-  return module.exports; // chainable
-};
-var exitListenerAttached = false;
-var filesToDelete = [];
-var dirsToDelete = [];
-
-function deleteFileOnExit(filePath) {
-  if (!tracking) return false;
-  attachExitListener();
-  filesToDelete.push(filePath);
-}
-
-function deleteDirOnExit(dirPath) {
-  if (!tracking) return false;
-  attachExitListener();
-  dirsToDelete.push(dirPath);
-}
-
-function attachExitListener() {
-  if (!tracking) return false;
-  if (!exitListenerAttached) {
-    process.addListener('exit', cleanupSync);
-    exitListenerAttached = true;
-  }
-}
-
-function cleanupFilesSync() {
-  if (!tracking) {
-    return false;
-  }
-  var count = 0;
-  var toDelete;
-  while ((toDelete = filesToDelete.shift()) !== undefined) {
-    rimrafSync(toDelete);
-    count++;
-  }
-  return count;
-}
-
-function cleanupFiles(callback) {
-  if (!tracking) {
-    if (callback) {
-      callback(new Error("not tracking"));
-    }
-    return;
-  }
-  var count = 0;
-  var left = filesToDelete.length;
-  if (!left) {
-    if (callback) {
-      callback(null, count);
-    }
-    return;
-  }
-  var toDelete;
-  var rimrafCallback = function(err) {
-    if (!left) {
-      // Prevent processing if aborted
-      return;
-    }
-    if (err) {
-      // This shouldn't happen; pass error to callback and abort
-      // processing
-      if (callback) {
-        callback(err);
-      }
-      left = 0;
-      return;
-    } else {
-      count++;
-    }
-    left--;
-    if (!left && callback) {
-      callback(null, count);
-    }
-  };
-  while ((toDelete = filesToDelete.shift()) !== undefined) {
-    rimraf(toDelete, rimrafCallback);
-  }
-}
-
-function cleanupDirsSync() {
-  if (!tracking) {
-    return false;
-  }
-  var count = 0;
-  var toDelete;
-  while ((toDelete = dirsToDelete.shift()) !== undefined) {
-    rimrafSync(toDelete);
-    count++;
-  }
-  return count;
-}
-
-function cleanupDirs(callback) {
-  if (!tracking) {
-    if (callback) {
-      callback(new Error("not tracking"));
-    }
-    return;
-  }
-  var count = 0;
-  var left = dirsToDelete.length;
-  if (!left) {
-    if (callback) {
-      callback(null, count);
-    }
-    return;
-  }
-  var toDelete;
-  var rimrafCallback = function (err) {
-    if (!left) {
-      // Prevent processing if aborted
-      return;
-    }
-    if (err) {
-      // rimraf handles most "normal" errors; pass the error to the
-      // callback and abort processing
-      if (callback) {
-        callback(err, count);
-      }
-      left = 0;
-      return;
-    } else {
-      count;
-    }
-    left--;
-    if (!left && callback) {
-      callback(null, count);
-    }
-  };
-  while ((toDelete = dirsToDelete.shift()) !== undefined) {
-    rimraf(toDelete, rimrafCallback);
-  }
-}
-
-function cleanupSync() {
-  if (!tracking) {
-    return false;
-  }
-  var fileCount = cleanupFilesSync();
-  var dirCount  = cleanupDirsSync();
-  return {files: fileCount, dirs: dirCount};
-}
-
-function cleanup(callback) {
-  if (!tracking) {
-    if (callback) {
-      callback(new Error("not tracking"));
-    }
-    return;
-  }
-  cleanupFiles(function(fileErr, fileCount) {
-    if (fileErr) {
-      if (callback) {
-        callback(fileErr, {files: fileCount})
-      }
-    } else {
-      cleanupDirs(function(dirErr, dirCount) {
-        if (callback) {
-          callback(dirErr, {files: fileCount, dirs: dirCount});
-        }
-      });
-    }
-  });
-}
-
-/* DIRECTORIES */
-
-function mkdir(affixes, callback) {
-  var dirPath = generateName(affixes, 'd-');
-  fs.mkdir(dirPath, 0700, function(err) {
-    if (!err) {
-      deleteDirOnExit(dirPath);
-    }
-    if (callback) {
-      callback(err, dirPath);
-    }
-  });
-}
-
-function mkdirSync(affixes) {
-  var dirPath = generateName(affixes, 'd-');
-  fs.mkdirSync(dirPath, 0700);
-  deleteDirOnExit(dirPath);
-  return dirPath;
-}
-
-/* FILES */
-
-function open(affixes, callback) {
-  var filePath = generateName(affixes, 'f-');
-  fs.open(filePath, RDWR_EXCL, 0600, function(err, fd) {
-    if (!err) {
-      deleteFileOnExit(filePath);
-    }
-    if (callback) {
-      callback(err, {path: filePath, fd: fd});
-    }
-  });
-}
-
-function openSync(affixes) {
-  var filePath = generateName(affixes, 'f-');
-  var fd = fs.openSync(filePath, RDWR_EXCL, 0600);
-  deleteFileOnExit(filePath);
-  return {path: filePath, fd: fd};
-}
-
-function createWriteStream(affixes) {
-  var filePath = generateName(affixes, 's-');
-  var stream = fs.createWriteStream(filePath, {flags: RDWR_EXCL, mode: 0600});
-  deleteFileOnExit(filePath);
-  return stream;
-}
-
-/* EXPORTS */
-// Settings
-exports.dir               = path.resolve(osTmpdir());
-exports.track             = track;
-// Functions
-exports.mkdir             = mkdir;
-exports.mkdirSync         = mkdirSync;
-exports.open              = open;
-exports.openSync          = openSync;
-exports.path              = generateName;
-exports.cleanup           = cleanup;
-exports.cleanupSync       = cleanupSync;
-exports.createWriteStream = createWriteStream;
-
-/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(1)))
-
-/***/ }),
 /* 103 */
 /***/ (function(module, exports) {
 
-module.exports = {"O_RDONLY":0,"O_WRONLY":1,"O_RDWR":2,"S_IFMT":61440,"S_IFREG":32768,"S_IFDIR":16384,"S_IFCHR":8192,"S_IFBLK":24576,"S_IFIFO":4096,"S_IFLNK":40960,"S_IFSOCK":49152,"O_CREAT":512,"O_EXCL":2048,"O_NOCTTY":131072,"O_TRUNC":1024,"O_APPEND":8,"O_DIRECTORY":1048576,"O_NOFOLLOW":256,"O_SYNC":128,"O_SYMLINK":2097152,"O_NONBLOCK":4,"S_IRWXU":448,"S_IRUSR":256,"S_IWUSR":128,"S_IXUSR":64,"S_IRWXG":56,"S_IRGRP":32,"S_IWGRP":16,"S_IXGRP":8,"S_IRWXO":7,"S_IROTH":4,"S_IWOTH":2,"S_IXOTH":1,"E2BIG":7,"EACCES":13,"EADDRINUSE":48,"EADDRNOTAVAIL":49,"EAFNOSUPPORT":47,"EAGAIN":35,"EALREADY":37,"EBADF":9,"EBADMSG":94,"EBUSY":16,"ECANCELED":89,"ECHILD":10,"ECONNABORTED":53,"ECONNREFUSED":61,"ECONNRESET":54,"EDEADLK":11,"EDESTADDRREQ":39,"EDOM":33,"EDQUOT":69,"EEXIST":17,"EFAULT":14,"EFBIG":27,"EHOSTUNREACH":65,"EIDRM":90,"EILSEQ":92,"EINPROGRESS":36,"EINTR":4,"EINVAL":22,"EIO":5,"EISCONN":56,"EISDIR":21,"ELOOP":62,"EMFILE":24,"EMLINK":31,"EMSGSIZE":40,"EMULTIHOP":95,"ENAMETOOLONG":63,"ENETDOWN":50,"ENETRESET":52,"ENETUNREACH":51,"ENFILE":23,"ENOBUFS":55,"ENODATA":96,"ENODEV":19,"ENOENT":2,"ENOEXEC":8,"ENOLCK":77,"ENOLINK":97,"ENOMEM":12,"ENOMSG":91,"ENOPROTOOPT":42,"ENOSPC":28,"ENOSR":98,"ENOSTR":99,"ENOSYS":78,"ENOTCONN":57,"ENOTDIR":20,"ENOTEMPTY":66,"ENOTSOCK":38,"ENOTSUP":45,"ENOTTY":25,"ENXIO":6,"EOPNOTSUPP":102,"EOVERFLOW":84,"EPERM":1,"EPIPE":32,"EPROTO":100,"EPROTONOSUPPORT":43,"EPROTOTYPE":41,"ERANGE":34,"EROFS":30,"ESPIPE":29,"ESRCH":3,"ESTALE":70,"ETIME":101,"ETIMEDOUT":60,"ETXTBSY":26,"EWOULDBLOCK":35,"EXDEV":18,"SIGHUP":1,"SIGINT":2,"SIGQUIT":3,"SIGILL":4,"SIGTRAP":5,"SIGABRT":6,"SIGIOT":6,"SIGBUS":10,"SIGFPE":8,"SIGKILL":9,"SIGUSR1":30,"SIGSEGV":11,"SIGUSR2":31,"SIGPIPE":13,"SIGALRM":14,"SIGTERM":15,"SIGCHLD":20,"SIGCONT":19,"SIGSTOP":17,"SIGTSTP":18,"SIGTTIN":21,"SIGTTOU":22,"SIGURG":16,"SIGXCPU":24,"SIGXFSZ":25,"SIGVTALRM":26,"SIGPROF":27,"SIGWINCH":28,"SIGIO":23,"SIGSYS":12,"SSL_OP_ALL":2147486719,"SSL_OP_ALLOW_UNSAFE_LEGACY_RENEGOTIATION":262144,"SSL_OP_CIPHER_SERVER_PREFERENCE":4194304,"SSL_OP_CISCO_ANYCONNECT":32768,"SSL_OP_COOKIE_EXCHANGE":8192,"SSL_OP_CRYPTOPRO_TLSEXT_BUG":2147483648,"SSL_OP_DONT_INSERT_EMPTY_FRAGMENTS":2048,"SSL_OP_EPHEMERAL_RSA":0,"SSL_OP_LEGACY_SERVER_CONNECT":4,"SSL_OP_MICROSOFT_BIG_SSLV3_BUFFER":32,"SSL_OP_MICROSOFT_SESS_ID_BUG":1,"SSL_OP_MSIE_SSLV2_RSA_PADDING":0,"SSL_OP_NETSCAPE_CA_DN_BUG":536870912,"SSL_OP_NETSCAPE_CHALLENGE_BUG":2,"SSL_OP_NETSCAPE_DEMO_CIPHER_CHANGE_BUG":1073741824,"SSL_OP_NETSCAPE_REUSE_CIPHER_CHANGE_BUG":8,"SSL_OP_NO_COMPRESSION":131072,"SSL_OP_NO_QUERY_MTU":4096,"SSL_OP_NO_SESSION_RESUMPTION_ON_RENEGOTIATION":65536,"SSL_OP_NO_SSLv2":16777216,"SSL_OP_NO_SSLv3":33554432,"SSL_OP_NO_TICKET":16384,"SSL_OP_NO_TLSv1":67108864,"SSL_OP_NO_TLSv1_1":268435456,"SSL_OP_NO_TLSv1_2":134217728,"SSL_OP_PKCS1_CHECK_1":0,"SSL_OP_PKCS1_CHECK_2":0,"SSL_OP_SINGLE_DH_USE":1048576,"SSL_OP_SINGLE_ECDH_USE":524288,"SSL_OP_SSLEAY_080_CLIENT_DH_BUG":128,"SSL_OP_SSLREF2_REUSE_CERT_TYPE_BUG":0,"SSL_OP_TLS_BLOCK_PADDING_BUG":512,"SSL_OP_TLS_D5_BUG":256,"SSL_OP_TLS_ROLLBACK_BUG":8388608,"ENGINE_METHOD_DSA":2,"ENGINE_METHOD_DH":4,"ENGINE_METHOD_RAND":8,"ENGINE_METHOD_ECDH":16,"ENGINE_METHOD_ECDSA":32,"ENGINE_METHOD_CIPHERS":64,"ENGINE_METHOD_DIGESTS":128,"ENGINE_METHOD_STORE":256,"ENGINE_METHOD_PKEY_METHS":512,"ENGINE_METHOD_PKEY_ASN1_METHS":1024,"ENGINE_METHOD_ALL":65535,"ENGINE_METHOD_NONE":0,"DH_CHECK_P_NOT_SAFE_PRIME":2,"DH_CHECK_P_NOT_PRIME":1,"DH_UNABLE_TO_CHECK_GENERATOR":4,"DH_NOT_SUITABLE_GENERATOR":8,"NPN_ENABLED":1,"RSA_PKCS1_PADDING":1,"RSA_SSLV23_PADDING":2,"RSA_NO_PADDING":3,"RSA_PKCS1_OAEP_PADDING":4,"RSA_X931_PADDING":5,"RSA_PKCS1_PSS_PADDING":6,"POINT_CONVERSION_COMPRESSED":2,"POINT_CONVERSION_UNCOMPRESSED":4,"POINT_CONVERSION_HYBRID":6,"F_OK":0,"R_OK":4,"W_OK":2,"X_OK":1,"UV_UDP_REUSEADDR":4}
+module.exports = require("temp");
 
 /***/ }),
 /* 104 */
 /***/ (function(module, exports, __webpack_require__) {
 
-/* WEBPACK VAR INJECTION */(function(process) {module.exports = rimraf
-rimraf.sync = rimrafSync
-
-var assert = __webpack_require__(105)
-var path = __webpack_require__(25)
-var fs = __webpack_require__(6)
-
-// for EMFILE handling
-var timeout = 0
-exports.EMFILE_MAX = 1000
-exports.BUSYTRIES_MAX = 3
-
-var isWindows = (process.platform === "win32")
-
-function defaults (options) {
-  var methods = [
-    'unlink',
-    'chmod',
-    'stat',
-    'rmdir',
-    'readdir'
-  ]
-  methods.forEach(function(m) {
-    options[m] = options[m] || fs[m]
-    m = m + 'Sync'
-    options[m] = options[m] || fs[m]
-  })
-}
-
-function rimraf (p, options, cb) {
-  if (typeof options === 'function') {
-    cb = options
-    options = {}
-  }
-  assert(p)
-  assert(options)
-  assert(typeof cb === 'function')
-
-  defaults(options)
-
-  if (!cb) throw new Error("No callback passed to rimraf()")
-
-  var busyTries = 0
-  rimraf_(p, options, function CB (er) {
-    if (er) {
-      if (isWindows && (er.code === "EBUSY" || er.code === "ENOTEMPTY") &&
-          busyTries < exports.BUSYTRIES_MAX) {
-        busyTries ++
-        var time = busyTries * 100
-        // try again, with the same exact callback as this one.
-        return setTimeout(function () {
-          rimraf_(p, options, CB)
-        }, time)
-      }
-
-      // this one won't happen if graceful-fs is used.
-      if (er.code === "EMFILE" && timeout < exports.EMFILE_MAX) {
-        return setTimeout(function () {
-          rimraf_(p, options, CB)
-        }, timeout ++)
-      }
-
-      // already gone
-      if (er.code === "ENOENT") er = null
-    }
-
-    timeout = 0
-    cb(er)
-  })
-}
-
-// Two possible strategies.
-// 1. Assume it's a file.  unlink it, then do the dir stuff on EPERM or EISDIR
-// 2. Assume it's a directory.  readdir, then do the file stuff on ENOTDIR
-//
-// Both result in an extra syscall when you guess wrong.  However, there
-// are likely far more normal files in the world than directories.  This
-// is based on the assumption that a the average number of files per
-// directory is >= 1.
-//
-// If anyone ever complains about this, then I guess the strategy could
-// be made configurable somehow.  But until then, YAGNI.
-function rimraf_ (p, options, cb) {
-  assert(p)
-  assert(options)
-  assert(typeof cb === 'function')
-
-  options.unlink(p, function (er) {
-    if (er) {
-      if (er.code === "ENOENT")
-        return cb(null)
-      if (er.code === "EPERM")
-        return (isWindows)
-          ? fixWinEPERM(p, options, er, cb)
-          : rmdir(p, options, er, cb)
-      if (er.code === "EISDIR")
-        return rmdir(p, options, er, cb)
-    }
-    return cb(er)
-  })
-}
-
-function fixWinEPERM (p, options, er, cb) {
-  assert(p)
-  assert(options)
-  assert(typeof cb === 'function')
-  if (er)
-    assert(er instanceof Error)
-
-  options.chmod(p, 666, function (er2) {
-    if (er2)
-      cb(er2.code === "ENOENT" ? null : er)
-    else
-      options.stat(p, function(er3, stats) {
-        if (er3)
-          cb(er3.code === "ENOENT" ? null : er)
-        else if (stats.isDirectory())
-          rmdir(p, options, er, cb)
-        else
-          options.unlink(p, cb)
-      })
-  })
-}
-
-function fixWinEPERMSync (p, options, er) {
-  assert(p)
-  assert(options)
-  if (er)
-    assert(er instanceof Error)
-
-  try {
-    options.chmodSync(p, 666)
-  } catch (er2) {
-    if (er2.code === "ENOENT")
-      return
-    else
-      throw er
-  }
-
-  try {
-    var stats = options.statSync(p)
-  } catch (er3) {
-    if (er3.code === "ENOENT")
-      return
-    else
-      throw er
-  }
-
-  if (stats.isDirectory())
-    rmdirSync(p, options, er)
-  else
-    options.unlinkSync(p)
-}
-
-function rmdir (p, options, originalEr, cb) {
-  assert(p)
-  assert(options)
-  if (originalEr)
-    assert(originalEr instanceof Error)
-  assert(typeof cb === 'function')
-
-  // try to rmdir first, and only readdir on ENOTEMPTY or EEXIST (SunOS)
-  // if we guessed wrong, and it's not a directory, then
-  // raise the original error.
-  options.rmdir(p, function (er) {
-    if (er && (er.code === "ENOTEMPTY" || er.code === "EEXIST" || er.code === "EPERM"))
-      rmkids(p, options, cb)
-    else if (er && er.code === "ENOTDIR")
-      cb(originalEr)
-    else
-      cb(er)
-  })
-}
-
-function rmkids(p, options, cb) {
-  assert(p)
-  assert(options)
-  assert(typeof cb === 'function')
-
-  options.readdir(p, function (er, files) {
-    if (er)
-      return cb(er)
-    var n = files.length
-    if (n === 0)
-      return options.rmdir(p, cb)
-    var errState
-    files.forEach(function (f) {
-      rimraf(path.join(p, f), options, function (er) {
-        if (errState)
-          return
-        if (er)
-          return cb(errState = er)
-        if (--n === 0)
-          options.rmdir(p, cb)
-      })
-    })
-  })
-}
-
-// this looks simpler, and is strictly *faster*, but will
-// tie up the JavaScript thread and fail on excessively
-// deep directory trees.
-function rimrafSync (p, options) {
-  options = options || {}
-  defaults(options)
-
-  assert(p)
-  assert(options)
-
-  try {
-    options.unlinkSync(p)
-  } catch (er) {
-    if (er.code === "ENOENT")
-      return
-    if (er.code === "EPERM")
-      return isWindows ? fixWinEPERMSync(p, options, er) : rmdirSync(p, options, er)
-    if (er.code !== "EISDIR")
-      throw er
-    rmdirSync(p, options, er)
-  }
-}
-
-function rmdirSync (p, options, originalEr) {
-  assert(p)
-  assert(options)
-  if (originalEr)
-    assert(originalEr instanceof Error)
-
-  try {
-    options.rmdirSync(p)
-  } catch (er) {
-    if (er.code === "ENOENT")
-      return
-    if (er.code === "ENOTDIR")
-      throw originalEr
-    if (er.code === "ENOTEMPTY" || er.code === "EEXIST" || er.code === "EPERM")
-      rmkidsSync(p, options)
-  }
-}
-
-function rmkidsSync (p, options) {
-  assert(p)
-  assert(options)
-  options.readdirSync(p).forEach(function (f) {
-    rimrafSync(path.join(p, f), options)
-  })
-  options.rmdirSync(p, options)
-}
-
-/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(1)))
-
-/***/ }),
-/* 105 */
-/***/ (function(module, exports, __webpack_require__) {
-
-"use strict";
-/* WEBPACK VAR INJECTION */(function(global) {
-
-// compare and isBuffer taken from https://github.com/feross/buffer/blob/680e9e5e488f22aac27599a57dc844a6315928dd/index.js
-// original notice:
-
-/*!
- * The buffer module from node.js, for the browser.
- *
- * @author   Feross Aboukhadijeh <feross@feross.org> <http://feross.org>
- * @license  MIT
- */
-function compare(a, b) {
-  if (a === b) {
-    return 0;
-  }
-
-  var x = a.length;
-  var y = b.length;
-
-  for (var i = 0, len = Math.min(x, y); i < len; ++i) {
-    if (a[i] !== b[i]) {
-      x = a[i];
-      y = b[i];
-      break;
-    }
-  }
-
-  if (x < y) {
-    return -1;
-  }
-  if (y < x) {
-    return 1;
-  }
-  return 0;
-}
-function isBuffer(b) {
-  if (global.Buffer && typeof global.Buffer.isBuffer === 'function') {
-    return global.Buffer.isBuffer(b);
-  }
-  return !!(b != null && b._isBuffer);
-}
-
-// based on node assert, original notice:
-
-// http://wiki.commonjs.org/wiki/Unit_Testing/1.0
-//
-// THIS IS NOT TESTED NOR LIKELY TO WORK OUTSIDE V8!
-//
-// Originally from narwhal.js (http://narwhaljs.org)
-// Copyright (c) 2009 Thomas Robinson <280north.com>
-//
-// Permission is hereby granted, free of charge, to any person obtaining a copy
-// of this software and associated documentation files (the 'Software'), to
-// deal in the Software without restriction, including without limitation the
-// rights to use, copy, modify, merge, publish, distribute, sublicense, and/or
-// sell copies of the Software, and to permit persons to whom the Software is
-// furnished to do so, subject to the following conditions:
-//
-// The above copyright notice and this permission notice shall be included in
-// all copies or substantial portions of the Software.
-//
-// THE SOFTWARE IS PROVIDED 'AS IS', WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
-// IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
-// FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
-// AUTHORS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN
-// ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION
-// WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
-
-var util = __webpack_require__(16);
-var hasOwn = Object.prototype.hasOwnProperty;
-var pSlice = Array.prototype.slice;
-var functionsHaveNames = (function () {
-  return function foo() {}.name === 'foo';
-}());
-function pToString (obj) {
-  return Object.prototype.toString.call(obj);
-}
-function isView(arrbuf) {
-  if (isBuffer(arrbuf)) {
-    return false;
-  }
-  if (typeof global.ArrayBuffer !== 'function') {
-    return false;
-  }
-  if (typeof ArrayBuffer.isView === 'function') {
-    return ArrayBuffer.isView(arrbuf);
-  }
-  if (!arrbuf) {
-    return false;
-  }
-  if (arrbuf instanceof DataView) {
-    return true;
-  }
-  if (arrbuf.buffer && arrbuf.buffer instanceof ArrayBuffer) {
-    return true;
-  }
-  return false;
-}
-// 1. The assert module provides functions that throw
-// AssertionError's when particular conditions are not met. The
-// assert module must conform to the following interface.
-
-var assert = module.exports = ok;
-
-// 2. The AssertionError is defined in assert.
-// new assert.AssertionError({ message: message,
-//                             actual: actual,
-//                             expected: expected })
-
-var regex = /\s*function\s+([^\(\s]*)\s*/;
-// based on https://github.com/ljharb/function.prototype.name/blob/adeeeec8bfcc6068b187d7d9fb3d5bb1d3a30899/implementation.js
-function getName(func) {
-  if (!util.isFunction(func)) {
-    return;
-  }
-  if (functionsHaveNames) {
-    return func.name;
-  }
-  var str = func.toString();
-  var match = str.match(regex);
-  return match && match[1];
-}
-assert.AssertionError = function AssertionError(options) {
-  this.name = 'AssertionError';
-  this.actual = options.actual;
-  this.expected = options.expected;
-  this.operator = options.operator;
-  if (options.message) {
-    this.message = options.message;
-    this.generatedMessage = false;
-  } else {
-    this.message = getMessage(this);
-    this.generatedMessage = true;
-  }
-  var stackStartFunction = options.stackStartFunction || fail;
-  if (Error.captureStackTrace) {
-    Error.captureStackTrace(this, stackStartFunction);
-  } else {
-    // non v8 browsers so we can have a stacktrace
-    var err = new Error();
-    if (err.stack) {
-      var out = err.stack;
-
-      // try to strip useless frames
-      var fn_name = getName(stackStartFunction);
-      var idx = out.indexOf('\n' + fn_name);
-      if (idx >= 0) {
-        // once we have located the function frame
-        // we need to strip out everything before it (and its line)
-        var next_line = out.indexOf('\n', idx + 1);
-        out = out.substring(next_line + 1);
-      }
-
-      this.stack = out;
-    }
-  }
-};
-
-// assert.AssertionError instanceof Error
-util.inherits(assert.AssertionError, Error);
-
-function truncate(s, n) {
-  if (typeof s === 'string') {
-    return s.length < n ? s : s.slice(0, n);
-  } else {
-    return s;
-  }
-}
-function inspect(something) {
-  if (functionsHaveNames || !util.isFunction(something)) {
-    return util.inspect(something);
-  }
-  var rawname = getName(something);
-  var name = rawname ? ': ' + rawname : '';
-  return '[Function' +  name + ']';
-}
-function getMessage(self) {
-  return truncate(inspect(self.actual), 128) + ' ' +
-         self.operator + ' ' +
-         truncate(inspect(self.expected), 128);
-}
-
-// At present only the three keys mentioned above are used and
-// understood by the spec. Implementations or sub modules can pass
-// other keys to the AssertionError's constructor - they will be
-// ignored.
-
-// 3. All of the following functions must throw an AssertionError
-// when a corresponding condition is not met, with a message that
-// may be undefined if not provided.  All assertion methods provide
-// both the actual and expected values to the assertion error for
-// display purposes.
-
-function fail(actual, expected, message, operator, stackStartFunction) {
-  throw new assert.AssertionError({
-    message: message,
-    actual: actual,
-    expected: expected,
-    operator: operator,
-    stackStartFunction: stackStartFunction
-  });
-}
-
-// EXTENSION! allows for well behaved errors defined elsewhere.
-assert.fail = fail;
-
-// 4. Pure assertion tests whether a value is truthy, as determined
-// by !!guard.
-// assert.ok(guard, message_opt);
-// This statement is equivalent to assert.equal(true, !!guard,
-// message_opt);. To test strictly for the value true, use
-// assert.strictEqual(true, guard, message_opt);.
-
-function ok(value, message) {
-  if (!value) fail(value, true, message, '==', assert.ok);
-}
-assert.ok = ok;
-
-// 5. The equality assertion tests shallow, coercive equality with
-// ==.
-// assert.equal(actual, expected, message_opt);
-
-assert.equal = function equal(actual, expected, message) {
-  if (actual != expected) fail(actual, expected, message, '==', assert.equal);
-};
-
-// 6. The non-equality assertion tests for whether two objects are not equal
-// with != assert.notEqual(actual, expected, message_opt);
-
-assert.notEqual = function notEqual(actual, expected, message) {
-  if (actual == expected) {
-    fail(actual, expected, message, '!=', assert.notEqual);
-  }
-};
-
-// 7. The equivalence assertion tests a deep equality relation.
-// assert.deepEqual(actual, expected, message_opt);
-
-assert.deepEqual = function deepEqual(actual, expected, message) {
-  if (!_deepEqual(actual, expected, false)) {
-    fail(actual, expected, message, 'deepEqual', assert.deepEqual);
-  }
-};
-
-assert.deepStrictEqual = function deepStrictEqual(actual, expected, message) {
-  if (!_deepEqual(actual, expected, true)) {
-    fail(actual, expected, message, 'deepStrictEqual', assert.deepStrictEqual);
-  }
-};
-
-function _deepEqual(actual, expected, strict, memos) {
-  // 7.1. All identical values are equivalent, as determined by ===.
-  if (actual === expected) {
-    return true;
-  } else if (isBuffer(actual) && isBuffer(expected)) {
-    return compare(actual, expected) === 0;
-
-  // 7.2. If the expected value is a Date object, the actual value is
-  // equivalent if it is also a Date object that refers to the same time.
-  } else if (util.isDate(actual) && util.isDate(expected)) {
-    return actual.getTime() === expected.getTime();
-
-  // 7.3 If the expected value is a RegExp object, the actual value is
-  // equivalent if it is also a RegExp object with the same source and
-  // properties (`global`, `multiline`, `lastIndex`, `ignoreCase`).
-  } else if (util.isRegExp(actual) && util.isRegExp(expected)) {
-    return actual.source === expected.source &&
-           actual.global === expected.global &&
-           actual.multiline === expected.multiline &&
-           actual.lastIndex === expected.lastIndex &&
-           actual.ignoreCase === expected.ignoreCase;
-
-  // 7.4. Other pairs that do not both pass typeof value == 'object',
-  // equivalence is determined by ==.
-  } else if ((actual === null || typeof actual !== 'object') &&
-             (expected === null || typeof expected !== 'object')) {
-    return strict ? actual === expected : actual == expected;
-
-  // If both values are instances of typed arrays, wrap their underlying
-  // ArrayBuffers in a Buffer each to increase performance
-  // This optimization requires the arrays to have the same type as checked by
-  // Object.prototype.toString (aka pToString). Never perform binary
-  // comparisons for Float*Arrays, though, since e.g. +0 === -0 but their
-  // bit patterns are not identical.
-  } else if (isView(actual) && isView(expected) &&
-             pToString(actual) === pToString(expected) &&
-             !(actual instanceof Float32Array ||
-               actual instanceof Float64Array)) {
-    return compare(new Uint8Array(actual.buffer),
-                   new Uint8Array(expected.buffer)) === 0;
-
-  // 7.5 For all other Object pairs, including Array objects, equivalence is
-  // determined by having the same number of owned properties (as verified
-  // with Object.prototype.hasOwnProperty.call), the same set of keys
-  // (although not necessarily the same order), equivalent values for every
-  // corresponding key, and an identical 'prototype' property. Note: this
-  // accounts for both named and indexed properties on Arrays.
-  } else if (isBuffer(actual) !== isBuffer(expected)) {
-    return false;
-  } else {
-    memos = memos || {actual: [], expected: []};
-
-    var actualIndex = memos.actual.indexOf(actual);
-    if (actualIndex !== -1) {
-      if (actualIndex === memos.expected.indexOf(expected)) {
-        return true;
-      }
-    }
-
-    memos.actual.push(actual);
-    memos.expected.push(expected);
-
-    return objEquiv(actual, expected, strict, memos);
-  }
-}
-
-function isArguments(object) {
-  return Object.prototype.toString.call(object) == '[object Arguments]';
-}
-
-function objEquiv(a, b, strict, actualVisitedObjects) {
-  if (a === null || a === undefined || b === null || b === undefined)
-    return false;
-  // if one is a primitive, the other must be same
-  if (util.isPrimitive(a) || util.isPrimitive(b))
-    return a === b;
-  if (strict && Object.getPrototypeOf(a) !== Object.getPrototypeOf(b))
-    return false;
-  var aIsArgs = isArguments(a);
-  var bIsArgs = isArguments(b);
-  if ((aIsArgs && !bIsArgs) || (!aIsArgs && bIsArgs))
-    return false;
-  if (aIsArgs) {
-    a = pSlice.call(a);
-    b = pSlice.call(b);
-    return _deepEqual(a, b, strict);
-  }
-  var ka = objectKeys(a);
-  var kb = objectKeys(b);
-  var key, i;
-  // having the same number of owned properties (keys incorporates
-  // hasOwnProperty)
-  if (ka.length !== kb.length)
-    return false;
-  //the same set of keys (although not necessarily the same order),
-  ka.sort();
-  kb.sort();
-  //~~~cheap key test
-  for (i = ka.length - 1; i >= 0; i--) {
-    if (ka[i] !== kb[i])
-      return false;
-  }
-  //equivalent values for every corresponding key, and
-  //~~~possibly expensive deep test
-  for (i = ka.length - 1; i >= 0; i--) {
-    key = ka[i];
-    if (!_deepEqual(a[key], b[key], strict, actualVisitedObjects))
-      return false;
-  }
-  return true;
-}
-
-// 8. The non-equivalence assertion tests for any deep inequality.
-// assert.notDeepEqual(actual, expected, message_opt);
-
-assert.notDeepEqual = function notDeepEqual(actual, expected, message) {
-  if (_deepEqual(actual, expected, false)) {
-    fail(actual, expected, message, 'notDeepEqual', assert.notDeepEqual);
-  }
-};
-
-assert.notDeepStrictEqual = notDeepStrictEqual;
-function notDeepStrictEqual(actual, expected, message) {
-  if (_deepEqual(actual, expected, true)) {
-    fail(actual, expected, message, 'notDeepStrictEqual', notDeepStrictEqual);
-  }
-}
-
-
-// 9. The strict equality assertion tests strict equality, as determined by ===.
-// assert.strictEqual(actual, expected, message_opt);
-
-assert.strictEqual = function strictEqual(actual, expected, message) {
-  if (actual !== expected) {
-    fail(actual, expected, message, '===', assert.strictEqual);
-  }
-};
-
-// 10. The strict non-equality assertion tests for strict inequality, as
-// determined by !==.  assert.notStrictEqual(actual, expected, message_opt);
-
-assert.notStrictEqual = function notStrictEqual(actual, expected, message) {
-  if (actual === expected) {
-    fail(actual, expected, message, '!==', assert.notStrictEqual);
-  }
-};
-
-function expectedException(actual, expected) {
-  if (!actual || !expected) {
-    return false;
-  }
-
-  if (Object.prototype.toString.call(expected) == '[object RegExp]') {
-    return expected.test(actual);
-  }
-
-  try {
-    if (actual instanceof expected) {
-      return true;
-    }
-  } catch (e) {
-    // Ignore.  The instanceof check doesn't work for arrow functions.
-  }
-
-  if (Error.isPrototypeOf(expected)) {
-    return false;
-  }
-
-  return expected.call({}, actual) === true;
-}
-
-function _tryBlock(block) {
-  var error;
-  try {
-    block();
-  } catch (e) {
-    error = e;
-  }
-  return error;
-}
-
-function _throws(shouldThrow, block, expected, message) {
-  var actual;
-
-  if (typeof block !== 'function') {
-    throw new TypeError('"block" argument must be a function');
-  }
-
-  if (typeof expected === 'string') {
-    message = expected;
-    expected = null;
-  }
-
-  actual = _tryBlock(block);
-
-  message = (expected && expected.name ? ' (' + expected.name + ').' : '.') +
-            (message ? ' ' + message : '.');
-
-  if (shouldThrow && !actual) {
-    fail(actual, expected, 'Missing expected exception' + message);
-  }
-
-  var userProvidedMessage = typeof message === 'string';
-  var isUnwantedException = !shouldThrow && util.isError(actual);
-  var isUnexpectedException = !shouldThrow && actual && !expected;
-
-  if ((isUnwantedException &&
-      userProvidedMessage &&
-      expectedException(actual, expected)) ||
-      isUnexpectedException) {
-    fail(actual, expected, 'Got unwanted exception' + message);
-  }
-
-  if ((shouldThrow && actual && expected &&
-      !expectedException(actual, expected)) || (!shouldThrow && actual)) {
-    throw actual;
-  }
-}
-
-// 11. Expected to throw an error:
-// assert.throws(block, Error_opt, message_opt);
-
-assert.throws = function(block, /*optional*/error, /*optional*/message) {
-  _throws(true, block, error, message);
-};
-
-// EXTENSION! This is annoying to write outside this module.
-assert.doesNotThrow = function(block, /*optional*/error, /*optional*/message) {
-  _throws(false, block, error, message);
-};
-
-assert.ifError = function(err) { if (err) throw err; };
-
-var objectKeys = Object.keys || function (obj) {
-  var keys = [];
-  for (var key in obj) {
-    if (hasOwn.call(obj, key)) keys.push(key);
-  }
-  return keys;
-};
-
-/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(9)))
-
-/***/ }),
-/* 106 */
-/***/ (function(module, exports, __webpack_require__) {
-
 "use strict";
 /* WEBPACK VAR INJECTION */(function(process) {
-var isWindows = process.platform === 'win32';
-var trailingSlashRe = isWindows ? /[^:]\\$/ : /.\/$/;
 
-// https://github.com/nodejs/node/blob/3e7a14381497a3b73dda68d05b5130563cdab420/lib/os.js#L25-L43
-module.exports = function () {
-	var path;
+(function () {
+  var Base,
+      DirectClient,
+      DirectRuntime,
+      EventEmitter,
+      isBrowser,
+      extend = function extend(child, parent) {
+    for (var key in parent) {
+      if (hasProp.call(parent, key)) child[key] = parent[key];
+    }function ctor() {
+      this.constructor = child;
+    }ctor.prototype = parent.prototype;child.prototype = new ctor();child.__super__ = parent.prototype;return child;
+  },
+      hasProp = {}.hasOwnProperty;
 
-	if (isWindows) {
-		path = process.env.TEMP ||
-			process.env.TMP ||
-			(process.env.SystemRoot || process.env.windir) + '\\temp';
-	} else {
-		path = process.env.TMPDIR ||
-			process.env.TMP ||
-			process.env.TEMP ||
-			'/tmp';
-	}
-
-	if (trailingSlashRe.test(path)) {
-		path = path.slice(0, -1);
-	}
-
-	return path;
-};
-
-/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(1)))
-
-/***/ }),
-/* 107 */
-/***/ (function(module, exports, __webpack_require__) {
-
-/* WEBPACK VAR INJECTION */(function(process) {(function() {
-  var Base, DirectClient, DirectRuntime, EventEmitter, isBrowser,
-    extend = function(child, parent) { for (var key in parent) { if (hasProp.call(parent, key)) child[key] = parent[key]; } function ctor() { this.constructor = child; } ctor.prototype = parent.prototype; child.prototype = new ctor(); child.__super__ = parent.prototype; return child; },
-    hasProp = {}.hasOwnProperty;
-
-  isBrowser = function() {
+  isBrowser = function isBrowser() {
     return !(typeof process !== 'undefined' && process.execPath && process.execPath.indexOf('node') !== -1);
   };
 
-  Base = __webpack_require__(24);
+  Base = __webpack_require__(23);
 
-  EventEmitter = __webpack_require__(2).EventEmitter;
+  EventEmitter = __webpack_require__(1).EventEmitter;
 
-  DirectRuntime = (function(superClass) {
+  DirectRuntime = function (superClass) {
     extend(DirectRuntime, superClass);
 
     function DirectRuntime(options) {
@@ -24722,18 +24083,18 @@ module.exports = function () {
       this.clients = [];
     }
 
-    DirectRuntime.prototype._connect = function(client) {
+    DirectRuntime.prototype._connect = function (client) {
       this.clients.push(client);
-      return client.on('send', (function(_this) {
-        return function(msg) {
+      return client.on('send', function (_this) {
+        return function (msg) {
           return _this._receive(msg, {
             client: client
           });
         };
-      })(this));
+      }(this));
     };
 
-    DirectRuntime.prototype._disconnect = function(client) {
+    DirectRuntime.prototype._disconnect = function (client) {
       if (this.clients.indexOf(client) === -1) {
         return;
       }
@@ -24741,11 +24102,11 @@ module.exports = function () {
       return client.removeAllListeners('send');
     };
 
-    DirectRuntime.prototype._receive = function(msg, context) {
+    DirectRuntime.prototype._receive = function (msg, context) {
       return this.receive(msg.protocol, msg.command, msg.payload, context);
     };
 
-    DirectRuntime.prototype.send = function(protocol, topic, payload, context) {
+    DirectRuntime.prototype.send = function (protocol, topic, payload, context) {
       var m;
       if (!context.client) {
         return;
@@ -24758,7 +24119,7 @@ module.exports = function () {
       return context.client._receive(m);
     };
 
-    DirectRuntime.prototype.sendAll = function(protocol, topic, payload) {
+    DirectRuntime.prototype.sendAll = function (protocol, topic, payload) {
       var client, i, len, m, ref, results;
       m = {
         protocol: protocol,
@@ -24775,10 +24136,9 @@ module.exports = function () {
     };
 
     return DirectRuntime;
+  }(Base);
 
-  })(Base);
-
-  DirectClient = (function(superClass) {
+  DirectClient = function (superClass) {
     extend(DirectClient, superClass);
 
     function DirectClient(runtime, name) {
@@ -24790,15 +24150,15 @@ module.exports = function () {
       }
     }
 
-    DirectClient.prototype.connect = function() {
+    DirectClient.prototype.connect = function () {
       return this.runtime._connect(this);
     };
 
-    DirectClient.prototype.disconnect = function() {
+    DirectClient.prototype.disconnect = function () {
       return this.runtime._disconnect(this);
     };
 
-    DirectClient.prototype.send = function(protocol, topic, payload) {
+    DirectClient.prototype.send = function (protocol, topic, payload) {
       var m;
       m = {
         protocol: protocol,
@@ -24808,34 +24168,34 @@ module.exports = function () {
       return this.emit('send', m);
     };
 
-    DirectClient.prototype._receive = function(message) {
-      return setTimeout((function(_this) {
-        return function() {
+    DirectClient.prototype._receive = function (message) {
+      return setTimeout(function (_this) {
+        return function () {
           return _this.emit('message', message);
         };
-      })(this), 1);
+      }(this), 1);
     };
 
     return DirectClient;
-
-  })(EventEmitter);
+  }(EventEmitter);
 
   exports.Client = DirectClient;
 
   exports.Runtime = DirectRuntime;
-
-}).call(this);
-
-/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(1)))
+}).call(undefined);
+/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(2)))
 
 /***/ }),
-/* 108 */
+/* 105 */
 /***/ (function(module, exports, __webpack_require__) {
 
-(function (context) {
-  var PostMessage = __webpack_require__(23);
+"use strict";
 
-  var OpenerRuntime = function (options, button) {
+
+(function (context) {
+  var PostMessage = __webpack_require__(22);
+
+  var OpenerRuntime = function OpenerRuntime(options, button) {
     PostMessage.call(this, options);
     if (button) {
       button.addEventListener('click', function (event) {
@@ -24845,7 +24205,7 @@ module.exports = function () {
       }.bind(this));
     }
   };
-  OpenerRuntime.prototype = new PostMessage;
+  OpenerRuntime.prototype = new PostMessage();
 
   OpenerRuntime.prototype.openClient = function (url) {
     var client = window.open(url, '_blank');
@@ -24888,8 +24248,6 @@ module.exports = function () {
     return runtime;
   };
 })(window);
-
-
 
 /***/ })
 /******/ ]);
